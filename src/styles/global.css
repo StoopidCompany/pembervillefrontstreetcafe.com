@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Placeholder tokens. Real brand palette and fonts are phase 4 (design/brand).
+   --color-navy is the current live site's theme-color, kept so the scaffold is
+   not visually arbitrary. */
+@theme {
+  --color-navy: #2b3063;
+  --color-paper: #faf8f4;
+  --color-ink: #1c1c1c;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: system-ui, sans-serif;
+  }
+}
