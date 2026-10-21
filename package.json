@@ -1,0 +1,30 @@
+{
+  "name": "pembervillefrontstreetcafe.com",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "dev:cms": "tinacms dev --datalayer-port 9876 -c \"astro dev\"",
+    "build": "astro build",
+    "build:cms": "tinacms build && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.2.0",
+    "@astrojs/sitemap": "^3.2.1",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@tailwindcss/vite": "^4.1.0",
+    "astro": "^5.6.0",
+    "sharp": "^0.34.0",
+    "tailwindcss": "^4.1.0",
+    "tinacms": "^2.6.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@tinacms/cli": "^1.9.0",
+    "typescript": "^5.7.0"
+  }
+}

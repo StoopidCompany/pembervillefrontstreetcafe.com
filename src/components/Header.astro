@@ -1,0 +1,162 @@
+---
+import { getSettings, telHref, formatAddress } from "~/lib/content";
+import { summarizeHours } from "~/lib/hours";
+
+const settings = await getSettings();
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { label: "Menu", href: "/menu" },
+  { label: "About", href: "/about" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
+];
+
+function isActive(href: string) {
+  if (href === "/") return currentPath === "/";
+  return currentPath.startsWith(href);
+}
+
+const tel = telHref(settings.phone);
+const address = formatAddress(settings.address);
+// Most phone visitors are standing on Front Street deciding where to eat, so the open
+// hours ride along in the header rather than waiting at the bottom of the page.
+const [openRow] = summarizeHours(settings.hours);
+---
+<header class="site-header fixed top-0 left-0 right-0 z-50 bg-cream/95 backdrop-blur border-b border-crust">
+  <div class="site-header-inner mx-auto max-w-6xl px-5 lg:px-8 flex items-center justify-between gap-4">
+    <a href="/" class="shrink-0 group" aria-label={`${settings.businessName} — home`}>
+      <span class="site-wordmark block font-display text-door leading-none tracking-tight">
+        Front Street Cafe
+      </span>
+      <span class="hidden sm:block font-body text-[0.65rem] uppercase tracking-[0.2em] text-ink-soft mt-1">
+        Pemberville, Ohio
+      </span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-7 font-body text-sm uppercase tracking-wide">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          aria-current={isActive(link.href) ? "page" : undefined}
+          class:list={[
+            "transition-colors hover:!text-brick",
+            isActive(link.href) ? "!text-brick" : "!text-ink",
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+      {tel && (
+        <a
+          href={tel}
+          class="rounded-full bg-brick px-4 py-2 text-xs font-semibold uppercase tracking-wider !text-cream hover:!bg-door transition-colors"
+        >
+          {settings.phone}
+        </a>
+      )}
+    </nav>
+
+    <div class="flex items-center gap-1 md:hidden">
+      {tel && (
+        <a
+          href={tel}
+          class="flex items-center gap-1.5 rounded-full bg-brick px-3 py-2 text-xs font-semibold uppercase tracking-wider !text-cream"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 5a2 2 0 012-2h2.5a1 1 0 01.97.757l.9 3.6a1 1 0 01-.52 1.12l-1.7.85a11 11 0 005.52 5.52l.85-1.7a1 1 0 011.12-.52l3.6.9A1 1 0 0121 14.5V17a2 2 0 01-2 2h-1C9.7 19 3 12.3 3 5z" />
+          </svg>
+          Call
+        </a>
+      )}
+      <button
+        type="button"
+        id="mobile-menu-toggle"
+        class="p-2.5 text-ink"
+        aria-label="Open menu"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Hours + where we are, on phones, above the fold, on every page. -->
+  <div class="md:hidden border-t border-crust/70 bg-crust/40 px-5 py-1 text-xs flex items-center justify-between gap-3">
+    {openRow && (
+      <span class="truncate font-medium text-ink">{openRow.days} {openRow.time}</span>
+    )}
+    {address && <span class="truncate text-ink-soft">{address}</span>}
+  </div>
+
+  <div id="mobile-menu" class="md:hidden hidden border-t border-crust bg-cream">
+    <nav class="flex flex-col py-2">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          aria-current={isActive(link.href) ? "page" : undefined}
+          class:list={[
+            "px-5 py-3 text-sm uppercase tracking-wide hover:bg-crust/50 transition-colors",
+            isActive(link.href) ? "!text-brick" : "!text-ink",
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById("mobile-menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+  toggle?.addEventListener("click", () => {
+    if (!menu) return;
+    const isOpen = menu.classList.toggle("hidden") === false;
+    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    toggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+  });
+
+  const header = document.querySelector(".site-header");
+  function updateScrollState() {
+    header?.classList.toggle("is-scrolled", window.scrollY > 40);
+  }
+  updateScrollState();
+  window.addEventListener("scroll", updateScrollState, { passive: true });
+</script>
+
+<style>
+  .site-header-inner {
+    height: 60px;
+    transition: height 300ms ease;
+  }
+  .site-wordmark {
+    font-size: 1.35rem;
+    transition: font-size 300ms ease;
+  }
+  .site-header.is-scrolled .site-header-inner {
+    height: 52px;
+  }
+  .site-header.is-scrolled .site-wordmark {
+    font-size: 1.15rem;
+  }
+
+  @media (min-width: 768px) {
+    .site-header-inner {
+      height: 92px;
+    }
+    .site-wordmark {
+      font-size: 2rem;
+    }
+    .site-header.is-scrolled .site-header-inner {
+      height: 68px;
+    }
+    .site-header.is-scrolled .site-wordmark {
+      font-size: 1.5rem;
+    }
+  }
+</style>

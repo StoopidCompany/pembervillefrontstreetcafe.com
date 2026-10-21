@@ -1,0 +1,42 @@
+---
+import { render } from "astro:content";
+import Base from "~/layouts/Base.astro";
+import { getPage } from "~/lib/content";
+
+const page = await getPage("gallery");
+const { Content: Intro } = await render(page);
+const photos = page.data.images;
+---
+<Base
+  title={page.data.seoTitle ?? page.data.headline}
+  description={page.data.description ?? undefined}
+>
+  <div class="mx-auto max-w-5xl px-5 py-10 lg:px-8">
+    <h1 class="text-3xl sm:text-4xl">{page.data.headline}</h1>
+    <div class="mt-3 text-ink-soft"><Intro /></div>
+
+    {photos.length > 0 ? (
+      <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+        {photos.map((photo, i) => (
+          <li>
+            <figure>
+              <img
+                src={photo.image}
+                alt={photo.alt}
+                width="1920"
+                height="2560"
+                loading={i === 0 ? "eager" : "lazy"}
+                class="aspect-[3/4] w-full rounded-2xl object-cover"
+              />
+              {photo.caption && (
+                <figcaption class="mt-2 text-sm text-ink-soft">{photo.caption}</figcaption>
+              )}
+            </figure>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="mt-8 text-ink-soft">Photos coming soon.</p>
+    )}
+  </div>
+</Base>

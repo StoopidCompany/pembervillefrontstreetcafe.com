@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Front Street Cafe">
+  <!-- Placeholder mark: the cafe has no logo artwork, only a photo of its hanging sign.
+       Brand colours from src/styles/global.css. Replace if Gavin produces a real logo. -->
+  <rect width="64" height="64" rx="12" fill="#2c3550"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#ead9bf" stroke-width="2"/>
+  <text x="32" y="33" text-anchor="middle" dominant-baseline="central"
+        font-family="Georgia, 'Times New Roman', serif" font-size="24" font-weight="700"
+        fill="#fbf7f0">FS</text>
+</svg>

@@ -1,0 +1,65 @@
+---
+import { getSettings, telHref, formatAddress } from "~/lib/content";
+import { summarizeHours } from "~/lib/hours";
+
+interface Props {
+  heading?: string;
+  /** Callers supply the background so it can sit on cream or over a photo. */
+  class?: string;
+}
+
+const { heading = "Find us", class: className = "bg-crust/30" } = Astro.props;
+const settings = await getSettings();
+const rows = summarizeHours(settings.hours);
+const tel = telHref(settings.phone);
+const address = formatAddress(settings.address);
+const directions = address
+  ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      `${settings.businessName}, ${address}`,
+    )}`
+  : null;
+---
+<section class:list={["rounded-2xl border border-crust p-6 sm:p-8", className]}>
+  <h2 class="font-display text-2xl">{heading}</h2>
+
+  <dl class="mt-5 grid gap-5 sm:grid-cols-3">
+    <div>
+      <dt class="font-body text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Hours</dt>
+      {rows.length > 0 ? (
+        <dd class="mt-1.5 space-y-0.5">
+          {rows.map((row) => (
+            <div class="flex gap-2 text-sm">
+              <span class="font-semibold">{row.days}</span>
+              <span>{row.time}</span>
+            </div>
+          ))}
+        </dd>
+      ) : (
+        <dd class="mt-1.5 text-sm text-ink-soft">Please call for today's hours</dd>
+      )}
+    </div>
+
+    <div>
+      <dt class="font-body text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Where</dt>
+      <dd class="mt-1.5 text-sm">
+        {address ?? "Front Street, Pemberville, Ohio"}
+        {directions && (
+          <a href={directions} target="_blank" rel="noopener" class="block mt-1 underline">
+            Get directions
+          </a>
+        )}
+      </dd>
+    </div>
+
+    <div>
+      <dt class="font-body text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Call</dt>
+      <dd class="mt-1.5 text-sm">
+        {tel ? (
+          <a href={tel} class="font-semibold">{settings.phone}</a>
+        ) : (
+          <span class="text-ink-soft">Phone to be confirmed</span>
+        )}
+      </dd>
+    </div>
+  </dl>
+</section>
