@@ -2,12 +2,49 @@
 import { render } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import VisitInfo from "~/components/VisitInfo.astro";
-import { getPage, getSignatureDishes, formatPrice } from "~/lib/content";
+import SourceBadge from "~/components/SourceBadge.astro";
+import {
+  getPage,
+  getSettings,
+  getSignatureDishes,
+  getTestimonials,
+  getReviewLink,
+  formatPrice,
+} from "~/lib/content";
 
 const page = await getPage("home");
 const { Content: Intro } = await render(page);
 const signatures = await getSignatureDishes(page.data.signatures);
+
+/*
+ * There are 80 Google reviews in the repo and publishing most of them is reasonable — but
+ * the home page is not a review site. Show the strongest few and let the score line carry
+ * the rest. `order` decides which ones surface; scripts/publish-reviews.mjs sets it by
+ * rating then recency.
+ */
+const HOME_REVIEW_LIMIT = 6;
+const allTestimonials = await getTestimonials();
+const testimonials = allTestimonials.slice(0, HOME_REVIEW_LIMIT);
 const { headline, heroSubtext, heroImage, ctaText, ctaHref } = page.data;
+
+const { reviewsSummary } = await getSettings();
+
+// Resolved once per review: its own sourceUrl if it has one, else the platform's.
+const reviewLinks = await Promise.all(
+  testimonials.map(({ data }) => data.sourceUrl ?? getReviewLink(data.source)),
+);
+
+// All-or-nothing, like the address in the JSON-LD: a rating with no count, or a count with
+// no rating, says nothing useful, so it shows nothing.
+const summary =
+  reviewsSummary.rating && reviewsSummary.count
+    ? {
+        rating: reviewsSummary.rating,
+        count: reviewsSummary.count,
+        url: reviewsSummary.url,
+        platformLabel: reviewsSummary.platform === "yelp" ? "Yelp" : "Google",
+      }
+    : null;
 ---
 <Base
   title={page.data.seoTitle ?? undefined}
@@ -73,6 +110,77 @@ const { headline, heroSubtext, heroImage, ctaText, ctaHref } = page.data;
         <p class="mt-8 text-center">
           <a href="/menu" class="font-semibold underline">See the whole menu</a>
         </p>
+      </section>
+    )}
+
+    {(testimonials.length > 0 || summary) && (
+      <section class="mt-16">
+        <h2 class="text-center font-display text-2xl sm:text-3xl">What guests say</h2>
+
+        {testimonials.length > 0 && (
+          <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+            {testimonials.map(({ data }, i) => (
+              <li class="flex gap-4 rounded-2xl border border-crust p-5">
+                {/* The initial sits behind the photo, so a Google avatar URL that has
+                    rotted or been removed degrades to a lettered circle instead of a
+                    broken image. */}
+                <span
+                  class="relative mt-0.5 grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-crust font-display text-lg text-door"
+                  aria-hidden="true"
+                >
+                  {data.author.trim().charAt(0).toUpperCase()}
+                  {data.avatar && (
+                    <img
+                      src={data.avatar}
+                      alt=""
+                      width="44"
+                      height="44"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                      class="absolute inset-0 h-full w-full object-cover"
+                    />
+                  )}
+                </span>
+
+                <div class="min-w-0">
+                  {/* Backstop: a very long review still cannot run the card away. */}
+                  <blockquote class="line-clamp-[10] text-pretty leading-relaxed">
+                    “{data.quote}”
+                  </blockquote>
+                  <p class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-soft">
+                    <span class="font-semibold text-ink">{data.author}</span>
+                    {data.rating && (
+                      <span class="text-brick" aria-label={`${data.rating} out of 5`}>
+                        {"★".repeat(data.rating)}
+                      </span>
+                    )}
+                    <SourceBadge
+                      source={data.source}
+                      url={reviewLinks[i]}
+                      specific={Boolean(data.sourceUrl)}
+                    />
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {summary && (
+          <p class="mt-8 text-center text-sm text-ink-soft">
+            {summary.rating}★ on {summary.platformLabel} · {summary.count}{" "}
+            {summary.count === 1 ? "review" : "reviews"}
+            {summary.url && (
+              <>
+                {" — "}
+                <a href={summary.url} target="_blank" rel="noopener" class="font-semibold underline">
+                  see more
+                </a>
+              </>
+            )}
+          </p>
+        )}
       </section>
     )}
   </div>

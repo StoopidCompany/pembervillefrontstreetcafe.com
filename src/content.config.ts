@@ -62,6 +62,24 @@ const settings = defineCollection({
       google: optionalString,
       yelp: optionalString,
     }),
+    ordering: z
+      .object({
+        doordash: optionalString,
+        ubereats: optionalString,
+        grubhub: optionalString,
+      })
+      .nullish()
+      .transform((value) => value ?? {}),
+    // All-or-nothing, like the address: a rating with no count is not worth showing.
+    reviewsSummary: z
+      .object({
+        platform: z.enum(["google", "yelp"]).nullable().optional(),
+        rating: optionalString,
+        count: z.number().nullable().optional(),
+        url: optionalString,
+      })
+      .nullish()
+      .transform((value) => value ?? {}),
     hours: z.array(hoursEntry).default([]),
     footerText: optionalString,
   }),
@@ -133,4 +151,27 @@ const menuItems = defineCollection({
   }),
 });
 
-export const collections = { settings, pages, menuSections, menuItems };
+const testimonials = defineCollection({
+  loader: glob({ pattern: "*.md", base: "content/testimonials" }),
+  schema: z.object({
+    author: z.string(),
+    quote: z.string(),
+    source: z.enum(["google", "yelp", "facebook", "direct"]),
+    rating: z
+      .number()
+      .min(1, "a rating is 1 to 5")
+      .max(5, "a rating is 1 to 5")
+      .nullable()
+      .optional(),
+    sourceUrl: optionalString,
+    order: z.number().default(99),
+    published: z.boolean().default(true),
+    // Written by the Google sync; absent on hand-typed reviews.
+    avatar: optionalString,
+    googleReviewId: optionalString,
+    reviewedAt: optionalString,
+    syncNote: optionalString,
+  }),
+});
+
+export const collections = { settings, pages, menuSections, menuItems, testimonials };

@@ -1,0 +1,11 @@
+---
+author: "Karen Roepke"
+quote: "New favorite place!  Food is all made from scratch including the bread!"
+source: "google"
+rating: 5
+order: 200
+published: true
+avatar: "https://lh3.googleusercontent.com/a-/ALV-UjWG2rcXvlXEUo-ScjYw5PLTVQSkzJNeoARPmHHpvgsKnW6L-AO6=s96-c-rw"
+googleReviewId: "AbFvOqmN7tC6-MiBSFwTo_0ho3O019x74ra8vZaP3_cXXvqzLEMg2kOqCqaTpGqW83QikQIgnzb82Q"
+reviewedAt: "2025-08-13"
+---

@@ -1,0 +1,21 @@
+---
+import { getLogo, type LogoSlug } from "~/lib/logos";
+
+interface Props {
+  slug: LogoSlug;
+  class?: string;
+  /** Brand colour, or inherit the surrounding text colour (for use on a dark button). */
+  brandColor?: boolean;
+}
+
+const { slug, class: className = "h-4 w-auto", brandColor = true } = Astro.props;
+const logo = getLogo(slug);
+
+// Single-colour marks carry fill="currentColor" and take their colour from CSS. A
+// multicolour mark (the Google G) keeps the fills in its own file and is never tinted.
+const tint = brandColor && !logo?.multicolour;
+const svg = logo?.svg
+  .trim()
+  .replace("<svg ", `<svg class="${className}"${tint ? ` style="color:${logo.color}"` : ""} `);
+---
+{svg && <Fragment set:html={svg} />}

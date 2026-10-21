@@ -66,6 +66,7 @@ fails the build instead of rendering blank.
 | Contact page  | `content/pages/contact.md`   | Singleton. Intro + what the map looks up    |
 | Menu Sections | `content/menu-sections/*.md` | `order` + `published`. Body = section blurb |
 | Menu Items    | `content/menu-items/*.md`    | `order` + `available`, `section` reference   |
+| Guest Reviews | `content/testimonials/*.md`  | `order` + `published`. Google sync writes here |
 
 Things worth knowing before changing any of it:
 
@@ -132,6 +133,217 @@ npm run build && npx astro preview --port 4332
 google-chrome --headless --window-size=390,844 \
   --screenshot=/tmp/home.png --user-data-dir=/tmp/chrome-prof http://localhost:4332/
 ```
+
+## Guest reviews
+
+Three touchpoints, all of which disappear completely when there is nothing to show. That
+is the whole design rule here: zero reviews is a normal state for a restaurant site, not an
+error, so nothing renders an empty shell and nothing throws.
+
+| Where | What shows | When it disappears |
+|---|---|---|
+| Home, after the signature dishes | Up to 6 quotes + score line | No published reviews **and** no score |
+| Footer strip, above the copyright | "Liked it? Tell someone" + review buttons | Both `socials.google` and `socials.yelp` empty |
+| Contact, between Call and the form | Same component, "Already been in?" | Same |
+
+- The home page shows the **first 6 published reviews by `order`**
+  (`HOME_REVIEW_LIMIT` in [src/pages/index.astro](src/pages/index.astro)), not all of them —
+  70 are published and a review grid that long is not a home page. The score line carries
+  the rest. A long quote is also line-clamped so one essay cannot run a card away.
+- **Bulk approval**: `node scripts/publish-reviews.mjs` publishes everything rated 4+ and
+  assigns `order` by rating, then quotability (under ~280 characters, so pithy quotes reach
+  the home page ahead of five-paragraph ones), then recency. `--dry-run` to preview,
+  `--min-rating 5`, `--all` to include the unhappy ones, `--none` to hide everything,
+  `--exclude "Name"` to skip someone. Running it is the human approval step; it just does
+  not require 80 clicks.
+- `getTestimonials()` filters on `published` and sorts by `order`, the same hide-by-flag
+  pattern as menu sections and items. Unlike `getMenu()` it returns an empty array rather
+  than throwing: an empty menu is a bug, no reviews yet is just Tuesday.
+- The score line (`reviewsSummary` in settings) is **all or nothing** — blank out either the
+  rating or the count and the whole line vanishes, the same rule the postal address follows
+  in the JSON-LD. Half a statistic is worse than none.
+- [ReviewAsk.astro](src/components/ReviewAsk.astro) is shaped like `VisitInfo.astro`:
+  settings-driven, `heading` prop, caller supplies the background. It renders nothing at all
+  until at least one listing URL exists, so a review box never appears with no link in it.
+- Google reviews arrive via the sync below, unpublished until approved. Yelp and Facebook
+  quotes are **typed out by hand**: Yelp's terms restrict reproducing review text outside
+  their own widget.
+- The platform is shown by [SourceBadge.astro](src/components/SourceBadge.astro), which
+  looks for a mark at `public/logos/{google,yelp,facebook}.svg` and falls back to a plain
+  text label when one is missing. `google.svg` is the **official four-colour G**, taken from
+  Google's own `gstatic.com` asset and kept at its original fills — `multicolour: true` in
+  [logos.ts](src/lib/logos.ts) stops `BrandGlyph` tinting it, because Google's rules say the
+  G is not to be recoloured. `yelp.svg` and `facebook.svg` are still absent; drop them in
+  from each platform's brand page and they appear with no code change.
+- **Reviewer photos** are Google's, hotlinked rather than copied into the repo. The sync
+  rewrites the URL's size spec to `=s96-c-rw`, which returns a ~3KB WebP instead of the
+  ~30KB PNG the old site used. They are `loading="lazy"` with `referrerpolicy="no-referrer"`,
+  and the reviewer's initial is rendered *behind* the photo so a URL that rots degrades to a
+  lettered circle rather than a broken image. Clearing `avatar` on a review does the same.
+  Self-hosting them would mean keeping 80 strangers' profile pictures in git and re-fetching
+  them whenever someone changes their picture; hotlinking avoids both.
+- About is deliberately untouched — it would only duplicate the home page.
+
+`aggregateRating` on the `Restaurant` JSON-LD is deliberately deferred. It is worth real
+SEO, but only once the numbers are real and somebody has committed to keeping them current;
+a stale rating in structured data is its own problem.
+
+### Pulling reviews from Google
+
+`scripts/sync-google-reviews.mjs` writes Google reviews into `content/testimonials/`. It
+never publishes anything: every review arrives `published: false` and waits for a human to
+turn it on in the admin. Yelp stays hand-typed — their terms restrict reproducing review
+text outside their own widget.
+
+**Prerequisites, in order.** The first one has a lead time measured in days:
+
+1. **Request access to the Business Profile APIs.** Google grants it manually. Their stated
+   criteria include a verified, active profile at least 60 days old with a website attached.
+   You can tell whether it came through by looking at the API quota in Cloud Console:
+   **0 QPM means still pending, 300 QPM means approved.**
+2. Enable all **seven** Business Profile APIs that Google's setup guide lists, in the same
+   project. "Google My Business API" is the one that serves reviews (the legacy v4 host),
+   and it is **invisible in the API Library until your access request is approved** — if you
+   cannot find it, approval has not landed.
+3. On the OAuth consent screen, **publish the app**. An external app left in "Testing"
+   status is issued refresh tokens that **expire after 7 days**, which quietly breaks the
+   sync a week after you set it up.
+4. Create an OAuth client of type "Desktop app".
+5. `GOOGLE_CLIENT_ID=… GOOGLE_CLIENT_SECRET=… node scripts/google-oauth-setup.mjs`, signed
+   in **as the profile owner or a manager**. It prints a refresh token.
+6. Put `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN` in `.env.local`
+   and in the repository secrets. `GOOGLE_LOCATION_NAME` is optional and skips discovery.
+
+A refresh token also dies after **six months unused**, so a sync that only ever runs
+manually can go stale on its own. If the sync starts failing with a token error, rerun
+step 5.
+
+Run it from [.github/workflows/sync-reviews.yml](.github/workflows/sync-reviews.yml) — manual
+only for now, with the nightly `schedule` present but commented out until the deploy pipeline
+exists. The workflow builds and type-checks before committing, and writes a summary listing
+what is waiting for approval.
+
+**What it does and does not touch.** This writes into content a person also edits, so the
+rules matter:
+
+| Situation | What happens |
+|---|---|
+| New review with text | New file, `published: false`, `order: 99` |
+| Review edited on Google | Text, rating and date refreshed; **your published/hidden choice and `order` are kept** |
+| Review gone from Google | Unpublished, `syncNote` added, file kept, flagged in the summary |
+| Star-only review, no text | Skipped — it would be an empty quote. Still counts in the score |
+| Anonymous reviewer | Author becomes "A Google user" |
+| Hand-typed Yelp/Facebook review | Never touched; the sync only looks at `source: google` |
+| Google review already here by hand, no `googleReviewId` | **Adopted**, not duplicated: the ID is stamped on the existing file and your approval is kept. Matched on the words |
+| `reviewsSummary.platform` is `yelp` | Rating and count left alone — those are your numbers |
+
+Matching is on `googleReviewId`, never on filename or author — except for the adoption
+case above, which is what makes it safe to type reviews in by hand now and switch the API
+on later without ending up with two of everything. Change detection compares the
+**words**, ignoring YAML formatting, because Tina re-encodes files when it saves them — an
+exact comparison made the two fight over quote formatting on every run.
+
+Two honest limitations. Google's API returns no public URL for an individual review — only
+`reviewReplyUrl`, which is the owner's reply screen — so a synced review links to the
+listing as a whole, which is what every review widget does. And Tina can't filter a
+collection by a field, so there's no "pending" view in the admin — find new reviews from the
+workflow summary.
+
+`getReviewLink()` in [src/lib/content.ts](src/lib/content.ts) resolves where a card points,
+in order: that review's own `sourceUrl` if someone has pasted a real permalink into it, then
+the platform URL from `socials`, then — for Google only — a Maps search for the business by
+name and address. That last one uses the documented Maps URL API, the same call behind "Get
+directions", so it cannot point somewhere wrong the way an unverified listing ID could. The
+badge's tooltip says "Read this review on Google" only when the link really is that one
+review; otherwise "See our reviews on Google".
+
+**Importing without API access**, which is where the reviews in `content/testimonials/`
+actually came from. The old GoDaddy site's reviews widget receives the same Google data, so:
+
+1. Open the old site's `/reviews` page with DevTools → Network → XHR, and reload.
+2. Find the response carrying the review text and copy it.
+3. Save it and run the sync against it:
+
+```bash
+node scripts/sync-google-reviews.mjs --fixture _seed/fixtures/godaddy-reviews-export.json
+```
+
+`normalise()` in the script detects that shape and maps it to the API's. Crucially the
+`reviewId` values in it are **Google's real ones**, so when API access arrives the live sync
+recognises every imported review instead of duplicating it. The captured export is kept at
+[_seed/fixtures/godaddy-reviews-export.json](_seed/fixtures/godaddy-reviews-export.json).
+
+That export also handed over two things worth keeping:
+
+- `GOOGLE_LOCATION_NAME=accounts/110350157233702095324/locations/202947831027575165`, which
+  skips account/location discovery once credentials exist.
+- `metadata.pageId` `3320731339812246583`, which is almost certainly the Google Maps CID —
+  so `https://www.google.com/maps?cid=3320731339812246583` is very likely the listing URL.
+  Unconfirmed, because Maps renders in JavaScript and returns a generic shell to a fetch,
+  so it is **not** in settings yet. Open it once; if it is the cafe, paste it into
+  `socials.google`.
+
+**Testing edge cases** uses a separate synthetic fixture covering an anonymous reviewer, a
+star-only review with no text, and a translated one:
+
+```bash
+node scripts/sync-google-reviews.mjs --fixture _seed/fixtures/google-reviews-sample.json --dry-run
+```
+
+Delete anything that fixture writes — invented reviews must never be committed.
+
+## Order online
+
+`settings.ordering` holds DoorDash, Uber Eats and Grubhub URLs.
+[OrderOnline.astro](src/components/OrderOnline.astro) renders a direct button for one
+platform, or a `<details>` disclosure listing several — no JavaScript, keyboard-operable. It
+appears in the header on every page (in the hours strip on phones, beside the nav on
+desktop) and as the footer's "Order online" column, and **renders nothing at all** until at
+least one URL is set.
+
+The footer's columns are built from what exists: name and tagline on their own row, then
+Hours, Visit, Explore, and — only when settings have them — Order online and Follow us.
+`columnClass` in [Footer.astro](src/components/Footer.astro) picks the grid width to match,
+so an empty `ordering` means four columns rather than five with a hole in it.
+Each URL also becomes an `OrderAction` in the structured data.
+
+The header menu shows each platform's own mark in its own colour, from
+`public/logos/{doordash,ubereats,grubhub}.svg` via
+[BrandGlyph.astro](src/components/BrandGlyph.astro) and [src/lib/logos.ts](src/lib/logos.ts).
+Three things about those files worth knowing before touching them:
+
+- They are **Simple Icons glyphs**, re-cropped. Simple Icons packs every mark into a 24×24
+  box, which leaves the two wordmark-style ones as a thin band floating in a square and
+  illegible at icon size; the committed files have tight `viewBox` values derived by
+  rasterising each mark and trimming. They carry `fill="currentColor"` so the colour comes
+  from CSS.
+- The brand hex values in `logos.ts` are each platform's own (`#FF3008`, `#06C167`,
+  `#F63440` — the last from an older Simple Icons release, since Grubhub has been dropped
+  from the current dataset). The marks are never recoloured, only reversed to cream when
+  they sit on the brick-coloured button.
+- `menuHeight` in `logos.ts` is **optical, not geometric**. Sized to the same box height,
+  Grubhub's single-line wordmark towers over Uber Eats' stacked one; those heights give
+  them all roughly the same cap height. A wordmark also suppresses the printed platform
+  name, because the mark already says it.
+
+These are third-party trademarks, used to link to the cafe's own listing on each platform.
+If any platform objects or changes its guidelines, delete the file and the badge degrades
+to text by itself.
+
+Making room for it on a phone meant the hours strip gave up its address slot, so the
+wordmark's "Pemberville, Ohio" is now visible on mobile too. Hours, phone and the town are
+still above the fold on every page; the full street address is above the fold on the home
+page and the contact page.
+
+### A build gotcha this phase turned up
+
+`npm run build` now runs `astro build --force`, which clears the content-layer cache on
+every build. Without it, Astro 5.18's glob loader does not prune an entry from
+`node_modules/.astro/data-store.json` when its file is deleted between builds — so a review
+deleted in the admin kept appearing on locally rebuilt pages until the cache was cleared by
+hand. I reproduced it with a plain markdown file and no Tina involved. CI starts from a
+clean checkout so it was never a production risk, but it made local builds lie. The build
+still takes under a second.
 
 ## Contact form
 
@@ -236,6 +448,7 @@ _seed/extract.py        raw/*.html -> text/*.txt
 _seed/build-content.py  text/menu.txt -> content/menu-sections + content/menu-items
 _seed/verify-content.py checks content/ back against text/menu.txt, item by item
 _seed/validate-jsonld.py checks the built JSON-LD against the schema.org vocabulary
+_seed/fixtures/        synthetic API responses for testing the review sync offline
 ```
 
 The JSON-LD validator needs a copy of the vocabulary:
@@ -266,7 +479,13 @@ Gavin starts changing prices — at that point the check has done its job and ca
   ribeye at the bar. The Gallery page has zero `<img>` tags. Both photos are
   GoDaddy-compressed copies, not originals.
 - No street address anywhere on the site. Phone `419-287-7016` is on the contact page.
-- A Reviews page with a heading and no reviews under it.
+- A Reviews page with a heading and **no reviews**. Its GoDaddy widget config
+  (`_seed/raw/reviews.html` → the `@widget/REVIEWS` props in the page's `gpub` script) has
+  `sourceType: "dynamic"`, `providerType: "gmb"`, and a `manualReviews` array still holding
+  GoDaddy's shipped placeholders ("Review 1", "Anonymous", rating 0). So the page was
+  pointed at Google and rendered nothing — there is no stored review text to migrate.
+  The same config exposed the Facebook page ID `663507927121014`, which is how
+  `socials.facebook` got filled.
 - Every page served the entire menu, which is why the old site reads as duplicate content.
 
 ### Open items on the content
@@ -313,6 +532,7 @@ already compressed them — so the originals from Gavin will benefit more than t
 ```
 content/         Content files edited via Tina
 public/uploads/  Images uploaded via Tina (committed to git)
+public/logos/    Third-party brand marks for the order buttons and review badges
 src/
   layouts/       Base layout
   lib/           Content loaders (content.ts) + hours formatting (hours.ts)

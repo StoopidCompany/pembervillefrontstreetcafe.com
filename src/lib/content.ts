@@ -36,6 +36,15 @@ export async function getSignatureDishes(refs: readonly { item: string }[]) {
   });
 }
 
+/**
+ * Published guest reviews in display order. Unlike getMenu(), an empty result is fine and
+ * returns an empty array: a menu with no items is a bug, no reviews yet is just Tuesday.
+ */
+export async function getTestimonials() {
+  const all = await getCollection("testimonials", ({ data }) => data.published);
+  return all.sort((a, b) => a.data.order - b.data.order);
+}
+
 /** Resolve a Tina reference path (e.g. "content/menu-sections/handhelds.md") to its entry id. */
 function sectionId(refPath: string) {
   return refPath.replace(/^content\/menu-sections\//, "").replace(/\.md$/, "");
@@ -89,6 +98,50 @@ export function formatPrice(item: CollectionEntry<"menuItems">["data"]): string 
   const primary = label(item.priceNote, item.price);
   if (!item.altPrice) return primary;
   return `${primary} / ${label(item.altPriceNote, item.altPrice)}`;
+}
+
+/**
+ * Delivery links in a fixed order, skipping whatever is unset. Empty until Gavin supplies
+ * the URLs, which is what keeps the Order button out of the header until then.
+ */
+export async function getOrderingLinks() {
+  const { ordering } = await getSettings();
+  return [
+    { label: "DoorDash", href: ordering.doordash },
+    { label: "Uber Eats", href: ordering.ubereats },
+    { label: "Grubhub", href: ordering.grubhub },
+  ].filter((link): link is { label: string; href: string } => Boolean(link.href));
+}
+
+/**
+ * Where a review card points. There is no public per-review permalink: Google's API
+ * returns only `reviewReplyUrl`, which is the owner's reply screen, so every review widget
+ * in the world links to the listing instead. Order of preference:
+ *
+ *   1. that review's own `sourceUrl`, if someone has pasted a real permalink into it
+ *   2. the platform URL in settings (`socials.google` and friends)
+ *   3. for Google, a Maps search for the business by name and address — the documented
+ *      Maps URL API, the same one "Get directions" uses, so it cannot point somewhere
+ *      wrong the way an unverified listing ID could
+ */
+export async function getReviewLink(
+  source: "google" | "yelp" | "facebook" | "direct",
+): Promise<string | null> {
+  const settings = await getSettings();
+  const configured = {
+    google: settings.socials.google,
+    yelp: settings.socials.yelp,
+    facebook: settings.socials.facebook,
+    direct: null,
+  }[source];
+  if (configured) return configured;
+
+  if (source !== "google") return null;
+  const address = formatAddress(settings.address);
+  if (!address) return null;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    `${settings.businessName}, ${address}`,
+  )}`;
 }
 
 /** "419-287-7016" -> "tel:+14192877016". Returns null when no phone is set. */

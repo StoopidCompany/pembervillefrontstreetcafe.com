@@ -108,16 +108,65 @@ headcount, and write a message. It arrives as an email.
 Until you choose an inbox, the form is switched off and says so plainly, with your phone
 number next to it. It will not quietly swallow anyone's enquiry in the meantime.
 
+**Guest reviews — the site is ready, the content isn't**
+
+The new site can show what guests have said about you, and can ask happy guests to leave a
+review. Right now none of it appears, because all of it needs you. Nothing looks broken or
+half-finished in the meantime — those parts of the page simply aren't there.
+
+13. **Your Google and Yelp links.** Paste me the Google Business Profile link and the Yelp
+    page link. If your Google dashboard offers a short "ask for reviews" link, that one is
+    better — it drops people straight into writing a review. These two links turn on the
+    "Liked it? Tell someone" buttons in the footer and on the Contact page.
+14. ~~Your star rating and review count~~ — **done, and it's better than I thought.** You
+    have **206 Google reviews averaging 4.4 stars**. The front page now shows one line:
+    "4.4★ on Google · 206 reviews". Nothing to do here unless you'd rather it said Yelp.
+15. **Which reviews to show.** All 80 of your written Google reviews are loaded into the
+    site. The **70 rated four or five stars are switched on**; the nine unhappy ones (six
+    one-star, two two-star, one three-star) are switched **off**, as is Jason's own review.
+    The front page shows the six strongest and shortest of them, with "4.4★ on Google · 206
+    reviews" underneath — it is not meant to be a wall of reviews.
+
+    You can change any of this yourself, one toggle per review in the admin. Tell me if
+    you'd rather show the negative ones too; some owners do, on the grounds that it looks
+    more honest.
+
+    The six currently on the front page are Addy, Natalia Fenner, Todd Coston, coleen
+    meyers ("Grilled pork chop superb and Ceasars salad tasteful and grinder packed"), Zach
+    Williams and Barry Sell. If you want different ones, say which.
+
+You'll be able to add, hide, reorder and delete these yourself afterwards, the same way as
+menu items. Google reviews can now arrive on their own, too — see question 16.
+
+**Letting the site fetch your Google reviews**
+
+16. The site can pull your Google reviews in by itself, so you don't have to type them. They
+    arrive switched **off** and wait for you to approve each one, so nothing appears without
+    you seeing it first. To set it up I need you (as the owner of the Google listing) to sign
+    in once and grant access — a two-minute job, and I'll send you the link. Google also has
+    to approve the request on their end, which takes a few days.
+    Yelp reviews still have to be typed by hand; their rules don't allow fetching them.
+
+**Ordering online**
+
+17. **Which delivery apps are you actually on?** I know there's a DoorDash listing. Send me
+    the links for whichever of DoorDash, Uber Eats and Grubhub are live and I'll put an
+    "Order Online" button in the header of every page. One app gets a direct button, two or
+    three get a short menu. Until you send them, no button appears.
+18. Worth checking while you're in those apps: **the hours and address they show**. If
+    DoorDash says you close at 5 and the site says 8, that's the kind of mismatch Google
+    notices too.
+
 **Bar menu**
 
-13. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
+19. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
    Rye, Scotch and so on — with no actual drinks and no prices. I've carried those
    categories over but switched the bar section **off** so the site doesn't show an empty
    menu. Send me the real drinks list and prices and it goes on.
 
 **Photos**
 
-14. There are only **two photos** on your entire current site: the front of the building, and
+20. There are only **two photos** on your entire current site: the front of the building, and
    a ribeye on the bar. The Gallery page has no photos on it at all. Both of those two are
    copies that GoDaddy compressed, not your originals.
    - Could you send the originals of those two?
@@ -126,13 +175,14 @@ number next to it. It will not quietly swallow anyone's enquiry in the meantime.
 
 **The map**
 
-15. The Contact page has a map on it. It looks up the cafe by name and the address in
+21. The Contact page has a map on it. It looks up the cafe by name and the address in
     question 6, so if that address is wrong, the pin will be too.
 
 **Two pages that are empty today**
 
-16. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
-    Neither is planned for the new site. Say the word if you want either back.
+22. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
+    Neither is planned as a page on the new site — guest quotes now sit on the front page
+    instead (see questions 13–15). Say the word if you want either page back.
 
 ---
 

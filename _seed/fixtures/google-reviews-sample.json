@@ -1,0 +1,59 @@
+{
+  "_comment": [
+    "Synthetic sample of a Google Business Profile v4 reviews response, for testing",
+    "scripts/sync-google-reviews.mjs without credentials:",
+    "  node scripts/sync-google-reviews.mjs --fixture _seed/fixtures/google-reviews.json --dry-run",
+    "Field shapes follow developers.google.com/my-business/reference/rest/v4/accounts.locations.reviews.",
+    "None of these are real reviews. Nothing derived from this file should ever be committed."
+  ],
+  "reviews": [
+    {
+      "name": "accounts/000/locations/000/reviews/FIXTURE-1",
+      "reviewId": "FIXTURE-1",
+      "reviewer": {
+        "displayName": "Fixture Guest One",
+        "isAnonymous": false
+      },
+      "starRating": "FIVE",
+      "comment": "A normal review with text. The sync should turn this into a file that is not published yet.",
+      "createTime": "2026-09-14T18:22:04.000Z",
+      "updateTime": "2026-09-14T18:22:04.000Z"
+    },
+    {
+      "name": "accounts/000/locations/000/reviews/FIXTURE-2",
+      "reviewId": "FIXTURE-2",
+      "reviewer": {
+        "isAnonymous": true
+      },
+      "starRating": "FOUR",
+      "comment": "An anonymous reviewer, so there is no displayName to use.",
+      "createTime": "2026-08-02T12:00:00.000Z",
+      "updateTime": "2026-08-02T12:00:00.000Z"
+    },
+    {
+      "name": "accounts/000/locations/000/reviews/FIXTURE-3",
+      "reviewId": "FIXTURE-3",
+      "reviewer": {
+        "displayName": "Fixture Guest Three",
+        "isAnonymous": false
+      },
+      "starRating": "FIVE",
+      "createTime": "2026-07-19T01:15:00.000Z",
+      "updateTime": "2026-07-19T01:15:00.000Z"
+    },
+    {
+      "name": "accounts/000/locations/000/reviews/FIXTURE-4",
+      "reviewId": "FIXTURE-4",
+      "reviewer": {
+        "displayName": "Fixture Guest Four",
+        "isAnonymous": false
+      },
+      "starRating": "FIVE",
+      "comment": "(Translated by Google) Translated text of the review.\n\n(Original)\nOriginal text of the review.",
+      "createTime": "2026-06-30T20:45:00.000Z",
+      "updateTime": "2026-06-30T20:45:00.000Z"
+    }
+  ],
+  "averageRating": 4.666666,
+  "totalReviewCount": 12
+}
