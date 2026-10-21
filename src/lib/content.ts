@@ -113,6 +113,37 @@ export async function getOrderingLinks() {
   ].filter((link): link is { label: string; href: string } => Boolean(link.href));
 }
 
+/**
+ * Where a review card points. There is no public per-review permalink: Google's API
+ * returns only `reviewReplyUrl`, which is the owner's reply screen, so every review widget
+ * in the world links to the listing instead. Order of preference:
+ *
+ *   1. that review's own `sourceUrl`, if someone has pasted a real permalink into it
+ *   2. the platform URL in settings (`socials.google` and friends)
+ *   3. for Google, a Maps search for the business by name and address — the documented
+ *      Maps URL API, the same one "Get directions" uses, so it cannot point somewhere
+ *      wrong the way an unverified listing ID could
+ */
+export async function getReviewLink(
+  source: "google" | "yelp" | "facebook" | "direct",
+): Promise<string | null> {
+  const settings = await getSettings();
+  const configured = {
+    google: settings.socials.google,
+    yelp: settings.socials.yelp,
+    facebook: settings.socials.facebook,
+    direct: null,
+  }[source];
+  if (configured) return configured;
+
+  if (source !== "google") return null;
+  const address = formatAddress(settings.address);
+  if (!address) return null;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    `${settings.businessName}, ${address}`,
+  )}`;
+}
+
 /** "419-287-7016" -> "tel:+14192877016". Returns null when no phone is set. */
 export function telHref(phone: string | null | undefined) {
   if (!phone) return null;

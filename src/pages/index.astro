@@ -8,6 +8,7 @@ import {
   getSettings,
   getSignatureDishes,
   getTestimonials,
+  getReviewLink,
   formatPrice,
 } from "~/lib/content";
 
@@ -26,18 +27,12 @@ const allTestimonials = await getTestimonials();
 const testimonials = allTestimonials.slice(0, HOME_REVIEW_LIMIT);
 const { headline, heroSubtext, heroImage, ctaText, ctaHref } = page.data;
 
-const { reviewsSummary, socials } = await getSettings();
+const { reviewsSummary } = await getSettings();
 
-/**
- * Google's API returns no public URL for an individual review, so a synced review links to
- * the listing instead. A hand-entered sourceUrl always wins over this.
- */
-function reviewLink(source: "google" | "yelp" | "facebook" | "direct") {
-  if (source === "google") return socials.google ?? null;
-  if (source === "yelp") return socials.yelp ?? null;
-  if (source === "facebook") return socials.facebook ?? null;
-  return null;
-}
+// Resolved once per review: its own sourceUrl if it has one, else the platform's.
+const reviewLinks = await Promise.all(
+  testimonials.map(({ data }) => data.sourceUrl ?? getReviewLink(data.source)),
+);
 
 // All-or-nothing, like the address in the JSON-LD: a rating with no count, or a count with
 // no rating, says nothing useful, so it shows nothing.
@@ -124,7 +119,7 @@ const summary =
 
         {testimonials.length > 0 && (
           <ul class="mt-8 grid gap-4 sm:grid-cols-2">
-            {testimonials.map(({ data }) => (
+            {testimonials.map(({ data }, i) => (
               <li class="flex gap-4 rounded-2xl border border-crust p-5">
                 {/* The initial sits behind the photo, so a Google avatar URL that has
                     rotted or been removed degrades to a lettered circle instead of a
@@ -160,7 +155,11 @@ const summary =
                         {"★".repeat(data.rating)}
                       </span>
                     )}
-                    <SourceBadge source={data.source} url={data.sourceUrl ?? reviewLink(data.source)} />
+                    <SourceBadge
+                      source={data.source}
+                      url={reviewLinks[i]}
+                      specific={Boolean(data.sourceUrl)}
+                    />
                   </p>
                 </div>
               </li>

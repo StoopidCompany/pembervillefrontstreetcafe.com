@@ -243,9 +243,19 @@ on later without ending up with two of everything. Change detection compares the
 **words**, ignoring YAML formatting, because Tina re-encodes files when it saves them — an
 exact comparison made the two fight over quote formatting on every run.
 
-Two honest limitations. Google's API returns no public URL for an individual review, so a
-synced review links to the listing as a whole. And Tina can't filter a collection by a field,
-so there's no "pending" view in the admin — find new reviews from the workflow summary.
+Two honest limitations. Google's API returns no public URL for an individual review — only
+`reviewReplyUrl`, which is the owner's reply screen — so a synced review links to the
+listing as a whole, which is what every review widget does. And Tina can't filter a
+collection by a field, so there's no "pending" view in the admin — find new reviews from the
+workflow summary.
+
+`getReviewLink()` in [src/lib/content.ts](src/lib/content.ts) resolves where a card points,
+in order: that review's own `sourceUrl` if someone has pasted a real permalink into it, then
+the platform URL from `socials`, then — for Google only — a Maps search for the business by
+name and address. That last one uses the documented Maps URL API, the same call behind "Get
+directions", so it cannot point somewhere wrong the way an unverified listing ID could. The
+badge's tooltip says "Read this review on Google" only when the link really is that one
+review; otherwise "See our reviews on Google".
 
 **Importing without API access**, which is where the reviews in `content/testimonials/`
 actually came from. The old GoDaddy site's reviews widget receives the same Google data, so:

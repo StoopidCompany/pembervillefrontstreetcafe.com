@@ -6,9 +6,11 @@ interface Props {
   source: "google" | "yelp" | "facebook" | "direct";
   /** Where the review lives. Google's API gives no per-review URL, so this is the listing. */
   url?: string | null;
+  /** True only when `url` is that one review's permalink rather than the listing's. */
+  specific?: boolean;
 }
 
-const { source, url } = Astro.props;
+const { source, url, specific = false } = Astro.props;
 
 const LABELS = {
   google: "Google",
@@ -29,14 +31,22 @@ const label = LABELS[source];
 ---
 {source === "direct" ? (
   <span class="text-ink-soft">{label}</span>
+) : url ? (
+  /* The mark and the name are one link, so the whole badge is a target rather than just
+     the word next to the logo. */
+  <a
+    href={url}
+    target="_blank"
+    rel="noopener"
+    title={specific ? `Read this review on ${label}` : `See our reviews on ${label}`}
+    class="inline-flex items-center gap-1.5 align-middle !text-ink-soft hover:!text-brick"
+  >
+    {logo && <BrandGlyph slug={source} class="h-3.5 w-auto shrink-0" />}
+    {(!logo || logo.kind === "symbol") && <span>{label}</span>}
+  </a>
 ) : (
   <span class="inline-flex items-center gap-1.5 align-middle">
     {logo && <BrandGlyph slug={source} class="h-3.5 w-auto shrink-0" />}
-    {(!logo || logo.kind === "symbol") &&
-      (url ? (
-        <a href={url} target="_blank" rel="noopener">{label}</a>
-      ) : (
-        <span class="text-ink-soft">{label}</span>
-      ))}
+    {(!logo || logo.kind === "symbol") && <span class="text-ink-soft">{label}</span>}
   </span>
 )}
