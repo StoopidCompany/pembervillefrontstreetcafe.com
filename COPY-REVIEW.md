@@ -128,18 +128,37 @@ half-finished in the meantime — those parts of the page simply aren't there.
     wholesale because their rules don't allow it.
 
 You'll be able to add, hide, reorder and delete these yourself afterwards, the same way as
-menu items.
+menu items. Google reviews can now arrive on their own, too — see question 16.
+
+**Letting the site fetch your Google reviews**
+
+16. The site can pull your Google reviews in by itself, so you don't have to type them. They
+    arrive switched **off** and wait for you to approve each one, so nothing appears without
+    you seeing it first. To set it up I need you (as the owner of the Google listing) to sign
+    in once and grant access — a two-minute job, and I'll send you the link. Google also has
+    to approve the request on their end, which takes a few days.
+    Yelp reviews still have to be typed by hand; their rules don't allow fetching them.
+
+**Ordering online**
+
+17. **Which delivery apps are you actually on?** I know there's a DoorDash listing. Send me
+    the links for whichever of DoorDash, Uber Eats and Grubhub are live and I'll put an
+    "Order Online" button in the header of every page. One app gets a direct button, two or
+    three get a short menu. Until you send them, no button appears.
+18. Worth checking while you're in those apps: **the hours and address they show**. If
+    DoorDash says you close at 5 and the site says 8, that's the kind of mismatch Google
+    notices too.
 
 **Bar menu**
 
-16. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
+19. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
    Rye, Scotch and so on — with no actual drinks and no prices. I've carried those
    categories over but switched the bar section **off** so the site doesn't show an empty
    menu. Send me the real drinks list and prices and it goes on.
 
 **Photos**
 
-17. There are only **two photos** on your entire current site: the front of the building, and
+20. There are only **two photos** on your entire current site: the front of the building, and
    a ribeye on the bar. The Gallery page has no photos on it at all. Both of those two are
    copies that GoDaddy compressed, not your originals.
    - Could you send the originals of those two?
@@ -148,12 +167,12 @@ menu items.
 
 **The map**
 
-18. The Contact page has a map on it. It looks up the cafe by name and the address in
+21. The Contact page has a map on it. It looks up the cafe by name and the address in
     question 6, so if that address is wrong, the pin will be too.
 
 **Two pages that are empty today**
 
-19. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
+22. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
     Neither is planned as a page on the new site — guest quotes now sit on the front page
     instead (see questions 13–15). Say the word if you want either page back.
 

@@ -85,6 +85,9 @@ These disagree. Hours must come from Gavin, once, and then live in one place.
 9. `docs/onboarding` — Gavin's editor guide, modelled on `ONBOARDING.md`.
 10. `content-model/reviews` — testimonial collection + review-ask, built out of order
     (before 7–9) on request. Ships dormant: needs Gavin's listing URLs and real quotes.
+11. `reviews/google-sync` + ordering CTA — pull Google reviews with manual approval, source
+    badges, and an Order Online button in the header. Also dormant: needs Google API
+    approval, an owner OAuth grant, and the delivery URLs.
 
 ## Never cut
 

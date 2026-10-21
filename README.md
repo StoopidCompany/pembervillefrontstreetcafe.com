@@ -66,7 +66,7 @@ fails the build instead of rendering blank.
 | Contact page  | `content/pages/contact.md`   | Singleton. Intro + what the map looks up    |
 | Menu Sections | `content/menu-sections/*.md` | `order` + `published`. Body = section blurb |
 | Menu Items    | `content/menu-items/*.md`    | `order` + `available`, `section` reference   |
-| Guest Reviews | `content/testimonials/*.md`  | `order` + `published`. Empty today          |
+| Guest Reviews | `content/testimonials/*.md`  | `order` + `published`. Google sync writes here |
 
 Things worth knowing before changing any of it:
 
@@ -155,14 +155,91 @@ error, so nothing renders an empty shell and nothing throws.
 - [ReviewAsk.astro](src/components/ReviewAsk.astro) is shaped like `VisitInfo.astro`:
   settings-driven, `heading` prop, caller supplies the background. It renders nothing at all
   until at least one listing URL exists, so a review box never appears with no link in it.
-- Reviews are **typed out by hand**, not scraped. Yelp's terms restrict reproducing review
-  text outside their own widget, so the quote, name, rating and source go in through the
-  admin from whatever the platform shows.
+- Google reviews arrive via the sync below, unpublished until approved. Yelp and Facebook
+  quotes are **typed out by hand**: Yelp's terms restrict reproducing review text outside
+  their own widget.
+- The platform is shown by [SourceBadge.astro](src/components/SourceBadge.astro), which
+  looks for official marks at `public/logos/{google,yelp,facebook}.svg` and falls back to a
+  plain text label until they exist. Download the real assets from each platform's brand
+  page rather than redrawing them, and don't recolour them — both platforms' brand rules
+  say so.
 - About is deliberately untouched — it would only duplicate the home page.
 
 `aggregateRating` on the `Restaurant` JSON-LD is deliberately deferred. It is worth real
 SEO, but only once the numbers are real and somebody has committed to keeping them current;
 a stale rating in structured data is its own problem.
+
+### Pulling reviews from Google
+
+`scripts/sync-google-reviews.mjs` writes Google reviews into `content/testimonials/`. It
+never publishes anything: every review arrives `published: false` and waits for a human to
+turn it on in the admin. Yelp stays hand-typed — their terms restrict reproducing review
+text outside their own widget.
+
+**Prerequisites, in order.** The first one has a lead time measured in days:
+
+1. **Request access to the Business Profile APIs.** Google grants it manually. Their stated
+   criteria include a verified, active profile at least 60 days old with a website attached.
+   You can tell whether it came through by looking at the API quota in Cloud Console:
+   **0 QPM means still pending, 300 QPM means approved.**
+2. Enable, in the same project: My Business Account Management API, My Business Business
+   Information API, and the Google My Business API — reviews are still served by the
+   **legacy v4 endpoint**, which that last one covers.
+3. Create an OAuth client of type "Desktop app".
+4. `GOOGLE_CLIENT_ID=… GOOGLE_CLIENT_SECRET=… node scripts/google-oauth-setup.mjs`, signed
+   in **as the profile owner or a manager**. It prints a refresh token.
+5. Put `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN` in `.env.local`
+   and in the repository secrets. `GOOGLE_LOCATION_NAME` is optional and skips discovery.
+
+Run it from [.github/workflows/sync-reviews.yml](.github/workflows/sync-reviews.yml) — manual
+only for now, with the nightly `schedule` present but commented out until the deploy pipeline
+exists. The workflow builds and type-checks before committing, and writes a summary listing
+what is waiting for approval.
+
+**What it does and does not touch.** This writes into content a person also edits, so the
+rules matter:
+
+| Situation | What happens |
+|---|---|
+| New review with text | New file, `published: false`, `order: 99` |
+| Review edited on Google | Text, rating and date refreshed; **your published/hidden choice and `order` are kept** |
+| Review gone from Google | Unpublished, `syncNote` added, file kept, flagged in the summary |
+| Star-only review, no text | Skipped — it would be an empty quote. Still counts in the score |
+| Anonymous reviewer | Author becomes "A Google user" |
+| Hand-typed Yelp/Facebook review | Never touched; the sync only looks at `source: google` |
+| `reviewsSummary.platform` is `yelp` | Rating and count left alone — those are your numbers |
+
+Matching is on `googleReviewId`, never on filename or author. Change detection compares the
+**words**, ignoring YAML formatting, because Tina re-encodes files when it saves them — an
+exact comparison made the two fight over quote formatting on every run.
+
+Two honest limitations. Google's API returns no public URL for an individual review, so a
+synced review links to the listing as a whole. And Tina can't filter a collection by a field,
+so there's no "pending" view in the admin — find new reviews from the workflow summary.
+
+**Testing it without credentials**, which is how all of the above was verified:
+
+```bash
+node scripts/sync-google-reviews.mjs --fixture _seed/fixtures/google-reviews.json --dry-run
+```
+
+The fixture covers a normal review, an anonymous reviewer, a star-only review and a
+translated one. Drop `--dry-run` to write files — delete them afterwards, placeholder reviews
+must never be committed.
+
+## Order online
+
+`settings.ordering` holds DoorDash, Uber Eats and Grubhub URLs.
+[OrderOnline.astro](src/components/OrderOnline.astro) renders a direct button for one
+platform, or a `<details>` disclosure listing several — no JavaScript, keyboard-operable. It
+appears in the header on every page (in the hours strip on phones, beside the nav on
+desktop) and in the footer, and **renders nothing at all** until at least one URL is set.
+Each URL also becomes an `OrderAction` in the structured data.
+
+Making room for it on a phone meant the hours strip gave up its address slot, so the
+wordmark's "Pemberville, Ohio" is now visible on mobile too. Hours, phone and the town are
+still above the fold on every page; the full street address is above the fold on the home
+page and the contact page.
 
 ### A build gotcha this phase turned up
 
@@ -277,6 +354,7 @@ _seed/extract.py        raw/*.html -> text/*.txt
 _seed/build-content.py  text/menu.txt -> content/menu-sections + content/menu-items
 _seed/verify-content.py checks content/ back against text/menu.txt, item by item
 _seed/validate-jsonld.py checks the built JSON-LD against the schema.org vocabulary
+_seed/fixtures/        synthetic API responses for testing the review sync offline
 ```
 
 The JSON-LD validator needs a copy of the vocabulary:

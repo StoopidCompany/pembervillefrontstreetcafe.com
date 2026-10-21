@@ -1,0 +1,73 @@
+---
+import { getOrderingLinks } from "~/lib/content";
+
+interface Props {
+  /** Extra classes for the button or summary pill. */
+  class?: string;
+  /** "pill" for the header button, "list" for plain links in the footer. */
+  variant?: "pill" | "list";
+}
+
+const { class: className, variant = "pill" } = Astro.props;
+const links = await getOrderingLinks();
+
+const pill =
+  "inline-flex items-center gap-1 rounded-full bg-brick px-3 py-1.5 text-xs font-semibold uppercase tracking-wider !text-cream hover:!bg-door transition-colors cursor-pointer";
+---
+{links.length > 0 && variant === "list" && (
+  <ul class:list={["space-y-0.5 text-sm", className]}>
+    {links.map((link) => (
+      <li><a href={link.href} target="_blank" rel="noopener">Order on {link.label}</a></li>
+    ))}
+  </ul>
+)}
+
+{links.length === 1 && variant === "pill" && (
+  <a
+    href={links[0].href}
+    target="_blank"
+    rel="noopener"
+    class:list={[pill, className]}
+  >
+    Order on {links[0].label}
+  </a>
+)}
+
+{/* Two or more platforms: a <details> disclosure, so the menu works with no JavaScript
+    and stays keyboard-operable. */}
+{links.length > 1 && variant === "pill" && (
+  <details class:list={["order-online relative", className]}>
+    <summary class:list={[pill, "list-none"]}>
+      Order Online
+      <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+      </svg>
+    </summary>
+    <ul
+      class="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-xl border border-crust bg-cream shadow-lg"
+    >
+      {links.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener"
+            class="block px-4 py-2.5 text-sm !text-ink hover:bg-crust/50"
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </details>
+)}
+
+<style>
+  /* Safari still paints the default disclosure triangle without this. */
+  .order-online > summary::-webkit-details-marker {
+    display: none;
+  }
+  .order-online > summary::marker {
+    content: "";
+  }
+</style>

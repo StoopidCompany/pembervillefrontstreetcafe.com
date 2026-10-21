@@ -95,6 +95,17 @@ export default defineConfig({
             ],
           },
           {
+            type: "object", name: "ordering", label: "Order Online",
+            description:
+              "Delivery and pickup links. Leave all three empty and no Order button appears " +
+              "anywhere on the site.",
+            fields: [
+              { type: "string", name: "doordash", label: "DoorDash URL" },
+              { type: "string", name: "ubereats", label: "Uber Eats URL" },
+              { type: "string", name: "grubhub", label: "Grubhub URL" },
+            ],
+          },
+          {
             type: "object", name: "reviewsSummary", label: "Review Score",
             description:
               "The star rating shown on the home page. Leave the rating or the count empty " +
@@ -338,7 +349,14 @@ export default defineConfig({
           { type: "number", name: "order", label: "Display Order",
             description: "Low numbers first. Leave gaps (10, 20, 30) so they are easy to move." },
           { type: "boolean", name: "published", label: "Show on Site",
-            description: "Turn off to hide a review without deleting it" },
+            description: "Reviews pulled in from Google start off. Turn one on to put it on the site." },
+          // Written by scripts/sync-google-reviews.mjs. Hand-typed reviews leave these empty.
+          { type: "string", name: "googleReviewId", label: "Google review ID",
+            description: "Set by the sync so it can recognise this review again. Don't edit." },
+          { type: "string", name: "reviewedAt", label: "Date of the review",
+            description: "Set by the sync." },
+          { type: "string", name: "syncNote", label: "Note from the sync",
+            description: "The sync leaves messages here, e.g. if a review disappears from Google." },
         ],
       },
     ],

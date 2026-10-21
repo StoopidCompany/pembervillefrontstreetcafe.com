@@ -4,7 +4,7 @@ import "@fontsource-variable/manrope";
 import "~/styles/global.css";
 import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
-import { getSettings } from "~/lib/content";
+import { getSettings, getOrderingLinks } from "~/lib/content";
 import { toOpeningHoursSpecification } from "~/lib/hours";
 
 interface Props {
@@ -31,6 +31,20 @@ const { street, city, state, zip, latitude, longitude } = settings.address;
 const hasFullAddress = Boolean(street && city && state && zip);
 const openingHours = toOpeningHoursSpecification(settings.hours);
 const sameAs = Object.values(settings.socials).filter((url): url is string => Boolean(url));
+
+// One OrderAction per delivery platform, so "order online" intent has something to match.
+// Omitted entirely while Gavin has supplied no URLs, like every other optional field here.
+const orderActions = (await getOrderingLinks()).map((link) => ({
+  "@type": "OrderAction",
+  target: {
+    "@type": "EntryPoint",
+    urlTemplate: link.href,
+    actionPlatform: [
+      "https://schema.org/DesktopWebPlatform",
+      "https://schema.org/MobileWebPlatform",
+    ],
+  },
+}));
 
 /**
  * One Restaurant entity for the whole site. It appears on every page, so it carries a
@@ -70,6 +84,7 @@ const jsonLd = {
     acceptsReservations: settings.acceptsReservations === "yes",
   }),
   ...(sameAs.length > 0 && { sameAs }),
+  ...(orderActions.length > 0 && { potentialAction: orderActions }),
 };
 ---
 <!doctype html>

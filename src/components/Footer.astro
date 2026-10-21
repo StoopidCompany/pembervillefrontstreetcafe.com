@@ -2,6 +2,7 @@
 import { getSettings, telHref, formatAddress } from "~/lib/content";
 import { summarizeHours } from "~/lib/hours";
 import ReviewAsk from "~/components/ReviewAsk.astro";
+import OrderOnline from "~/components/OrderOnline.astro";
 
 const settings = await getSettings();
 const rows = summarizeHours(settings.hours);
@@ -58,6 +59,8 @@ const socials = [
             <li><a href={link.href}>{link.label}</a></li>
           ))}
         </ul>
+        <OrderOnline variant="list" class="mt-3" />
+
         {socials.length > 0 && (
           <ul class="mt-3 space-y-0.5 text-sm">
             {socials.map((social) => (

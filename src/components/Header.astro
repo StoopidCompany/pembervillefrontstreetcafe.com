@@ -1,6 +1,7 @@
 ---
-import { getSettings, telHref, formatAddress } from "~/lib/content";
+import { getSettings, telHref } from "~/lib/content";
 import { summarizeHours } from "~/lib/hours";
+import OrderOnline from "~/components/OrderOnline.astro";
 
 const settings = await getSettings();
 const currentPath = Astro.url.pathname;
@@ -18,7 +19,6 @@ function isActive(href: string) {
 }
 
 const tel = telHref(settings.phone);
-const address = formatAddress(settings.address);
 // Most phone visitors are standing on Front Street deciding where to eat, so the open
 // hours ride along in the header rather than waiting at the bottom of the page.
 const [openRow] = summarizeHours(settings.hours);
@@ -29,7 +29,9 @@ const [openRow] = summarizeHours(settings.hours);
       <span class="site-wordmark block font-display text-door leading-none tracking-tight">
         Front Street Cafe
       </span>
-      <span class="hidden sm:block font-body text-[0.65rem] uppercase tracking-[0.2em] text-ink-soft mt-1">
+      {/* Visible on phones too: the hours strip below gave up its address slot to the
+          Order button, and the town should still be on every page without scrolling. */}
+      <span class="block font-body text-[0.6rem] sm:text-[0.65rem] uppercase tracking-[0.2em] text-ink-soft mt-0.5 sm:mt-1">
         Pemberville, Ohio
       </span>
     </a>
@@ -47,14 +49,16 @@ const [openRow] = summarizeHours(settings.hours);
           {link.label}
         </a>
       ))}
+      {/* Phone drops to an outline so the filled Order button is the one clear primary. */}
       {tel && (
         <a
           href={tel}
-          class="rounded-full bg-brick px-4 py-2 text-xs font-semibold uppercase tracking-wider !text-cream hover:!bg-door transition-colors"
+          class="rounded-full border border-brick px-4 py-2 text-xs font-semibold uppercase tracking-wider !text-brick hover:bg-brick hover:!text-cream transition-colors"
         >
           {settings.phone}
         </a>
       )}
+      <OrderOnline class="px-4 py-2" />
     </nav>
 
     <div class="flex items-center gap-1 md:hidden">
@@ -90,7 +94,7 @@ const [openRow] = summarizeHours(settings.hours);
     {openRow && (
       <span class="truncate font-medium text-ink">{openRow.days} {openRow.time}</span>
     )}
-    {address && <span class="truncate text-ink-soft">{address}</span>}
+    <OrderOnline class="-my-0.5 shrink-0" />
   </div>
 
   <div id="mobile-menu" class="md:hidden hidden border-t border-crust bg-cream">

@@ -62,6 +62,14 @@ const settings = defineCollection({
       google: optionalString,
       yelp: optionalString,
     }),
+    ordering: z
+      .object({
+        doordash: optionalString,
+        ubereats: optionalString,
+        grubhub: optionalString,
+      })
+      .nullish()
+      .transform((value) => value ?? {}),
     // All-or-nothing, like the address: a rating with no count is not worth showing.
     reviewsSummary: z
       .object({
@@ -158,6 +166,10 @@ const testimonials = defineCollection({
     sourceUrl: optionalString,
     order: z.number().default(99),
     published: z.boolean().default(true),
+    // Written by the Google sync; absent on hand-typed reviews.
+    googleReviewId: optionalString,
+    reviewedAt: optionalString,
+    syncNote: optionalString,
   }),
 });
 

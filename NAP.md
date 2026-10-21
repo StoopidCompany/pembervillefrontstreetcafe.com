@@ -56,6 +56,8 @@ Compare **character for character**, not "close enough". `St.` vs `Street` and
 - [ ] Facebook page — same, plus the website link
 - [ ] Yelp, if the listing exists
 - [ ] DoorDash listing (store 37582213) — address and hours only; it is a third-party page
+- [ ] Uber Eats and Grubhub listings, if they exist — same check. Their URLs also belong in
+      `settings.ordering`, which is what puts the Order button in the header
 - [ ] Decide **one** written form of the street (`210 E. Front St.` or `210 East Front
       Street`) and use it everywhere, including this site
 - [ ] Decide **one** written form of the phone and use it everywhere

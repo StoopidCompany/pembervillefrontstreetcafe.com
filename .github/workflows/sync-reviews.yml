@@ -1,0 +1,65 @@
+name: Sync Google reviews
+
+# Manual only for now. Add the schedule when the deploy pipeline exists (phase 7) and the
+# site is live (phase 8) — the same convention the deploy workflow uses for its push
+# trigger. Until then there is nothing for a nightly run to publish to.
+#
+#  schedule:
+#    - cron: "17 9 * * *"   # 09:17 UTC daily
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report what would change without writing anything"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-reviews
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # The sync itself has no dependencies; this is only here so the repo state matches
+      # what a build would see.
+      - run: npm ci
+
+      - name: Pull reviews from Google
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          GOOGLE_LOCATION_NAME: ${{ secrets.GOOGLE_LOCATION_NAME }}
+        run: |
+          node scripts/sync-google-reviews.mjs \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Check the site still builds with the new content
+        if: ${{ !inputs.dry_run }}
+        run: |
+          npm run build
+          npx astro check
+
+      - name: Commit anything that changed
+        if: ${{ !inputs.dry_run }}
+        run: |
+          if [ -z "$(git status --porcelain content/)" ]; then
+            echo "Nothing changed." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/
+          git commit -m "chore(reviews): sync from Google Business Profile"
+          git push

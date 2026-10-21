@@ -1,0 +1,44 @@
+---
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
+interface Props {
+  source: "google" | "yelp" | "facebook" | "direct";
+  /** Where the review lives. Google's API gives no per-review URL, so this is the listing. */
+  url?: string | null;
+}
+
+const { source, url } = Astro.props;
+
+const LABELS = {
+  google: "Google",
+  yelp: "Yelp",
+  facebook: "Facebook",
+  direct: "told us directly",
+} as const;
+
+/*
+ * Official brand marks go in public/logos/ as google.svg, yelp.svg, facebook.svg. They are
+ * not committed here: both platforms publish their own assets with rules about colour and
+ * spacing, so the real files get dropped in rather than redrawn. Until they exist this
+ * falls back to the plain text label it replaced — same dormant-until-filled approach as
+ * ReviewAsk.astro, and nothing looks broken in the meantime.
+ */
+const logo = source === "direct" ? null : `/logos/${source}.svg`;
+const hasLogo = logo ? existsSync(join(process.cwd(), "public", logo)) : false;
+const label = LABELS[source];
+---
+{source === "direct" ? (
+  <span class="text-ink-soft">{label}</span>
+) : (
+  <span class="inline-flex items-center gap-1.5 align-middle">
+    {hasLogo && (
+      <img src={logo} alt="" width="14" height="14" loading="lazy" class="h-3.5 w-3.5" />
+    )}
+    {url ? (
+      <a href={url} target="_blank" rel="noopener">{label}</a>
+    ) : (
+      <span class="text-ink-soft">{label}</span>
+    )}
+  </span>
+)}

@@ -100,6 +100,19 @@ export function formatPrice(item: CollectionEntry<"menuItems">["data"]): string 
   return `${primary} / ${label(item.altPriceNote, item.altPrice)}`;
 }
 
+/**
+ * Delivery links in a fixed order, skipping whatever is unset. Empty until Gavin supplies
+ * the URLs, which is what keeps the Order button out of the header until then.
+ */
+export async function getOrderingLinks() {
+  const { ordering } = await getSettings();
+  return [
+    { label: "DoorDash", href: ordering.doordash },
+    { label: "Uber Eats", href: ordering.ubereats },
+    { label: "Grubhub", href: ordering.grubhub },
+  ].filter((link): link is { label: string; href: string } => Boolean(link.href));
+}
+
 /** "419-287-7016" -> "tel:+14192877016". Returns null when no phone is set. */
 export function telHref(phone: string | null | undefined) {
   if (!phone) return null;
