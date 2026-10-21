@@ -142,10 +142,20 @@ error, so nothing renders an empty shell and nothing throws.
 
 | Where | What shows | When it disappears |
 |---|---|---|
-| Home, after the signature dishes | Quote grid + score line | No published reviews **and** no score |
+| Home, after the signature dishes | Up to 6 quotes + score line | No published reviews **and** no score |
 | Footer strip, above the copyright | "Liked it? Tell someone" + review buttons | Both `socials.google` and `socials.yelp` empty |
 | Contact, between Call and the form | Same component, "Already been in?" | Same |
 
+- The home page shows the **first 6 published reviews by `order`**
+  (`HOME_REVIEW_LIMIT` in [src/pages/index.astro](src/pages/index.astro)), not all of them —
+  70 are published and a review grid that long is not a home page. The score line carries
+  the rest. A long quote is also line-clamped so one essay cannot run a card away.
+- **Bulk approval**: `node scripts/publish-reviews.mjs` publishes everything rated 4+ and
+  assigns `order` by rating, then quotability (under ~280 characters, so pithy quotes reach
+  the home page ahead of five-paragraph ones), then recency. `--dry-run` to preview,
+  `--min-rating 5`, `--all` to include the unhappy ones, `--none` to hide everything,
+  `--exclude "Name"` to skip someone. Running it is the human approval step; it just does
+  not require 80 clicks.
 - `getTestimonials()` filters on `published` and sorts by `order`, the same hide-by-flag
   pattern as menu sections and items. Unlike `getMenu()` it returns an empty array rather
   than throwing: an empty menu is a bug, no reviews yet is just Tuesday.

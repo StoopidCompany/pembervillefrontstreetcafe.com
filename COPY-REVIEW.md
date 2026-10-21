@@ -121,24 +121,19 @@ half-finished in the meantime — those parts of the page simply aren't there.
 14. ~~Your star rating and review count~~ — **done, and it's better than I thought.** You
     have **206 Google reviews averaging 4.4 stars**. The front page now shows one line:
     "4.4★ on Google · 206 reviews". Nothing to do here unless you'd rather it said Yelp.
-15. **Which reviews to show.** All 80 of your written Google reviews are now loaded into
-    the site, every one switched **off**. You pick. Switch one on and it appears; switch it
-    off and it's gone. Nothing was published without you choosing it, including the handful
-    of unhappy ones, which are in there too.
+15. **Which reviews to show.** All 80 of your written Google reviews are loaded into the
+    site. The **70 rated four or five stars are switched on**; the nine unhappy ones (six
+    one-star, two two-star, one three-star) are switched **off**, as is Jason's own review.
+    The front page shows the six strongest and shortest of them, with "4.4★ on Google · 206
+    reviews" underneath — it is not meant to be a wall of reviews.
 
-    Here are four I'd suggest, because they name specific things rather than just saying
-    "great food":
+    You can change any of this yourself, one toggle per review in the admin. Tell me if
+    you'd rather show the negative ones too; some owners do, on the grounds that it looks
+    more honest.
 
-    - **Susan Fletcher** (5★) — "So great! Fresh and delicious! The best bread I have ever
-      had." Short, and it's about the bread you bake.
-    - **coleen meyers** (5★) — "Grilled pork chop superb and Ceasars salad tasteful and
-      grinder packed. All fresh local ingredients. Highly recommend." Names three dishes.
-    - **Jennifer Melssen** (5★) — "Potato pancakes like I used to make with my grandma."
-    - **Dan Baker** (5★) — "They not only raise their own chickens, but grow their own feed.
-      They even grind their own flour." Says the scratch-kitchen thing better than we could.
-
-    Say the word and I'll switch those four on, or name your own. One note: your own 5★
-    review is in the list — I'd leave that one off.
+    The six currently on the front page are Addy, Natalia Fenner, Todd Coston, coleen
+    meyers ("Grilled pork chop superb and Ceasars salad tasteful and grinder packed"), Zach
+    Williams and Barry Sell. If you want different ones, say which.
 
 You'll be able to add, hide, reorder and delete these yourself afterwards, the same way as
 menu items. Google reviews can now arrive on their own, too — see question 16.
