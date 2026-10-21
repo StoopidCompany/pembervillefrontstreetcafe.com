@@ -1,15 +1,31 @@
 ---
 import Base from "~/layouts/Base.astro";
-import { getSettings } from "~/lib/content";
+import { getSettings, getHours } from "~/lib/content";
+import { formatDay, formatHours } from "~/lib/hours";
 
 const settings = await getSettings();
+const hours = await getHours();
 ---
 <Base>
   <section class="mx-auto max-w-2xl px-6 py-24">
     <h1 class="text-4xl text-navy">{settings.businessName}</h1>
     {settings.tagline && <p class="mt-4 text-lg">{settings.tagline}</p>}
+
+    <h2 class="mt-12 text-2xl text-navy">Hours</h2>
+    <dl class="mt-4">
+      {hours.map((entry) => (
+        <div class="flex justify-between gap-6 py-1">
+          <dt>{formatDay(entry.day)}</dt>
+          <dd>{formatHours(entry)}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <p class="mt-12"><a href="/menu" class="text-navy underline">See the menu</a></p>
+
     <p class="mt-10 text-sm opacity-60">
-      Scaffold only — content, design and pages land in later phases.
+      Scaffold only — design and full content land in later phases. Hours here are
+      provisional and must be confirmed with Gavin before launch.
     </p>
   </section>
 </Base>

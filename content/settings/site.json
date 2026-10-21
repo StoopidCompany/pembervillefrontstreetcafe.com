@@ -1,11 +1,30 @@
 {
   "businessName": "The Front Street Cafe",
   "tagline": "A true scratch kitchen in a historic brick building on Front Street in Pemberville, Ohio.",
-  "contactEmail": "",
+  "address": {
+    "street": "",
+    "city": "Pemberville",
+    "state": "OH",
+    "zip": ""
+  },
   "phone": "",
+  "email": "",
   "socials": {
     "facebook": "",
-    "instagram": ""
+    "instagram": "",
+    "twitter": "",
+    "tiktok": "",
+    "google": "",
+    "yelp": ""
   },
+  "hours": [
+    { "day": "monday", "closed": true },
+    { "day": "tuesday", "closed": false, "open": "10:30", "close": "20:00" },
+    { "day": "wednesday", "closed": false, "open": "10:30", "close": "20:00" },
+    { "day": "thursday", "closed": false, "open": "10:30", "close": "20:00" },
+    { "day": "friday", "closed": false, "open": "10:30", "close": "20:00" },
+    { "day": "saturday", "closed": false, "open": "10:30", "close": "20:00" },
+    { "day": "sunday", "closed": true }
+  ],
   "footerText": "© The Front Street Cafe 2026"
 }

@@ -1,0 +1,74 @@
+export type Day =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
+
+export interface HoursEntry {
+  day: Day;
+  closed: boolean;
+  open?: string | null;
+  close?: string | null;
+}
+
+const WEEK: Day[] = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+];
+
+/** schema.org day names, keyed by our stored value. */
+const SCHEMA_DAY: Record<Day, string> = {
+  monday: "Monday",
+  tuesday: "Tuesday",
+  wednesday: "Wednesday",
+  thursday: "Thursday",
+  friday: "Friday",
+  saturday: "Saturday",
+  sunday: "Sunday",
+};
+
+/** Monday-first, regardless of the order the rows sit in the file. */
+export function sortHours<T extends { day: Day }>(hours: readonly T[]): T[] {
+  return [...hours].sort((a, b) => WEEK.indexOf(a.day) - WEEK.indexOf(b.day));
+}
+
+export function formatDay(day: Day): string {
+  return SCHEMA_DAY[day];
+}
+
+/** "10:30" -> "10:30 am", "20:00" -> "8 pm", "12:00" -> "12 pm". */
+export function formatTime(time: string): string {
+  const [h, m] = time.split(":").map(Number);
+  const suffix = h < 12 ? "am" : "pm";
+  const hour12 = h % 12 === 0 ? 12 : h % 12;
+  return m === 0 ? `${hour12} ${suffix}` : `${hour12}:${String(m).padStart(2, "0")} ${suffix}`;
+}
+
+/** "10:30 am – 8 pm", or "Closed". */
+export function formatHours(entry: HoursEntry): string {
+  if (entry.closed || !entry.open || !entry.close) return "Closed";
+  return `${formatTime(entry.open)} – ${formatTime(entry.close)}`;
+}
+
+/**
+ * schema.org openingHoursSpecification. Closed days are omitted rather than emitted
+ * with opens/closes of 00:00, which Google reads as open around the clock.
+ */
+export function toOpeningHoursSpecification(hours: readonly HoursEntry[]) {
+  return sortHours(hours)
+    .filter((entry) => !entry.closed && entry.open && entry.close)
+    .map((entry) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: `https://schema.org/${SCHEMA_DAY[entry.day]}`,
+      opens: entry.open,
+      closes: entry.close,
+    }));
+}

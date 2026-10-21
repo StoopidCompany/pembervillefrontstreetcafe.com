@@ -1,0 +1,39 @@
+---
+import { render } from "astro:content";
+import Base from "~/layouts/Base.astro";
+import { getMenu, formatPrice } from "~/lib/content";
+
+const menu = await getMenu();
+const sections = await Promise.all(
+  menu.map(async ({ section, items }) => ({
+    section,
+    items,
+    Description: (await render(section)).Content,
+  })),
+);
+---
+<Base title="Menu">
+  <div class="mx-auto max-w-2xl px-6 py-16">
+    <h1 class="text-4xl text-navy">Menu</h1>
+
+    {sections.map(({ section, items, Description }) => (
+      <section class="mt-12">
+        <h2 class="text-2xl text-navy">{section.data.title}</h2>
+        <div class="mt-2 text-sm"><Description /></div>
+        <ul class="mt-4 space-y-3">
+          {items.map((item) => (
+            <li class="flex justify-between gap-6">
+              <span>
+                {item.data.name}
+                {item.data.description && (
+                  <span class="block text-sm opacity-70">{item.data.description}</span>
+                )}
+              </span>
+              <span class="whitespace-nowrap">{formatPrice(item.data)}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</Base>

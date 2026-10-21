@@ -1,6 +1,7 @@
 ---
 import "~/styles/global.css";
 import { getSettings } from "~/lib/content";
+import { toOpeningHoursSpecification } from "~/lib/hours";
 
 interface Props {
   title?: string;
@@ -15,6 +16,36 @@ const fullTitle =
   pageTitle === settings.businessName ? pageTitle : `${pageTitle} · ${settings.businessName}`;
 const metaDescription = description ?? settings.tagline ?? "";
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+
+const { street, city, state, zip } = settings.address;
+// Partial NAP is worse than none in structured data — all or nothing.
+const hasFullAddress = Boolean(street && city && state && zip);
+const openingHours = toOpeningHoursSpecification(settings.hours);
+const sameAs = Object.values(settings.socials).filter((url): url is string => Boolean(url));
+
+// Minimal Restaurant node; phase 5 (seo/local-business) fleshes this out.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  name: settings.businessName,
+  description: settings.tagline,
+  url: new URL("/", Astro.site).toString(),
+  hasMenu: new URL("/menu", Astro.site).toString(),
+  ...(settings.phone && { telephone: settings.phone }),
+  ...(settings.email && { email: settings.email }),
+  ...(hasFullAddress && {
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: street,
+      addressLocality: city,
+      addressRegion: state,
+      postalCode: zip,
+      addressCountry: "US",
+    },
+  }),
+  ...(openingHours.length > 0 && { openingHoursSpecification: openingHours }),
+  ...(sameAs.length > 0 && { sameAs }),
+};
 ---
 <!doctype html>
 <html lang="en">
@@ -26,6 +57,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     {metaDescription && <meta name="description" content={metaDescription} />}
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body class="min-h-screen flex flex-col">
     <main class="flex-1">
