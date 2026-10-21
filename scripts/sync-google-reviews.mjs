@@ -250,7 +250,14 @@ function mapReview(review) {
 
 async function reconcile({ reviews, averageRating, totalReviewCount }) {
   const existing = await readExisting();
-  const changes = { created: [], updated: [], vanished: [], skipped: [], untouched: 0 };
+  const changes = {
+    created: [],
+    adopted: [],
+    updated: [],
+    vanished: [],
+    skipped: [],
+    untouched: 0,
+  };
 
   // Star-only ratings carry no comment. They count towards the score but make no quote.
   const usable = [];
@@ -267,8 +274,44 @@ async function reconcile({ reviews, averageRating, totalReviewCount }) {
     existing.filter((e) => e.data.googleReviewId).map((e) => [e.data.googleReviewId, e]),
   );
 
+  /*
+   * Google reviews that got into the repo before the API did — typed in by hand, or
+   * imported off the old site — have no googleReviewId. Rather than write a second copy
+   * of the same quote, claim the existing file: stamp the ID on it and leave the approval
+   * alone. Matching on the words is the only handle available, and it is a safe one here
+   * because two different guests writing the same review verbatim is not a thing.
+   */
+  const orphans = existing.filter(
+    (entry) => entry.data.source === "google" && !entry.data.googleReviewId && entry.data.quote,
+  );
+  const claimed = new Set();
+
   for (const review of usable) {
     const found = byId.get(review.id);
+
+    if (!found) {
+      const orphan = orphans.find(
+        (entry) => !claimed.has(entry.name) && sameText(entry.data.quote, review.quote),
+      );
+      if (orphan) {
+        claimed.add(orphan.name);
+        changes.adopted.push({
+          name: orphan.name,
+          author: review.author,
+          wasPublished: orphan.data.published === true,
+          data: {
+            ...orphan.data,
+            author: review.author,
+            quote: review.quote,
+            rating: review.rating,
+            reviewedAt: review.reviewedAt,
+            googleReviewId: review.id,
+            syncNote: undefined,
+          },
+        });
+        continue;
+      }
+    }
 
     if (!found) {
       const name = filenameFor({ reviewId: review.id }, review.author);
@@ -373,7 +416,7 @@ const { changes, averageRating, totalReviewCount } = await reconcile({
   totalReviewCount: source.totalReviewCount ?? null,
 });
 
-for (const group of ["created", "updated", "vanished"]) {
+for (const group of ["created", "adopted", "updated", "vanished"]) {
   for (const item of changes[group]) {
     if (!DRY_RUN) await writeFile(join(TESTIMONIALS, item.name), serialise(item.data));
   }
@@ -384,10 +427,18 @@ const summaryNote = await updateSummary(averageRating, totalReviewCount);
 // Report. In CI this lands in the job summary, which is where someone notices there is
 // something new waiting for approval.
 const lines = [];
-lines.push(`${changes.created.length} new, ${changes.updated.length} updated, ${changes.vanished.length} gone from Google, ${changes.untouched} unchanged`);
+lines.push(
+  `${changes.created.length} new, ${changes.adopted.length} matched to a review already here, ` +
+    `${changes.updated.length} updated, ${changes.vanished.length} gone from Google, ` +
+    `${changes.untouched} unchanged`,
+);
 if (changes.created.length > 0) {
   lines.push("", "**Waiting for approval** — turn these on in the admin to put them on the site:");
   lines.push(...changes.created.map((c) => `- ${c.author} — ${c.data.rating ?? "?"}★ (${c.name})`));
+}
+if (changes.adopted.length > 0) {
+  lines.push("", "**Matched to reviews already in the repo** (typed in or imported before the sync existed; left published as they were):");
+  lines.push(...changes.adopted.map((c) => `- ${c.author}${c.wasPublished ? " (live on the site)" : ""} (${c.name})`));
 }
 if (changes.updated.length > 0) {
   lines.push("", "**Updated on Google** (your published/hidden choice was kept):");

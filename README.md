@@ -216,9 +216,12 @@ rules matter:
 | Star-only review, no text | Skipped — it would be an empty quote. Still counts in the score |
 | Anonymous reviewer | Author becomes "A Google user" |
 | Hand-typed Yelp/Facebook review | Never touched; the sync only looks at `source: google` |
+| Google review already here by hand, no `googleReviewId` | **Adopted**, not duplicated: the ID is stamped on the existing file and your approval is kept. Matched on the words |
 | `reviewsSummary.platform` is `yelp` | Rating and count left alone — those are your numbers |
 
-Matching is on `googleReviewId`, never on filename or author. Change detection compares the
+Matching is on `googleReviewId`, never on filename or author — except for the adoption
+case above, which is what makes it safe to type reviews in by hand now and switch the API
+on later without ending up with two of everything. Change detection compares the
 **words**, ignoring YAML formatting, because Tina re-encodes files when it saves them — an
 exact comparison made the two fight over quote formatting on every run.
 
