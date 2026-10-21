@@ -68,8 +68,9 @@ Compare **character for character**, not "close enough". `St.` vs `Street` and
 
 ## The name question
 
-The old site uses two names: the header says **Front Street Cafe**, the page titles and
-Facebook say **Pemberville Front Street Cafe**. The new site uses *The Front Street Cafe* as
+The old site uses two names: the header says **Front Street Cafe**, the page titles say
+**Pemberville Front Street Cafe**, and the Facebook page (ID `663507927121014`, linked from
+`socials.facebook`) is titled **Pemberville Front Street Cafe**. The new site uses *The Front Street Cafe* as
 the business name and *Front Street Cafe* in the header wordmark. The listings should all
 carry whichever single form Gavin wants, and `businessName` in settings should match it
 exactly. Worth settling at the same time as the rest of this.

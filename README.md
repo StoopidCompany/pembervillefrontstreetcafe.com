@@ -417,7 +417,13 @@ Gavin starts changing prices — at that point the check has done its job and ca
   ribeye at the bar. The Gallery page has zero `<img>` tags. Both photos are
   GoDaddy-compressed copies, not originals.
 - No street address anywhere on the site. Phone `419-287-7016` is on the contact page.
-- A Reviews page with a heading and no reviews under it.
+- A Reviews page with a heading and **no reviews**. Its GoDaddy widget config
+  (`_seed/raw/reviews.html` → the `@widget/REVIEWS` props in the page's `gpub` script) has
+  `sourceType: "dynamic"`, `providerType: "gmb"`, and a `manualReviews` array still holding
+  GoDaddy's shipped placeholders ("Review 1", "Anonymous", rating 0). So the page was
+  pointed at Google and rendered nothing — there is no stored review text to migrate.
+  The same config exposed the Facebook page ID `663507927121014`, which is how
+  `socials.facebook` got filled.
 - Every page served the entire menu, which is why the old site reads as duplicate content.
 
 ### Open items on the content

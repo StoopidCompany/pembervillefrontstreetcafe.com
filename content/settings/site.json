@@ -15,21 +15,57 @@
   "priceRange": "$$",
   "acceptsReservations": "unknown",
   "socials": {
-    "facebook": "",
+    "facebook": "https://www.facebook.com/663507927121014",
     "instagram": "",
     "twitter": "",
     "tiktok": "",
     "google": "",
     "yelp": ""
   },
+  "ordering": {
+    "doordash": "https://doorddash.com",
+    "ubereats": "https://ubereats.com",
+    "grubhub": "https://grubhub.com"
+  },
   "hours": [
-    { "day": "monday", "closed": true },
-    { "day": "tuesday", "closed": false, "open": "10:30", "close": "20:00" },
-    { "day": "wednesday", "closed": false, "open": "10:30", "close": "20:00" },
-    { "day": "thursday", "closed": false, "open": "10:30", "close": "20:00" },
-    { "day": "friday", "closed": false, "open": "10:30", "close": "20:00" },
-    { "day": "saturday", "closed": false, "open": "10:30", "close": "20:00" },
-    { "day": "sunday", "closed": true }
+    {
+      "day": "monday",
+      "closed": true
+    },
+    {
+      "day": "tuesday",
+      "closed": false,
+      "open": "10:30",
+      "close": "20:00"
+    },
+    {
+      "day": "wednesday",
+      "closed": false,
+      "open": "10:30",
+      "close": "20:00"
+    },
+    {
+      "day": "thursday",
+      "closed": false,
+      "open": "10:30",
+      "close": "20:00"
+    },
+    {
+      "day": "friday",
+      "closed": false,
+      "open": "10:30",
+      "close": "20:00"
+    },
+    {
+      "day": "saturday",
+      "closed": false,
+      "open": "10:30",
+      "close": "20:00"
+    },
+    {
+      "day": "sunday",
+      "closed": true
+    }
   ],
-  "footerText": "© The Front Street Cafe 2026"
+  "footerText": "\u00a9 The Front Street Cafe 2026"
 }
