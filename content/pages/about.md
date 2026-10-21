@@ -1,5 +1,6 @@
 ---
 headline: About Front Street Cafe
+image: /uploads/photos/ribeye-at-the-bar.jpg
 ---
 
 Front Street Cafe opened its doors in downtown Pemberville, Ohio on September 27, 2023, in a charming historic brick building on Front Street. We started this cafe because we believe food is medicine — and food loaded with additives and shelf stabilizers is the opposite. We wanted to build a place where you know exactly what you’re eating, made from ingredients you can trust, prepared where you can see it happen.

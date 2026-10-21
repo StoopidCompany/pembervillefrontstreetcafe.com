@@ -98,6 +98,74 @@ export default defineConfig({
         ],
       },
       {
+        name: "home",
+        label: "Home Page",
+        path: "content/pages",
+        format: "md",
+        match: { include: "home" },
+        ui: { allowedActions: { create: false, delete: false } },
+        fields: [
+          { type: "string", name: "headline", label: "Hero Headline", required: true },
+          { type: "string", name: "heroSubtext", label: "Hero Subtext" },
+          { type: "image", name: "heroImage", label: "Hero Photo" },
+          { type: "rich-text", name: "body", label: "Intro", isBody: true,
+            description: "The short pitch under the hero" },
+          {
+            type: "object", name: "signatures", label: "Signature Dishes",
+            description: "Shown on the home page. Pick from the menu so the price stays in one place.",
+            list: true,
+            ui: {
+              max: 4,
+              itemProps: (item) => ({ label: item?.item || "Choose a dish" }),
+            },
+            fields: [
+              { type: "reference", name: "item", label: "Menu Item", collections: ["menuItem"] },
+            ],
+          },
+          { type: "string", name: "ctaText", label: "Button Text" },
+          { type: "string", name: "ctaHref", label: "Button Link" },
+        ],
+      },
+      {
+        name: "gallery",
+        label: "Gallery Page",
+        path: "content/pages",
+        format: "md",
+        match: { include: "gallery" },
+        ui: { allowedActions: { create: false, delete: false } },
+        fields: [
+          { type: "string", name: "headline", label: "Headline", required: true },
+          { type: "rich-text", name: "body", label: "Intro", isBody: true },
+          {
+            type: "object", name: "images", label: "Photos",
+            list: true,
+            ui: {
+              itemProps: (item) => ({ label: item?.alt || item?.image || "Photo" }),
+            },
+            fields: [
+              { type: "image", name: "image", label: "Photo", required: true },
+              { type: "string", name: "alt", label: "Describe the photo", required: true,
+                description: "For people using a screen reader, and shown if the photo fails to load" },
+              { type: "string", name: "caption", label: "Caption (optional)" },
+            ],
+          },
+        ],
+      },
+      {
+        name: "contact",
+        label: "Contact Page",
+        path: "content/pages",
+        format: "md",
+        match: { include: "contact" },
+        ui: { allowedActions: { create: false, delete: false } },
+        fields: [
+          { type: "string", name: "headline", label: "Headline", required: true },
+          { type: "rich-text", name: "body", label: "Intro", isBody: true },
+          { type: "string", name: "mapQuery", label: "Map Search Text",
+            description: "What the embedded map should look up, e.g. 'Front Street Cafe, Pemberville, OH'" },
+        ],
+      },
+      {
         name: "about",
         label: "About Page",
         path: "content/pages",
@@ -106,6 +174,7 @@ export default defineConfig({
         ui: { allowedActions: { create: false, delete: false } },
         fields: [
           { type: "string", name: "headline", label: "Headline", required: true },
+          { type: "image", name: "image", label: "Photo" },
           { type: "rich-text", name: "body", label: "Our Story", isBody: true, required: true },
         ],
       },

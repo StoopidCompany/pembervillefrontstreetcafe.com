@@ -62,11 +62,37 @@ const settings = defineCollection({
   }),
 });
 
-/** One file per singleton page: about.md, menu.md. Prose lives in the markdown body. */
+/**
+ * One file per singleton page: home.md, menu.md, about.md, gallery.md, contact.md.
+ * Prose lives in the markdown body. Everything past `headline` belongs to one page or
+ * another, so it is all optional — same shape as the Tina collections above it.
+ */
 const pages = defineCollection({
   loader: glob({ pattern: "*.md", base: "content/pages" }),
   schema: z.object({
     headline: z.string(),
+    // home
+    heroSubtext: optionalString,
+    heroImage: optionalString,
+    signatures: z
+      .array(z.object({ item: z.string() }))
+      .default([]),
+    ctaText: optionalString,
+    ctaHref: optionalString,
+    // about
+    image: optionalString,
+    // gallery
+    images: z
+      .array(
+        z.object({
+          image: z.string(),
+          alt: z.string().min(1, "every photo needs a description"),
+          caption: optionalString,
+        }),
+      )
+      .default([]),
+    // contact
+    mapQuery: optionalString,
   }),
 });
 

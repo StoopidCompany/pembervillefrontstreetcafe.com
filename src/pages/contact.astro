@@ -1,0 +1,51 @@
+---
+import { render } from "astro:content";
+import Base from "~/layouts/Base.astro";
+import VisitInfo from "~/components/VisitInfo.astro";
+import { getPage, getSettings, telHref, formatAddress } from "~/lib/content";
+
+const page = await getPage("contact");
+const { Content: Intro } = await render(page);
+const settings = await getSettings();
+const tel = telHref(settings.phone);
+const address = formatAddress(settings.address);
+const mapQuery =
+  page.data.mapQuery ?? [settings.businessName, address].filter(Boolean).join(", ");
+---
+<Base title={page.data.headline}>
+  <div class="mx-auto max-w-3xl px-5 py-10 lg:px-8">
+    <h1 class="text-3xl sm:text-4xl">{page.data.headline}</h1>
+    <div class="mt-3 text-lg text-ink-soft"><Intro /></div>
+
+    <VisitInfo class="mt-8 bg-crust/30" heading="Hours, address and phone" />
+
+    {tel && (
+      <a
+        href={tel}
+        class="mt-6 flex items-center justify-center gap-2 rounded-full bg-brick px-6 py-4 text-base font-semibold uppercase tracking-wider !text-cream hover:!bg-door transition-colors"
+      >
+        Call {settings.phone}
+      </a>
+    )}
+
+    <section class="mt-10">
+      <h2 class="text-2xl">Find us on the map</h2>
+      <iframe
+        title={`Map showing ${settings.businessName}`}
+        src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        class="mt-4 aspect-[4/3] w-full rounded-2xl border border-crust sm:aspect-video"
+      ></iframe>
+      <p class="mt-2 text-sm text-ink-soft">
+        The map searches for the cafe by name until the street address is confirmed.
+      </p>
+    </section>
+
+    <!--
+      Phase 6 (forms/contact) drops the Web3Forms enquiry form in here — general message
+      plus catering / private event. Deliberately not stubbed out: a form that posts
+      nowhere is worse than no form, and the phone number above already works.
+    -->
+  </div>
+</Base>

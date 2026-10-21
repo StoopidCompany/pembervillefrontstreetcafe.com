@@ -59,8 +59,11 @@ fails the build instead of rendering blank.
 | Type          | Storage                      | Notes                                       |
 | ------------- | ---------------------------- | ------------------------------------------- |
 | Site Settings | `content/settings/site.json` | Singleton. NAP, socials and opening hours   |
-| About page    | `content/pages/about.md`     | Singleton. Body = the story                 |
+| Home page     | `content/pages/home.md`      | Singleton. Hero, intro, signature dishes    |
 | Menu page     | `content/pages/menu.md`      | Singleton. Headline + intro above the menu  |
+| About page    | `content/pages/about.md`     | Singleton. Body = the story, plus a photo   |
+| Gallery page  | `content/pages/gallery.md`   | Singleton. Photo list with alt text         |
+| Contact page  | `content/pages/contact.md`   | Singleton. Intro + what the map looks up    |
 | Menu Sections | `content/menu-sections/*.md` | `order` + `published`. Body = section blurb |
 | Menu Items    | `content/menu-items/*.md`    | `order` + `available`, `section` reference   |
 
@@ -87,6 +90,48 @@ Things worth knowing before changing any of it:
   names repeat across sections — German Potato Cakes is both an à la carte breakfast item
   and a side, at different prices. Tina names new files after the title, so watch for
   collisions when adding an item that already exists elsewhere on the menu.
+
+## Design
+
+The entire brand surface is [src/styles/global.css](src/styles/global.css): six colour
+tokens and two fonts. Change them there and the whole site follows.
+
+| Token | Value | Role |
+|---|---|---|
+| `--color-cream` | `#fbf7f0` | Page background, warm rather than white |
+| `--color-crust` | `#ead9bf` | Panels, borders, footer |
+| `--color-brick` | `#a03c27` | Links, buttons, prices |
+| `--color-door` | `#2c3550` | Headings, hero overlay — the navy front door |
+| `--color-ink` | `#241d18` | Body text |
+| `--color-ink-soft` | `#6b5f54` | Secondary text |
+
+Display font is Bricolage Grotesque, body is Manrope — both already in use on the old site,
+so the cafe still looks like itself. All text pairings clear WCAG AA on cream: brick 6.2:1,
+ink-soft 5.8:1, door 11.3:1, ink 15.9:1.
+
+**Mobile is the design target.** Most of this traffic is someone on Front Street deciding
+where to eat, so:
+
+- The header carries a `tel:` **Call** button and, under it on phones only, a strip with
+  today's opening hours and the town. Hours, phone and address are therefore above the fold
+  on every page, not just the ones with a "Find us" card.
+- `summarizeHours()` in [src/lib/hours.ts](src/lib/hours.ts) collapses the seven stored days
+  into `Tue–Sat 10:30 am – 8 pm` + `Mon & Sun Closed` for the header and footer. The full
+  per-day data still goes to Google in the JSON-LD.
+- `/menu` leads with jump links to each section, because people arrive looking for one thing.
+
+Routes: `/`, `/menu`, `/about`, `/gallery`, `/contact`, and `/reviews`, which redirects to
+`/` via `redirects` in [astro.config.mjs](astro.config.mjs) — all six of the old site's
+paths resolve. Astro emits a meta-refresh page with a canonical link for it in a static
+build; phase 5 should decide whether that is the final answer for that URL.
+
+To look at it:
+
+```bash
+npm run build && npx astro preview --port 4332
+google-chrome --headless --window-size=390,844 \
+  --screenshot=/tmp/home.png --user-data-dir=/tmp/chrome-prof http://localhost:4332/
+```
 
 ## Migrating the old site
 
@@ -145,7 +190,12 @@ Gavin starts changing prices — at that point the check has done its job and ca
 - The old menu groups sections under Breakfast / Lunch & Dinner / Bar. The model stays flat;
   section `order` already produces the same reading order, so grouping is a phase 4 layout
   decision, not a content one.
-- Photos: two is not enough for the design phase. Chased in COPY-REVIEW.md.
+- Photos: two is not enough. The storefront shot carries the home hero and the gallery, and
+  the bar shot carries About and the gallery — every photo on the site is doing two jobs.
+  Chased in COPY-REVIEW.md.
+- The contact page has no enquiry form yet; phase 6 adds it. There is a marker comment in
+  [src/pages/contact.astro](src/pages/contact.astro) where it goes. A form that posts
+  nowhere would be worse than the phone button that's there now.
 
 ## Bulk image optimization
 

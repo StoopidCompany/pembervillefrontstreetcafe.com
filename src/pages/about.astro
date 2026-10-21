@@ -1,14 +1,31 @@
 ---
 import { render } from "astro:content";
 import Base from "~/layouts/Base.astro";
+import VisitInfo from "~/components/VisitInfo.astro";
 import { getPage } from "~/lib/content";
 
 const page = await getPage("about");
 const { Content } = await render(page);
 ---
 <Base title={page.data.headline}>
-  <article class="mx-auto max-w-2xl px-6 py-16">
-    <h1 class="text-4xl text-navy">{page.data.headline}</h1>
-    <div class="mt-6 space-y-4 leading-relaxed"><Content /></div>
+  <article class="mx-auto max-w-3xl px-5 py-10 lg:px-8">
+    <h1 class="text-3xl sm:text-4xl">{page.data.headline}</h1>
+
+    {page.data.image && (
+      <img
+        src={page.data.image}
+        alt="Inside the cafe"
+        width="1920"
+        height="2560"
+        loading="lazy"
+        class="mt-6 aspect-[4/3] w-full rounded-2xl object-cover"
+      />
+    )}
+
+    <div class="mt-8 space-y-5 text-lg leading-relaxed text-pretty">
+      <Content />
+    </div>
+
+    <VisitInfo class="mt-14 bg-crust/30" heading="Come and see us" />
   </article>
 </Base>

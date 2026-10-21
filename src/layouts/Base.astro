@@ -1,14 +1,21 @@
 ---
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/manrope";
 import "~/styles/global.css";
+import Header from "~/components/Header.astro";
+import Footer from "~/components/Footer.astro";
 import { getSettings } from "~/lib/content";
 import { toOpeningHoursSpecification } from "~/lib/hours";
 
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  /** Hero pages paint their own full-bleed top; everything else gets normal spacing. */
+  flushTop?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, ogImage, flushTop = false } = Astro.props;
 const settings = await getSettings();
 
 const pageTitle = title ?? settings.businessName;
@@ -16,6 +23,7 @@ const fullTitle =
   pageTitle === settings.businessName ? pageTitle : `${pageTitle} · ${settings.businessName}`;
 const metaDescription = description ?? settings.tagline ?? "";
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImageUrl = new URL(ogImage ?? "/uploads/photos/storefront.jpg", Astro.site).toString();
 
 const { street, city, state, zip } = settings.address;
 // Partial NAP is worse than none in structured data — all or nothing.
@@ -31,6 +39,7 @@ const jsonLd = {
   description: settings.tagline,
   url: new URL("/", Astro.site).toString(),
   hasMenu: new URL("/menu", Astro.site).toString(),
+  image: ogImageUrl,
   ...(settings.phone && { telephone: settings.phone }),
   ...(settings.email && { email: settings.email }),
   ...(hasFullAddress && {
@@ -53,16 +62,35 @@ const jsonLd = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#2c3550" />
     <title>{fullTitle}</title>
     {metaDescription && <meta name="description" content={metaDescription} />}
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
 
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:site_name" content={settings.businessName} />
+    <meta property="og:title" content={fullTitle} />
+    {metaDescription && <meta property="og:description" content={metaDescription} />}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body class="min-h-screen flex flex-col">
-    <main class="flex-1">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:rounded focus:bg-cream focus:px-3 focus:py-2"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <!-- Header is fixed; this offset matches its unscrolled height (including the
+         mobile hours strip) so nothing hides underneath it. -->
+    <main id="main" class:list={["flex-1 pt-[88px] md:pt-[92px]", flushTop ? "" : "pb-4"]}>
       <slot />
     </main>
+    <Footer />
   </body>
 </html>

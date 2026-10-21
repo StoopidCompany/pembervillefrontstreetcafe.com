@@ -28,6 +28,24 @@ On number 5: nothing is lost. Prices now spell the sizes out — your Caesar Sal
 
 Your About page is **unchanged** — all four paragraphs are exactly as you wrote them.
 
+### The new front page
+
+The front page needed a headline and a line or two of introduction. Rather than write new
+marketing copy for you, I used sentences you had already written:
+
+| Where | Taken from | Now reads |
+|-------|-----------|-----------|
+| Headline | Your site's banner, "Made From Scratch and handled with Care." | Made from scratch and handled with care. |
+| Under the headline | New, built from your own description | A true scratch kitchen in a historic brick building on Front Street, Pemberville. |
+| Introduction | Your About page, second and fourth paragraphs | We bake our own bread, churn our own butter, and build every dish from real ingredients, with a nut-oil free kitchen from top to bottom. Join us and discover what we can do for you. |
+
+The only change to the headline is the capital letters — "Made From Scratch and handled with
+Care." becomes an ordinary sentence. Say the word if you want your original back.
+
+The front page also shows four dishes under "What people come back for": the Italian
+Grinder, Fettuccine Alfredo, 10 oz Ribeye and Peppercorn Pork Chop. Those are the four you
+name on your own About page. Easy to change.
+
 ---
 
 ## 2. Questions for you
@@ -77,9 +95,14 @@ Your About page is **unchanged** — all four paragraphs are exactly as you wrot
    - The new site will want photos of the food, the dining room, the bar and the building.
      Phone photos are fine if they're taken in daylight.
 
+**The map**
+
+10. The Contact page has a map on it. Until the street address is confirmed (question 6),
+    it finds the cafe by name, which works but is less precise than it should be.
+
 **Two pages that are empty today**
 
-10. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
+11. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
     Neither is planned for the new site. Say the word if you want either back.
 
 ---

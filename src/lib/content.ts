@@ -13,10 +13,27 @@ export async function getHours() {
   return sortHours(hours);
 }
 
-export async function getPage(slug: "about" | "menu") {
+export async function getPage(slug: "home" | "menu" | "about" | "gallery" | "contact") {
   const entry = await getEntry("pages", slug);
   if (!entry) throw new Error(`Page not found: content/pages/${slug}.md`);
   return entry;
+}
+
+/**
+ * Resolve the home page's signature-dish references to real menu items, so a price only
+ * ever lives in one file. Throws on a dangling reference, like getMenu().
+ */
+export async function getSignatureDishes(refs: readonly { item: string }[]) {
+  if (refs.length === 0) return [];
+  const items = await getCollection("menuItems");
+  return refs.map(({ item }) => {
+    const id = item.replace(/^content\/menu-items\//, "").replace(/\.md$/, "");
+    const found = items.find((entry) => entry.id === id);
+    if (!found) {
+      throw new Error(`Home page signature dish references a missing menu item: ${item}`);
+    }
+    return found;
+  });
 }
 
 /** Resolve a Tina reference path (e.g. "content/menu-sections/handhelds.md") to its entry id. */
@@ -72,6 +89,31 @@ export function formatPrice(item: CollectionEntry<"menuItems">["data"]): string 
   const primary = label(item.priceNote, item.price);
   if (!item.altPrice) return primary;
   return `${primary} / ${label(item.altPriceNote, item.altPrice)}`;
+}
+
+/** "419-287-7016" -> "tel:+14192877016". Returns null when no phone is set. */
+export function telHref(phone: string | null | undefined) {
+  if (!phone) return null;
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 0) return null;
+  return `tel:${digits.length === 10 ? `+1${digits}` : `+${digits}`}`;
+}
+
+interface Address {
+  street?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip?: string | null;
+}
+
+/**
+ * One line, skipping whatever is still blank — the street address is not confirmed yet,
+ * so this has to read sensibly as just "Pemberville, OH".
+ */
+export function formatAddress(address: Address) {
+  const cityLine = [address.city, address.state].filter(Boolean).join(", ");
+  const tail = [cityLine, address.zip].filter(Boolean).join(" ");
+  return [address.street, tail].filter(Boolean).join(", ") || null;
 }
 
 export type MenuSectionEntry = CollectionEntry<"menuSections">;

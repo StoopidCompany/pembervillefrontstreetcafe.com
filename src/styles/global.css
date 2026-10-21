@@ -1,18 +1,62 @@
 @import "tailwindcss";
 
-/* Placeholder tokens. Real brand palette and fonts are phase 4 (design/brand).
-   --color-navy is the current live site's theme-color, kept so the scaffold is
-   not visually arbitrary. */
+/*
+ * The whole brand lives here: six colours, two fonts.
+ *
+ * Warm scratch-kitchen, pulled from the building itself — the brick, the butter-cream
+ * plaster inside, the navy front door. Deliberately not the GoDaddy site's cold navy.
+ * Fonts match what the old site used, so the cafe still looks like itself.
+ */
 @theme {
-  --color-navy: #2b3063;
-  --color-paper: #faf8f4;
-  --color-ink: #1c1c1c;
+  --color-cream: #fbf7f0; /* page background — warm, not white */
+  --color-crust: #ead9bf; /* panels, borders, footer */
+  --color-brick: #a03c27; /* primary accent — links, buttons, prices */
+  --color-door: #2c3550; /* the navy front door — headings on light, hero overlay */
+  --color-ink: #241d18; /* body text */
+  --color-ink-soft: #6b5f54; /* secondary text */
+
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", Georgia, serif;
+  --font-body: "Manrope Variable", "Manrope", system-ui, sans-serif;
 }
 
 @layer base {
   html {
-    background-color: var(--color-paper);
+    background-color: var(--color-cream);
     color: var(--color-ink);
-    font-family: system-ui, sans-serif;
+    font-family: var(--font-body);
+    scroll-behavior: smooth;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-door);
+  }
+  a {
+    color: var(--color-brick);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-ink);
+  }
+  /* Keyboard focus has to stay obvious on every background. */
+  :focus-visible {
+    outline: 2px solid var(--color-brick);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

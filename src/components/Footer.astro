@@ -1,0 +1,74 @@
+---
+import { getSettings, telHref, formatAddress } from "~/lib/content";
+import { summarizeHours } from "~/lib/hours";
+
+const settings = await getSettings();
+const rows = summarizeHours(settings.hours);
+const tel = telHref(settings.phone);
+const address = formatAddress(settings.address);
+
+const navLinks = [
+  { label: "Menu", href: "/menu" },
+  { label: "About", href: "/about" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
+];
+
+const socials = [
+  { label: "Facebook", href: settings.socials.facebook },
+  { label: "Instagram", href: settings.socials.instagram },
+  { label: "TikTok", href: settings.socials.tiktok },
+  { label: "Google", href: settings.socials.google },
+  { label: "Yelp", href: settings.socials.yelp },
+].filter((s) => Boolean(s.href));
+---
+<footer class="bg-crust/60 border-t border-crust mt-20">
+  <div class="mx-auto max-w-6xl px-5 lg:px-8 py-14">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <h2 class="font-display text-xl">{settings.businessName}</h2>
+        {settings.tagline && (
+          <p class="mt-2 text-sm text-ink-soft leading-relaxed">{settings.tagline}</p>
+        )}
+      </div>
+
+      <div>
+        <h3 class="font-body text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Hours</h3>
+        <ul class="mt-2 space-y-0.5 text-sm">
+          {rows.map((row) => (
+            <li><span class="font-semibold">{row.days}</span> {row.time}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-body text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Visit</h3>
+        <p class="mt-2 text-sm">{address ?? "Front Street, Pemberville, Ohio"}</p>
+        {tel && <p class="mt-1 text-sm"><a href={tel}>{settings.phone}</a></p>}
+        {settings.email && (
+          <p class="mt-1 text-sm"><a href={`mailto:${settings.email}`}>{settings.email}</a></p>
+        )}
+      </div>
+
+      <div>
+        <h3 class="font-body text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Explore</h3>
+        <ul class="mt-2 space-y-0.5 text-sm">
+          {navLinks.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+        {socials.length > 0 && (
+          <ul class="mt-3 space-y-0.5 text-sm">
+            {socials.map((social) => (
+              <li><a href={social.href!} target="_blank" rel="noopener">{social.label}</a></li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+
+    {settings.footerText && (
+      <p class="mt-12 pt-6 border-t border-ink/10 text-xs text-ink-soft">{settings.footerText}</p>
+    )}
+  </div>
+</footer>
