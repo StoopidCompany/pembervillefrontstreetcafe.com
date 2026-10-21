@@ -67,5 +67,10 @@
       "closed": true
     }
   ],
-  "footerText": "\u00a9 The Front Street Cafe 2026"
+  "footerText": "© The Front Street Cafe 2026",
+  "reviewsSummary": {
+    "platform": "google",
+    "rating": "4.4",
+    "count": 206
+  }
 }

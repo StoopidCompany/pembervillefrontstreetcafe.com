@@ -118,14 +118,27 @@ half-finished in the meantime — those parts of the page simply aren't there.
     page link. If your Google dashboard offers a short "ask for reviews" link, that one is
     better — it drops people straight into writing a review. These two links turn on the
     "Liked it? Tell someone" buttons in the footer and on the Contact page.
-14. **Your star rating and review count**, and which platform to show. I found 4.2 stars
-    from 9 reviews on Yelp, which you should check against what you see. If Google has more
-    reviews, show Google instead. It appears as one line: "4.2★ on Yelp · 9 reviews".
-15. **Three or four reviews you'd like quoted**, with the guest's name as they signed it,
-    the platform, and the stars they gave. Pick ones that say something specific — "the
-    Italian Grinder is the best sandwich in Wood County" beats "great food". I'll type them
-    in exactly as written; we don't edit people's words, and I won't copy them off Yelp
-    wholesale because their rules don't allow it.
+14. ~~Your star rating and review count~~ — **done, and it's better than I thought.** You
+    have **206 Google reviews averaging 4.4 stars**. The front page now shows one line:
+    "4.4★ on Google · 206 reviews". Nothing to do here unless you'd rather it said Yelp.
+15. **Which reviews to show.** All 80 of your written Google reviews are now loaded into
+    the site, every one switched **off**. You pick. Switch one on and it appears; switch it
+    off and it's gone. Nothing was published without you choosing it, including the handful
+    of unhappy ones, which are in there too.
+
+    Here are four I'd suggest, because they name specific things rather than just saying
+    "great food":
+
+    - **Susan Fletcher** (5★) — "So great! Fresh and delicious! The best bread I have ever
+      had." Short, and it's about the bread you bake.
+    - **coleen meyers** (5★) — "Grilled pork chop superb and Ceasars salad tasteful and
+      grinder packed. All fresh local ingredients. Highly recommend." Names three dishes.
+    - **Jennifer Melssen** (5★) — "Potato pancakes like I used to make with my grandma."
+    - **Dan Baker** (5★) — "They not only raise their own chickens, but grow their own feed.
+      They even grind their own flour." Says the scratch-kitchen thing better than we could.
+
+    Say the word and I'll switch those four on, or name your own. One note: your own 5★
+    review is in the list — I'd leave that one off.
 
 You'll be able to add, hide, reorder and delete these yourself afterwards, the same way as
 menu items. Google reviews can now arrive on their own, too — see question 16.

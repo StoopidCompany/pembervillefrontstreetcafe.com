@@ -229,15 +229,40 @@ Two honest limitations. Google's API returns no public URL for an individual rev
 synced review links to the listing as a whole. And Tina can't filter a collection by a field,
 so there's no "pending" view in the admin — find new reviews from the workflow summary.
 
-**Testing it without credentials**, which is how all of the above was verified:
+**Importing without API access**, which is where the reviews in `content/testimonials/`
+actually came from. The old GoDaddy site's reviews widget receives the same Google data, so:
+
+1. Open the old site's `/reviews` page with DevTools → Network → XHR, and reload.
+2. Find the response carrying the review text and copy it.
+3. Save it and run the sync against it:
 
 ```bash
-node scripts/sync-google-reviews.mjs --fixture _seed/fixtures/google-reviews.json --dry-run
+node scripts/sync-google-reviews.mjs --fixture _seed/fixtures/godaddy-reviews-export.json
 ```
 
-The fixture covers a normal review, an anonymous reviewer, a star-only review and a
-translated one. Drop `--dry-run` to write files — delete them afterwards, placeholder reviews
-must never be committed.
+`normalise()` in the script detects that shape and maps it to the API's. Crucially the
+`reviewId` values in it are **Google's real ones**, so when API access arrives the live sync
+recognises every imported review instead of duplicating it. The captured export is kept at
+[_seed/fixtures/godaddy-reviews-export.json](_seed/fixtures/godaddy-reviews-export.json).
+
+That export also handed over two things worth keeping:
+
+- `GOOGLE_LOCATION_NAME=accounts/110350157233702095324/locations/202947831027575165`, which
+  skips account/location discovery once credentials exist.
+- `metadata.pageId` `3320731339812246583`, which is almost certainly the Google Maps CID —
+  so `https://www.google.com/maps?cid=3320731339812246583` is very likely the listing URL.
+  Unconfirmed, because Maps renders in JavaScript and returns a generic shell to a fetch,
+  so it is **not** in settings yet. Open it once; if it is the cafe, paste it into
+  `socials.google`.
+
+**Testing edge cases** uses a separate synthetic fixture covering an anonymous reviewer, a
+star-only review with no text, and a translated one:
+
+```bash
+node scripts/sync-google-reviews.mjs --fixture _seed/fixtures/google-reviews-sample.json --dry-run
+```
+
+Delete anything that fixture writes — invented reviews must never be committed.
 
 ## Order online
 

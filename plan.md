@@ -56,6 +56,16 @@ Owner: Gavin Shank (The Front Street Cafe, Pemberville OH).
 - Facebook search snippet: "Tuesday–Saturday | 10:30 AM–8 PM".
 These disagree. Hours must come from Gavin, once, and then live in one place.
 
+## Superseded by real data (21 Oct 2026)
+
+- The cafe has **206 Google reviews averaging 4.4★** — captured from the old site's own
+  reviews widget, which is wired to Google Business Profile. Earlier notes guessed at Yelp's
+  4.2★/9 reviews; Google is an order of magnitude bigger and is what the site features.
+- 80 of those reviews have written text. All of them are in `content/testimonials/`,
+  unpublished, carrying Google's real review IDs.
+- GBP location: `accounts/110350157233702095324/locations/202947831027575165`.
+- Facebook page ID 663507927121014; Instagram @pembervillefrontstreetcafe. Both in settings.
+
 ## Unverified / needs Gavin
 
 1. 210 E. Front St., Pemberville, OH 43450 and (419) 287-7016 — from a Facebook search

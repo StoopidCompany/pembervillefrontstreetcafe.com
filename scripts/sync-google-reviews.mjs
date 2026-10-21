@@ -399,10 +399,43 @@ async function updateSummary(averageRating, totalReviewCount) {
   return `${rating}★ from ${count} reviews`;
 }
 
+// ---------------------------------------------------------------- shapes
+
+const STAR_NAMES = ["", "ONE", "TWO", "THREE", "FOUR", "FIVE"];
+
+/**
+ * Accept either the Business Profile v4 shape or the shape the old GoDaddy site's reviews
+ * widget receives, which carries the same Google data under different names:
+ *
+ *   { metadata: { pageId, name }, overallRating, totalReviews,
+ *     reviews: [{ metadata: { reviewId, name }, name, body, rating, date, photo }] }
+ *
+ * The reviewIds are Google's real ones, so anything imported this way is recognised by the
+ * live API later instead of being duplicated. See the README for how to capture it.
+ */
+function normalise(raw) {
+  const looksLikeGoDaddy =
+    Array.isArray(raw.reviews) && raw.reviews.some((r) => r?.metadata?.reviewId && "body" in r);
+  if (!looksLikeGoDaddy) return raw;
+
+  return {
+    reviews: raw.reviews.map((review) => ({
+      reviewId: review.metadata.reviewId,
+      reviewer: { displayName: review.name, isAnonymous: !review.name },
+      starRating: STAR_NAMES[Number(review.rating)] ?? undefined,
+      comment: review.body ?? "",
+      createTime: review.date,
+      updateTime: review.date,
+    })),
+    averageRating: raw.overallRating ?? null,
+    totalReviewCount: raw.totalReviews ?? null,
+  };
+}
+
 // ---------------------------------------------------------------- main
 
 const source = FIXTURE
-  ? JSON.parse(await readFile(FIXTURE, "utf8"))
+  ? normalise(JSON.parse(await readFile(FIXTURE, "utf8")))
   : await (async () => {
       const token = await accessToken();
       const parent = await resolveLocation(token);
