@@ -1,5 +1,5 @@
 ---
-import { getSettings, telHref, formatAddress } from "~/lib/content";
+import { getSettings, getOrderingLinks, telHref, formatAddress } from "~/lib/content";
 import { summarizeHours } from "~/lib/hours";
 import ReviewAsk from "~/components/ReviewAsk.astro";
 import OrderOnline from "~/components/OrderOnline.astro";
@@ -23,19 +23,31 @@ const socials = [
   { label: "Google", href: settings.socials.google },
   { label: "Yelp", href: settings.socials.yelp },
 ].filter((s) => Boolean(s.href));
+
+// Explore used to carry the pages, the delivery apps and the social links all at once.
+// Each is now its own column, and the two that depend on settings drop out when empty —
+// so the grid is sized to what there actually is rather than to the maximum.
+const hasOrdering = (await getOrderingLinks()).length > 0;
+const columns = 3 + (hasOrdering ? 1 : 0) + (socials.length > 0 ? 1 : 0);
+const columnClass = { 3: "lg:grid-cols-3", 4: "lg:grid-cols-4", 5: "lg:grid-cols-5" }[columns];
+
+const heading = "font-body text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft";
 ---
 <footer class="bg-crust/60 border-t border-crust mt-20">
   <div class="mx-auto max-w-6xl px-5 lg:px-8 py-14">
-    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-      <div>
-        <h2 class="font-display text-xl">{settings.businessName}</h2>
-        {settings.tagline && (
-          <p class="mt-2 text-sm text-ink-soft leading-relaxed">{settings.tagline}</p>
-        )}
-      </div>
+    {/* The name and tagline get their own row. Squeezed into a column alongside five
+        others they wrapped to "The Front / Street Cafe" over five lines of tagline. */}
+    <div class="max-w-md">
+      <h2 class="font-display text-xl">{settings.businessName}</h2>
+      {settings.tagline && (
+        <p class="mt-2 text-sm text-ink-soft leading-relaxed">{settings.tagline}</p>
+      )}
+    </div>
 
+    {/* Two-up on a phone: five stacked blocks made for a lot of scrolling. */}
+    <div class:list={["mt-10 grid grid-cols-2 gap-x-6 gap-y-9 sm:gap-10", columnClass]}>
       <div>
-        <h3 class="font-body text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Hours</h3>
+        <h3 class={heading}>Hours</h3>
         <ul class="mt-2 space-y-0.5 text-sm">
           {rows.map((row) => (
             <li><span class="font-semibold">{row.days}</span> {row.time}</li>
@@ -44,7 +56,7 @@ const socials = [
       </div>
 
       <div>
-        <h3 class="font-body text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Visit</h3>
+        <h3 class={heading}>Visit</h3>
         <p class="mt-2 text-sm">{address ?? "Front Street, Pemberville, Ohio"}</p>
         {tel && <p class="mt-1 text-sm"><a href={tel}>{settings.phone}</a></p>}
         {settings.email && (
@@ -53,22 +65,31 @@ const socials = [
       </div>
 
       <div>
-        <h3 class="font-body text-[0.7rem] uppercase tracking-[0.18em] text-ink-soft">Explore</h3>
+        <h3 class={heading}>Explore</h3>
         <ul class="mt-2 space-y-0.5 text-sm">
           {navLinks.map((link) => (
             <li><a href={link.href}>{link.label}</a></li>
           ))}
         </ul>
-        <OrderOnline variant="list" class="mt-3" />
+      </div>
 
-        {socials.length > 0 && (
-          <ul class="mt-3 space-y-0.5 text-sm">
+      {hasOrdering && (
+        <div>
+          <h3 class={heading}>Order online</h3>
+          <OrderOnline variant="list" class="mt-2" />
+        </div>
+      )}
+
+      {socials.length > 0 && (
+        <div>
+          <h3 class={heading}>Follow us</h3>
+          <ul class="mt-2 space-y-0.5 text-sm">
             {socials.map((social) => (
               <li><a href={social.href!} target="_blank" rel="noopener">{social.label}</a></li>
             ))}
           </ul>
-        )}
-      </div>
+        </div>
+      )}
     </div>
 
     {/* Renders nothing at all until a Google or Yelp URL exists in settings. */}

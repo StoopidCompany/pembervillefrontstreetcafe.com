@@ -298,7 +298,13 @@ Delete anything that fixture writes — invented reviews must never be committed
 [OrderOnline.astro](src/components/OrderOnline.astro) renders a direct button for one
 platform, or a `<details>` disclosure listing several — no JavaScript, keyboard-operable. It
 appears in the header on every page (in the hours strip on phones, beside the nav on
-desktop) and in the footer, and **renders nothing at all** until at least one URL is set.
+desktop) and as the footer's "Order online" column, and **renders nothing at all** until at
+least one URL is set.
+
+The footer's columns are built from what exists: name and tagline on their own row, then
+Hours, Visit, Explore, and — only when settings have them — Order online and Follow us.
+`columnClass` in [Footer.astro](src/components/Footer.astro) picks the grid width to match,
+so an empty `ordering` means four columns rather than five with a hole in it.
 Each URL also becomes an `OrderAction` in the structured data.
 
 The header menu shows each platform's own mark in its own colour, from

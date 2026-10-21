@@ -23,7 +23,7 @@
     "yelp": ""
   },
   "ordering": {
-    "doordash": "https://doorddash.com",
+    "doordash": "https://www.doordash.com",
     "ubereats": "https://ubereats.com",
     "grubhub": "https://grubhub.com"
   },
@@ -67,7 +67,7 @@
       "closed": true
     }
   ],
-  "footerText": "© The Front Street Cafe 2026",
+  "footerText": "\u00a9 The Front Street Cafe 2026",
   "reviewsSummary": {
     "platform": "google",
     "rating": "4.4",
