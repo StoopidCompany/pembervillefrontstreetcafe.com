@@ -125,17 +125,44 @@ const summary =
         {testimonials.length > 0 && (
           <ul class="mt-8 grid gap-4 sm:grid-cols-2">
             {testimonials.map(({ data }) => (
-              <li class="rounded-2xl border border-crust p-5">
-                {/* Backstop: a very long review still cannot run the card away. */}
-                <blockquote class="line-clamp-[10] text-pretty leading-relaxed">
-                  “{data.quote}”
-                </blockquote>
-                <p class="mt-3 text-sm text-ink-soft">
-                  <span class="font-semibold text-ink">{data.author}</span>
-                  {data.rating && <>{` · ${data.rating}★`}</>}
-                  {" · "}
-                  <SourceBadge source={data.source} url={data.sourceUrl ?? reviewLink(data.source)} />
-                </p>
+              <li class="flex gap-4 rounded-2xl border border-crust p-5">
+                {/* The initial sits behind the photo, so a Google avatar URL that has
+                    rotted or been removed degrades to a lettered circle instead of a
+                    broken image. */}
+                <span
+                  class="relative mt-0.5 grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-crust font-display text-lg text-door"
+                  aria-hidden="true"
+                >
+                  {data.author.trim().charAt(0).toUpperCase()}
+                  {data.avatar && (
+                    <img
+                      src={data.avatar}
+                      alt=""
+                      width="44"
+                      height="44"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                      class="absolute inset-0 h-full w-full object-cover"
+                    />
+                  )}
+                </span>
+
+                <div class="min-w-0">
+                  {/* Backstop: a very long review still cannot run the card away. */}
+                  <blockquote class="line-clamp-[10] text-pretty leading-relaxed">
+                    “{data.quote}”
+                  </blockquote>
+                  <p class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-soft">
+                    <span class="font-semibold text-ink">{data.author}</span>
+                    {data.rating && (
+                      <span class="text-brick" aria-label={`${data.rating} out of 5`}>
+                        {"★".repeat(data.rating)}
+                      </span>
+                    )}
+                    <SourceBadge source={data.source} url={data.sourceUrl ?? reviewLink(data.source)} />
+                  </p>
+                </div>
               </li>
             ))}
           </ul>

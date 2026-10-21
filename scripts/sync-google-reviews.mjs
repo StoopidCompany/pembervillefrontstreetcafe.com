@@ -187,7 +187,7 @@ function parseFrontMatter(text) {
 
 const FIELD_ORDER = [
   "author", "quote", "source", "rating", "sourceUrl",
-  "order", "published", "googleReviewId", "reviewedAt", "syncNote",
+  "order", "published", "avatar", "googleReviewId", "reviewedAt", "syncNote",
 ];
 
 function serialise(data) {
@@ -234,10 +234,21 @@ async function readExisting() {
   return entries;
 }
 
+/**
+ * Google's avatar URLs end in a size spec. Asking for s96-c-rw gets a 96px WebP of about
+ * 3KB instead of the 120px PNG of about 30KB the old site used, which matters on a page
+ * showing six of them over a phone connection.
+ */
+function avatarUrl(photo) {
+  if (!photo) return undefined;
+  return photo.includes("=") ? `${photo.split("=")[0]}=s96-c-rw` : `${photo}=s96-c-rw`;
+}
+
 function mapReview(review) {
   const anonymous = review.reviewer?.isAnonymous || !review.reviewer?.displayName;
   return {
     id: review.reviewId,
+    avatar: avatarUrl(review.reviewer?.profilePhotoUrl),
     author: anonymous ? "A Google user" : review.reviewer.displayName,
     // Left exactly as Google returns it, "(Translated by Google)" preamble and all.
     // Tidying someone's words is an editorial act and belongs in the admin, not here.
@@ -304,6 +315,7 @@ async function reconcile({ reviews, averageRating, totalReviewCount }) {
             author: review.author,
             quote: review.quote,
             rating: review.rating,
+            avatar: review.avatar,
             reviewedAt: review.reviewedAt,
             googleReviewId: review.id,
             syncNote: undefined,
@@ -320,6 +332,7 @@ async function reconcile({ reviews, averageRating, totalReviewCount }) {
         quote: review.quote,
         source: "google",
         rating: review.rating,
+        avatar: review.avatar,
         order: 99,
         published: false, // never auto-publish; a human approves every quote
         googleReviewId: review.id,
@@ -336,6 +349,7 @@ async function reconcile({ reviews, averageRating, totalReviewCount }) {
       sameText(found.data.quote, review.quote) &&
       (found.data.rating ?? null) === review.rating &&
       String(found.data.reviewedAt ?? "") === review.reviewedAt &&
+      (found.data.avatar ?? undefined) === review.avatar &&
       !found.data.syncNote;
     if (same) {
       changes.untouched++;
@@ -348,6 +362,7 @@ async function reconcile({ reviews, averageRating, totalReviewCount }) {
       author: review.author,
       quote: review.quote,
       rating: review.rating,
+      avatar: review.avatar,
       reviewedAt: review.reviewedAt,
       syncNote: undefined,
     };
@@ -421,7 +436,11 @@ function normalise(raw) {
   return {
     reviews: raw.reviews.map((review) => ({
       reviewId: review.metadata.reviewId,
-      reviewer: { displayName: review.name, isAnonymous: !review.name },
+      reviewer: {
+        displayName: review.name,
+        isAnonymous: !review.name,
+        profilePhotoUrl: review.photo ?? undefined,
+      },
       starRating: STAR_NAMES[Number(review.rating)] ?? undefined,
       comment: review.body ?? "",
       createTime: review.date,

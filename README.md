@@ -170,10 +170,18 @@ error, so nothing renders an empty shell and nothing throws.
   their own widget.
 - The platform is shown by [SourceBadge.astro](src/components/SourceBadge.astro), which
   looks for a mark at `public/logos/{google,yelp,facebook}.svg` and falls back to a plain
-  text label until one exists. Those three are **not** committed on purpose: Google is
-  strict about its G being used in its four colours, so take the files from each platform's
-  own brand page rather than redrawing them. Drop them in and they appear with no code
-  change.
+  text label when one is missing. `google.svg` is the **official four-colour G**, taken from
+  Google's own `gstatic.com` asset and kept at its original fills — `multicolour: true` in
+  [logos.ts](src/lib/logos.ts) stops `BrandGlyph` tinting it, because Google's rules say the
+  G is not to be recoloured. `yelp.svg` and `facebook.svg` are still absent; drop them in
+  from each platform's brand page and they appear with no code change.
+- **Reviewer photos** are Google's, hotlinked rather than copied into the repo. The sync
+  rewrites the URL's size spec to `=s96-c-rw`, which returns a ~3KB WebP instead of the
+  ~30KB PNG the old site used. They are `loading="lazy"` with `referrerpolicy="no-referrer"`,
+  and the reviewer's initial is rendered *behind* the photo so a URL that rots degrades to a
+  lettered circle rather than a broken image. Clearing `avatar` on a review does the same.
+  Self-hosting them would mean keeping 80 strangers' profile pictures in git and re-fetching
+  them whenever someone changes their picture; hotlinking avoids both.
 - About is deliberately untouched — it would only duplicate the home page.
 
 `aggregateRating` on the `Restaurant` JSON-LD is deliberately deferred. It is worth real

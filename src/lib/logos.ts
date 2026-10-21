@@ -25,12 +25,14 @@ export type LogoSlug =
  */
 const BRANDS: Record<
   LogoSlug,
-  { color: string; kind: "symbol" | "wordmark"; menuHeight: string }
+  { color: string; kind: "symbol" | "wordmark"; menuHeight: string; multicolour?: boolean }
 > = {
   doordash: { color: "#FF3008", kind: "symbol", menuHeight: "h-4" },
   ubereats: { color: "#06C167", kind: "wordmark", menuHeight: "h-8" },
   grubhub: { color: "#F63440", kind: "wordmark", menuHeight: "h-3" },
-  google: { color: "#4285F4", kind: "symbol", menuHeight: "h-4" },
+  // The G is a four-colour mark and Google's rules say not to recolour it, so the file
+  // keeps its own fills and nothing here tints it.
+  google: { color: "#4285F4", kind: "symbol", menuHeight: "h-4", multicolour: true },
   yelp: { color: "#FF1A1A", kind: "symbol", menuHeight: "h-4" },
   facebook: { color: "#0866FF", kind: "symbol", menuHeight: "h-4" },
 };
@@ -40,6 +42,8 @@ export interface Logo {
   color: string;
   kind: "symbol" | "wordmark";
   menuHeight: string;
+  /** True when the mark carries its own colours and must not be tinted. */
+  multicolour?: boolean;
 }
 
 /** Read at build time. Returns null when the mark has not been dropped in yet. */

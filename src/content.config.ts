@@ -167,6 +167,7 @@ const testimonials = defineCollection({
     order: z.number().default(99),
     published: z.boolean().default(true),
     // Written by the Google sync; absent on hand-typed reviews.
+    avatar: optionalString,
     googleReviewId: optionalString,
     reviewedAt: optionalString,
     syncNote: optionalString,

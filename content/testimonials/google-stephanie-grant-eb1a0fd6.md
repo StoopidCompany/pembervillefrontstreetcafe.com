@@ -5,6 +5,7 @@ source: "google"
 rating: 5
 order: 380
 published: true
+avatar: "https://lh3.googleusercontent.com/a-/ALV-UjV0uf0kYuLhENXIfJdF27UAxnj-ntyneNE3FcWt3dGQPF0JhpI=s96-c-rw"
 googleReviewId: "AbFvOqmMi7Z-WjV2qDMGCIJWwTGTZXCPdXjrAzIz25BdNDXTxgaNKkX0kKdJUFoJW_gl12WcPtJ-lg"
 reviewedAt: "2025-06-05"
 ---

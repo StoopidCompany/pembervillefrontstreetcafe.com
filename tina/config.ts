@@ -351,6 +351,8 @@ export default defineConfig({
           { type: "boolean", name: "published", label: "Show on Site",
             description: "Reviews pulled in from Google start off. Turn one on to put it on the site." },
           // Written by scripts/sync-google-reviews.mjs. Hand-typed reviews leave these empty.
+          { type: "string", name: "avatar", label: "Reviewer's photo URL",
+            description: "Set by the sync, hosted by Google. Clear it to show initials instead." },
           { type: "string", name: "googleReviewId", label: "Google review ID",
             description: "Set by the sync so it can recognise this review again. Don't edit." },
           { type: "string", name: "reviewedAt", label: "Date of the review",
