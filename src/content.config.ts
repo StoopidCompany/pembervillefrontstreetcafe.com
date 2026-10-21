@@ -46,9 +46,14 @@ const settings = defineCollection({
       city: optionalString,
       state: optionalString,
       zip: optionalString,
+      latitude: optionalString,
+      longitude: optionalString,
     }),
     phone: optionalString,
     email: optionalString,
+    servesCuisine: optionalString,
+    priceRange: optionalString,
+    acceptsReservations: z.enum(["unknown", "yes", "no"]).default("unknown"),
     socials: z.object({
       facebook: optionalString,
       instagram: optionalString,
@@ -71,6 +76,9 @@ const pages = defineCollection({
   loader: glob({ pattern: "*.md", base: "content/pages" }),
   schema: z.object({
     headline: z.string(),
+    // every page: distinct title and meta description, editable in the admin
+    seoTitle: optionalString,
+    description: optionalString,
     // home
     heroSubtext: optionalString,
     heroImage: optionalString,

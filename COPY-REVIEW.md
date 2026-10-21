@@ -73,22 +73,34 @@ name on your own About page. Easy to change.
 
 **Address and phone**
 
-6. Your current site shows **no street address anywhere**. I have 210 E. Front St.,
-   Pemberville, OH 43450 from a Facebook listing — please confirm it exactly as it should
-   appear, since Google compares it against your other listings.
+6. Your current site shows **no street address anywhere**. The new site now says
+   **210 E. Front St., Pemberville, OH 43450**, which is what both your Facebook listing
+   and the public map data say. Please confirm it, and tell me which way you want it
+   written — "210 E. Front St." or "210 East Front Street". Google compares the website
+   against your Google, Apple and Bing listings and penalises any difference, down to the
+   punctuation.
 7. I took the phone number **419-287-7016** from your contact page. Please confirm it
    matches your Google listing.
 
+**Three things Google asks about a restaurant**
+
+8. **Do you take reservations?** The site currently says nothing either way, which is better
+   than saying the wrong thing. Yes or no is all I need.
+9. We tell Google the cafe serves **American** food and sits in the **$$** price band
+   ($10–$25 a head). Both are guesses from your menu. Correct?
+10. Which name should everything use — **Front Street Cafe** or **Pemberville Front Street
+    Cafe**? Your current site uses both, and your listings should all say the same one.
+
 **Bar menu**
 
-8. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
+11. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
    Rye, Scotch and so on — with no actual drinks and no prices. I've carried those
    categories over but switched the bar section **off** so the site doesn't show an empty
    menu. Send me the real drinks list and prices and it goes on.
 
 **Photos**
 
-9. There are only **two photos** on your entire current site: the front of the building, and
+12. There are only **two photos** on your entire current site: the front of the building, and
    a ribeye on the bar. The Gallery page has no photos on it at all. Both of those two are
    copies that GoDaddy compressed, not your originals.
    - Could you send the originals of those two?
@@ -97,12 +109,12 @@ name on your own About page. Easy to change.
 
 **The map**
 
-10. The Contact page has a map on it. Until the street address is confirmed (question 6),
-    it finds the cafe by name, which works but is less precise than it should be.
+13. The Contact page has a map on it. It looks up the cafe by name and the address in
+    question 6, so if that address is wrong, the pin will be too.
 
 **Two pages that are empty today**
 
-11. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
+14. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
     Neither is planned for the new site. Say the word if you want either back.
 
 ---

@@ -12,7 +12,10 @@ const address = formatAddress(settings.address);
 const mapQuery =
   page.data.mapQuery ?? [settings.businessName, address].filter(Boolean).join(", ");
 ---
-<Base title={page.data.headline}>
+<Base
+  title={page.data.seoTitle ?? page.data.headline}
+  description={page.data.description ?? undefined}
+>
   <div class="mx-auto max-w-3xl px-5 py-10 lg:px-8">
     <h1 class="text-3xl sm:text-4xl">{page.data.headline}</h1>
     <div class="mt-3 text-lg text-ink-soft"><Intro /></div>
@@ -37,9 +40,6 @@ const mapQuery =
         referrerpolicy="no-referrer-when-downgrade"
         class="mt-4 aspect-[4/3] w-full rounded-2xl border border-crust sm:aspect-video"
       ></iframe>
-      <p class="mt-2 text-sm text-ink-soft">
-        The map searches for the cafe by name until the street address is confirmed.
-      </p>
     </section>
 
     <!--

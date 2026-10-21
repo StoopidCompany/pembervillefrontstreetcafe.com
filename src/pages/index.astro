@@ -9,7 +9,11 @@ const { Content: Intro } = await render(page);
 const signatures = await getSignatureDishes(page.data.signatures);
 const { headline, heroSubtext, heroImage, ctaText, ctaHref } = page.data;
 ---
-<Base description={heroSubtext ?? undefined} flushTop>
+<Base
+  title={page.data.seoTitle ?? undefined}
+  description={page.data.description ?? undefined}
+  flushTop
+>
   <section class="relative isolate flex min-h-[44vh] items-end sm:min-h-[62vh]">
     <!-- object-top: the only photo of the building is portrait and the sign sits high in it,
          so a wide hero crop has to be anchored to the top to show the cafe's name. -->

@@ -1,5 +1,8 @@
 ---
 headline: About Front Street Cafe
+seoTitle: Our story
+description: >-
+  How The Front Street Cafe came to be — a true scratch kitchen in a historic brick building on Front Street in Pemberville, Ohio, open since September 2023.
 image: /uploads/photos/ribeye-at-the-bar.jpg
 ---
 

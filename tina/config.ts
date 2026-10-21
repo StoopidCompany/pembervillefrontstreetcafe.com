@@ -56,10 +56,33 @@ export default defineConfig({
               { type: "string", name: "city", label: "City" },
               { type: "string", name: "state", label: "State", description: "Two letters — e.g. OH" },
               { type: "string", name: "zip", label: "ZIP" },
+              { type: "string", name: "latitude", label: "Latitude",
+                description: "Optional. Helps Google place the pin exactly — read it off Google Maps." },
+              { type: "string", name: "longitude", label: "Longitude", description: "Optional." },
             ],
           },
           { type: "string", name: "phone", label: "Phone" },
           { type: "string", name: "email", label: "Email" },
+          { type: "string", name: "servesCuisine", label: "Cuisine",
+            description: "What Google lists the cafe as serving, e.g. 'American'" },
+          {
+            type: "string", name: "priceRange", label: "Price Range",
+            description: "Google's shorthand for how expensive the place is",
+            options: [
+              { value: "$", label: "$ — under $10 a head" },
+              { value: "$$", label: "$$ — $10 to $25 a head" },
+              { value: "$$$", label: "$$$ — $25 to $50 a head" },
+            ],
+          },
+          {
+            type: "string", name: "acceptsReservations", label: "Takes Reservations?",
+            description: "Left as 'not stated' until you confirm it — Google would rather be told nothing than told wrong",
+            options: [
+              { value: "unknown", label: "Not stated" },
+              { value: "yes", label: "Yes, we take reservations" },
+              { value: "no", label: "No, walk-ins only" },
+            ],
+          },
           {
             type: "object", name: "socials", label: "Social & Listing Links",
             fields: [
@@ -105,6 +128,11 @@ export default defineConfig({
         match: { include: "home" },
         ui: { allowedActions: { create: false, delete: false } },
         fields: [
+          { type: "string", name: "seoTitle", label: "Title for Google / browser tab",
+            description: "Shown in search results and the browser tab, with the cafe name added after it. Keep it under about 40 characters." },
+          { type: "string", name: "description", label: "Search Description",
+            description: "The sentence Google shows under the title. Aim for 150 characters, and avoid hours or prices here — they go stale.",
+            ui: { component: "textarea" } },
           { type: "string", name: "headline", label: "Hero Headline", required: true },
           { type: "string", name: "heroSubtext", label: "Hero Subtext" },
           { type: "image", name: "heroImage", label: "Hero Photo" },
@@ -134,6 +162,11 @@ export default defineConfig({
         match: { include: "gallery" },
         ui: { allowedActions: { create: false, delete: false } },
         fields: [
+          { type: "string", name: "seoTitle", label: "Title for Google / browser tab",
+            description: "Shown in search results and the browser tab, with the cafe name added after it. Keep it under about 40 characters." },
+          { type: "string", name: "description", label: "Search Description",
+            description: "The sentence Google shows under the title. Aim for 150 characters, and avoid hours or prices here — they go stale.",
+            ui: { component: "textarea" } },
           { type: "string", name: "headline", label: "Headline", required: true },
           { type: "rich-text", name: "body", label: "Intro", isBody: true },
           {
@@ -159,6 +192,11 @@ export default defineConfig({
         match: { include: "contact" },
         ui: { allowedActions: { create: false, delete: false } },
         fields: [
+          { type: "string", name: "seoTitle", label: "Title for Google / browser tab",
+            description: "Shown in search results and the browser tab, with the cafe name added after it. Keep it under about 40 characters." },
+          { type: "string", name: "description", label: "Search Description",
+            description: "The sentence Google shows under the title. Aim for 150 characters, and avoid hours or prices here — they go stale.",
+            ui: { component: "textarea" } },
           { type: "string", name: "headline", label: "Headline", required: true },
           { type: "rich-text", name: "body", label: "Intro", isBody: true },
           { type: "string", name: "mapQuery", label: "Map Search Text",
@@ -173,6 +211,11 @@ export default defineConfig({
         match: { include: "about" },
         ui: { allowedActions: { create: false, delete: false } },
         fields: [
+          { type: "string", name: "seoTitle", label: "Title for Google / browser tab",
+            description: "Shown in search results and the browser tab, with the cafe name added after it. Keep it under about 40 characters." },
+          { type: "string", name: "description", label: "Search Description",
+            description: "The sentence Google shows under the title. Aim for 150 characters, and avoid hours or prices here — they go stale.",
+            ui: { component: "textarea" } },
           { type: "string", name: "headline", label: "Headline", required: true },
           { type: "image", name: "image", label: "Photo" },
           { type: "rich-text", name: "body", label: "Our Story", isBody: true, required: true },
@@ -186,6 +229,11 @@ export default defineConfig({
         match: { include: "menu" },
         ui: { allowedActions: { create: false, delete: false } },
         fields: [
+          { type: "string", name: "seoTitle", label: "Title for Google / browser tab",
+            description: "Shown in search results and the browser tab, with the cafe name added after it. Keep it under about 40 characters." },
+          { type: "string", name: "description", label: "Search Description",
+            description: "The sentence Google shows under the title. Aim for 150 characters, and avoid hours or prices here — they go stale.",
+            ui: { component: "textarea" } },
           { type: "string", name: "headline", label: "Headline", required: true },
           { type: "rich-text", name: "body", label: "Intro", isBody: true,
             description: "Shown above the menu sections" },
