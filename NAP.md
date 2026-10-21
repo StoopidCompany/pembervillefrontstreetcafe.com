@@ -64,7 +64,22 @@ Compare **character for character**, not "close enough". `St.` vs `Street` and
 - [ ] Set the website URL in every listing to `https://pembervillefrontstreetcafe.com`
       (apex, no `www`, no trailing path)
 - [ ] Add the Google Business Profile and Yelp URLs to `socials` in settings so they go into
-      `sameAs` in the structured data
+      `sameAs` in the structured data and switch on the review-ask buttons
+
+### Social and listing URLs — what is in settings and what is missing
+
+| Platform | In settings | How it was established |
+|---|---|---|
+| Facebook | `https://www.facebook.com/663507927121014` | Linked from the old site's own pages; the page resolves to "Pemberville Front Street Cafe" |
+| Instagram | `https://www.instagram.com/pembervillefrontstreetcafe` | Linked from the old site's own pages; profile confirmed (bio mentions house-churned butter and the full bar) |
+| Google | **blank** | Needs the real listing URL. Fastest route: Business Profile dashboard → "Ask for reviews" → copy link, or open the listing in Maps → Share → copy link. A Maps *search* URL is not the same thing and would make the "Review us on Google" button lie |
+| Yelp | **blank** | Yelp blocks automated requests (403 on every URL, existing or not), so the slug cannot be confirmed from here. Open the listing in a browser and copy the address bar |
+| TikTok | **blank** | Unconfirmed. `tiktok.com/@pembervillefrontstreetcafe` returns HTTP 200, but TikTok returns 200 for handles that do not exist, so that proves nothing |
+| Twitter/X | **blank** | No evidence the cafe has one |
+| DoorDash | **blank** (`ordering`) | Store id 37582213 appears in plan.md from an unverified note; DoorDash also 403s automated requests |
+
+Only verified URLs belong in settings: a wrong one would point the footer links, the
+`sameAs` in the structured data and the review-ask buttons at the wrong place.
 
 ## The name question
 
