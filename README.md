@@ -183,14 +183,22 @@ text outside their own widget.
    criteria include a verified, active profile at least 60 days old with a website attached.
    You can tell whether it came through by looking at the API quota in Cloud Console:
    **0 QPM means still pending, 300 QPM means approved.**
-2. Enable, in the same project: My Business Account Management API, My Business Business
-   Information API, and the Google My Business API — reviews are still served by the
-   **legacy v4 endpoint**, which that last one covers.
-3. Create an OAuth client of type "Desktop app".
-4. `GOOGLE_CLIENT_ID=… GOOGLE_CLIENT_SECRET=… node scripts/google-oauth-setup.mjs`, signed
+2. Enable all **seven** Business Profile APIs that Google's setup guide lists, in the same
+   project. "Google My Business API" is the one that serves reviews (the legacy v4 host),
+   and it is **invisible in the API Library until your access request is approved** — if you
+   cannot find it, approval has not landed.
+3. On the OAuth consent screen, **publish the app**. An external app left in "Testing"
+   status is issued refresh tokens that **expire after 7 days**, which quietly breaks the
+   sync a week after you set it up.
+4. Create an OAuth client of type "Desktop app".
+5. `GOOGLE_CLIENT_ID=… GOOGLE_CLIENT_SECRET=… node scripts/google-oauth-setup.mjs`, signed
    in **as the profile owner or a manager**. It prints a refresh token.
-5. Put `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN` in `.env.local`
+6. Put `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN` in `.env.local`
    and in the repository secrets. `GOOGLE_LOCATION_NAME` is optional and skips discovery.
+
+A refresh token also dies after **six months unused**, so a sync that only ever runs
+manually can go stale on its own. If the sync starts failing with a token error, rerun
+step 5.
 
 Run it from [.github/workflows/sync-reviews.yml](.github/workflows/sync-reviews.yml) — manual
 only for now, with the nightly `schedule` present but commented out until the deploy pipeline
