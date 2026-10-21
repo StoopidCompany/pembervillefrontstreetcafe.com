@@ -1,0 +1,39 @@
+---
+import { getSettings } from "~/lib/content";
+
+interface Props {
+  heading?: string;
+  /** Callers supply the background, same arrangement as VisitInfo. */
+  class?: string;
+}
+
+const { heading = "Liked it? Tell someone", class: className = "bg-crust/30" } = Astro.props;
+const settings = await getSettings();
+
+const links = [
+  { label: "Review us on Google", href: settings.socials.google },
+  { label: "Review us on Yelp", href: settings.socials.yelp },
+].filter((link): link is { label: string; href: string } => Boolean(link.href));
+---
+{/* Nothing at all until Gavin supplies at least one listing URL — an "review us" box with
+    no link to click is worse than no box. */}
+{links.length > 0 && (
+  <section class:list={["rounded-2xl border border-crust p-6 sm:p-8", className]}>
+    <h2 class="font-display text-xl">{heading}</h2>
+    <p class="mt-2 text-sm text-ink-soft">
+      A review helps people in Pemberville find us. It takes a minute.
+    </p>
+    <div class="mt-4 flex flex-wrap gap-3">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          target="_blank"
+          rel="noopener"
+          class="rounded-full bg-brick px-5 py-2.5 text-xs font-semibold uppercase tracking-wider !text-cream hover:!bg-door transition-colors"
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
+  </section>
+)}

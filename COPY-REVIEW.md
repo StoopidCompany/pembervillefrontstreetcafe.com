@@ -108,16 +108,38 @@ headcount, and write a message. It arrives as an email.
 Until you choose an inbox, the form is switched off and says so plainly, with your phone
 number next to it. It will not quietly swallow anyone's enquiry in the meantime.
 
+**Guest reviews — the site is ready, the content isn't**
+
+The new site can show what guests have said about you, and can ask happy guests to leave a
+review. Right now none of it appears, because all of it needs you. Nothing looks broken or
+half-finished in the meantime — those parts of the page simply aren't there.
+
+13. **Your Google and Yelp links.** Paste me the Google Business Profile link and the Yelp
+    page link. If your Google dashboard offers a short "ask for reviews" link, that one is
+    better — it drops people straight into writing a review. These two links turn on the
+    "Liked it? Tell someone" buttons in the footer and on the Contact page.
+14. **Your star rating and review count**, and which platform to show. I found 4.2 stars
+    from 9 reviews on Yelp, which you should check against what you see. If Google has more
+    reviews, show Google instead. It appears as one line: "4.2★ on Yelp · 9 reviews".
+15. **Three or four reviews you'd like quoted**, with the guest's name as they signed it,
+    the platform, and the stars they gave. Pick ones that say something specific — "the
+    Italian Grinder is the best sandwich in Wood County" beats "great food". I'll type them
+    in exactly as written; we don't edit people's words, and I won't copy them off Yelp
+    wholesale because their rules don't allow it.
+
+You'll be able to add, hide, reorder and delete these yourself afterwards, the same way as
+menu items.
+
 **Bar menu**
 
-13. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
+16. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
    Rye, Scotch and so on — with no actual drinks and no prices. I've carried those
    categories over but switched the bar section **off** so the site doesn't show an empty
    menu. Send me the real drinks list and prices and it goes on.
 
 **Photos**
 
-14. There are only **two photos** on your entire current site: the front of the building, and
+17. There are only **two photos** on your entire current site: the front of the building, and
    a ribeye on the bar. The Gallery page has no photos on it at all. Both of those two are
    copies that GoDaddy compressed, not your originals.
    - Could you send the originals of those two?
@@ -126,13 +148,14 @@ number next to it. It will not quietly swallow anyone's enquiry in the meantime.
 
 **The map**
 
-15. The Contact page has a map on it. It looks up the cafe by name and the address in
+18. The Contact page has a map on it. It looks up the cafe by name and the address in
     question 6, so if that address is wrong, the pin will be too.
 
 **Two pages that are empty today**
 
-16. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
-    Neither is planned for the new site. Say the word if you want either back.
+19. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
+    Neither is planned as a page on the new site — guest quotes now sit on the front page
+    instead (see questions 13–15). Say the word if you want either page back.
 
 ---
 

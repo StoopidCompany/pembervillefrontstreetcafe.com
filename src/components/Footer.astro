@@ -1,6 +1,7 @@
 ---
 import { getSettings, telHref, formatAddress } from "~/lib/content";
 import { summarizeHours } from "~/lib/hours";
+import ReviewAsk from "~/components/ReviewAsk.astro";
 
 const settings = await getSettings();
 const rows = summarizeHours(settings.hours);
@@ -66,6 +67,9 @@ const socials = [
         )}
       </div>
     </div>
+
+    {/* Renders nothing at all until a Google or Yelp URL exists in settings. */}
+    <ReviewAsk class="mt-12 bg-cream" />
 
     {settings.footerText && (
       <p class="mt-12 pt-6 border-t border-ink/10 text-xs text-ink-soft">{settings.footerText}</p>

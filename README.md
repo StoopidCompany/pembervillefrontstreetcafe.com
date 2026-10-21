@@ -66,6 +66,7 @@ fails the build instead of rendering blank.
 | Contact page  | `content/pages/contact.md`   | Singleton. Intro + what the map looks up    |
 | Menu Sections | `content/menu-sections/*.md` | `order` + `published`. Body = section blurb |
 | Menu Items    | `content/menu-items/*.md`    | `order` + `available`, `section` reference   |
+| Guest Reviews | `content/testimonials/*.md`  | `order` + `published`. Empty today          |
 
 Things worth knowing before changing any of it:
 
@@ -132,6 +133,46 @@ npm run build && npx astro preview --port 4332
 google-chrome --headless --window-size=390,844 \
   --screenshot=/tmp/home.png --user-data-dir=/tmp/chrome-prof http://localhost:4332/
 ```
+
+## Guest reviews
+
+Three touchpoints, all of which disappear completely when there is nothing to show. That
+is the whole design rule here: zero reviews is a normal state for a restaurant site, not an
+error, so nothing renders an empty shell and nothing throws.
+
+| Where | What shows | When it disappears |
+|---|---|---|
+| Home, after the signature dishes | Quote grid + score line | No published reviews **and** no score |
+| Footer strip, above the copyright | "Liked it? Tell someone" + review buttons | Both `socials.google` and `socials.yelp` empty |
+| Contact, between Call and the form | Same component, "Already been in?" | Same |
+
+- `getTestimonials()` filters on `published` and sorts by `order`, the same hide-by-flag
+  pattern as menu sections and items. Unlike `getMenu()` it returns an empty array rather
+  than throwing: an empty menu is a bug, no reviews yet is just Tuesday.
+- The score line (`reviewsSummary` in settings) is **all or nothing** — blank out either the
+  rating or the count and the whole line vanishes, the same rule the postal address follows
+  in the JSON-LD. Half a statistic is worse than none.
+- [ReviewAsk.astro](src/components/ReviewAsk.astro) is shaped like `VisitInfo.astro`:
+  settings-driven, `heading` prop, caller supplies the background. It renders nothing at all
+  until at least one listing URL exists, so a review box never appears with no link in it.
+- Reviews are **typed out by hand**, not scraped. Yelp's terms restrict reproducing review
+  text outside their own widget, so the quote, name, rating and source go in through the
+  admin from whatever the platform shows.
+- About is deliberately untouched — it would only duplicate the home page.
+
+`aggregateRating` on the `Restaurant` JSON-LD is deliberately deferred. It is worth real
+SEO, but only once the numbers are real and somebody has committed to keeping them current;
+a stale rating in structured data is its own problem.
+
+### A build gotcha this phase turned up
+
+`npm run build` now runs `astro build --force`, which clears the content-layer cache on
+every build. Without it, Astro 5.18's glob loader does not prune an entry from
+`node_modules/.astro/data-store.json` when its file is deleted between builds — so a review
+deleted in the admin kept appearing on locally rebuilt pages until the cache was cleared by
+hand. I reproduced it with a plain markdown file and no Tina involved. CI starts from a
+clean checkout so it was never a production risk, but it made local builds lie. The build
+still takes under a second.
 
 ## Contact form
 

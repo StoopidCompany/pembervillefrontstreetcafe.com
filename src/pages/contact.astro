@@ -2,6 +2,7 @@
 import { render } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import VisitInfo from "~/components/VisitInfo.astro";
+import ReviewAsk from "~/components/ReviewAsk.astro";
 import { getPage, getSettings, telHref, formatAddress } from "~/lib/content";
 
 const page = await getPage("contact");
@@ -46,6 +47,8 @@ const enquiryTypes = [
         Call {settings.phone}
       </a>
     )}
+
+    <ReviewAsk class="mt-10 bg-crust/30" heading="Already been in?" />
 
     <section class="mt-12">
       <h2 class="text-2xl">Send us a message</h2>

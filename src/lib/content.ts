@@ -36,6 +36,15 @@ export async function getSignatureDishes(refs: readonly { item: string }[]) {
   });
 }
 
+/**
+ * Published guest reviews in display order. Unlike getMenu(), an empty result is fine and
+ * returns an empty array: a menu with no items is a bug, no reviews yet is just Tuesday.
+ */
+export async function getTestimonials() {
+  const all = await getCollection("testimonials", ({ data }) => data.published);
+  return all.sort((a, b) => a.data.order - b.data.order);
+}
+
 /** Resolve a Tina reference path (e.g. "content/menu-sections/handhelds.md") to its entry id. */
 function sectionId(refPath: string) {
   return refPath.replace(/^content\/menu-sections\//, "").replace(/\.md$/, "");

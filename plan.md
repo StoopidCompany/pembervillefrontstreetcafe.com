@@ -83,6 +83,8 @@ These disagree. Hours must come from Gavin, once, and then live in one place.
 7. `ci/pages-deploy` — Actions, Tina Cloud prod, secrets.
 8. `launch/dns-cutover` — CNAME, DNS flip, verify, then decommission GoDaddy.
 9. `docs/onboarding` — Gavin's editor guide, modelled on `ONBOARDING.md`.
+10. `content-model/reviews` — testimonial collection + review-ask, built out of order
+    (before 7–9) on request. Ships dormant: needs Gavin's listing URLs and real quotes.
 
 ## Never cut
 
@@ -95,3 +97,6 @@ These disagree. Hours must come from Gavin, once, and then live in one place.
 ## Cut first
 
 Podcast hooks, events collection, reviews page, gallery page, online ordering integration.
+
+A standalone reviews page is still cut. Phase 10 puts guest quotes on the home page instead,
+which is where they do some good, and leaves `/reviews` redirecting to `/`.

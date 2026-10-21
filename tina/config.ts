@@ -95,6 +95,25 @@ export default defineConfig({
             ],
           },
           {
+            type: "object", name: "reviewsSummary", label: "Review Score",
+            description:
+              "The star rating shown on the home page. Leave the rating or the count empty " +
+              "and nothing is shown at all — better than showing half of it.",
+            fields: [
+              {
+                type: "string", name: "platform", label: "Which platform",
+                options: [
+                  { value: "google", label: "Google" },
+                  { value: "yelp", label: "Yelp" },
+                ],
+              },
+              { type: "string", name: "rating", label: "Rating", description: "e.g. 4.2" },
+              { type: "number", name: "count", label: "Number of reviews" },
+              { type: "string", name: "url", label: "Link to the reviews",
+                description: "Where 'see more' goes. Ideally your one-click review link." },
+            ],
+          },
+          {
             type: "object", name: "hours", label: "Opening Hours",
             description:
               "One row per day. These feed both the hours shown on the site and the " +
@@ -288,6 +307,38 @@ export default defineConfig({
             description: "Low numbers first, within the section. Leave gaps (10, 20, 30)." },
           { type: "boolean", name: "available", label: "Show on Site",
             description: "Turn off when an item is off the menu — no need to delete it" },
+        ],
+      },
+      {
+        name: "testimonial",
+        label: "Guest Reviews",
+        path: "content/testimonials",
+        format: "md",
+        defaultItem: () => ({ published: true, order: 99, source: "google" }),
+        fields: [
+          { type: "string", name: "author", label: "Guest's Name", required: true,
+            isTitle: true, description: "As they signed the review — 'Sarah M.' is fine" },
+          { type: "string", name: "quote", label: "What they said", required: true,
+            ui: { component: "textarea" },
+            description: "Type it out rather than pasting a screenshot, and don't edit their words" },
+          {
+            type: "string", name: "source", label: "Where it came from", required: true,
+            options: [
+              { value: "google", label: "Google" },
+              { value: "yelp", label: "Yelp" },
+              { value: "facebook", label: "Facebook" },
+              { value: "direct", label: "Told us directly" },
+            ],
+          },
+          {
+            type: "number", name: "rating", label: "Stars they gave (optional)",
+            description: "1 to 5",
+          },
+          { type: "string", name: "sourceUrl", label: "Link to the review (optional)" },
+          { type: "number", name: "order", label: "Display Order",
+            description: "Low numbers first. Leave gaps (10, 20, 30) so they are easy to move." },
+          { type: "boolean", name: "published", label: "Show on Site",
+            description: "Turn off to hide a review without deleting it" },
         ],
       },
     ],

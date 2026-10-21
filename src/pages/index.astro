@@ -2,12 +2,39 @@
 import { render } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import VisitInfo from "~/components/VisitInfo.astro";
-import { getPage, getSignatureDishes, formatPrice } from "~/lib/content";
+import {
+  getPage,
+  getSettings,
+  getSignatureDishes,
+  getTestimonials,
+  formatPrice,
+} from "~/lib/content";
 
 const page = await getPage("home");
 const { Content: Intro } = await render(page);
 const signatures = await getSignatureDishes(page.data.signatures);
+const testimonials = await getTestimonials();
 const { headline, heroSubtext, heroImage, ctaText, ctaHref } = page.data;
+
+const SOURCE_LABEL = {
+  google: "Google",
+  yelp: "Yelp",
+  facebook: "Facebook",
+  direct: "told us directly",
+} as const;
+
+// All-or-nothing, like the address in the JSON-LD: a rating with no count, or a count with
+// no rating, says nothing useful, so it shows nothing.
+const { reviewsSummary } = await getSettings();
+const summary =
+  reviewsSummary.rating && reviewsSummary.count
+    ? {
+        rating: reviewsSummary.rating,
+        count: reviewsSummary.count,
+        url: reviewsSummary.url,
+        platformLabel: reviewsSummary.platform === "yelp" ? "Yelp" : "Google",
+      }
+    : null;
 ---
 <Base
   title={page.data.seoTitle ?? undefined}
@@ -73,6 +100,53 @@ const { headline, heroSubtext, heroImage, ctaText, ctaHref } = page.data;
         <p class="mt-8 text-center">
           <a href="/menu" class="font-semibold underline">See the whole menu</a>
         </p>
+      </section>
+    )}
+
+    {(testimonials.length > 0 || summary) && (
+      <section class="mt-16">
+        <h2 class="text-center font-display text-2xl sm:text-3xl">What guests say</h2>
+
+        {testimonials.length > 0 && (
+          <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+            {testimonials.map(({ data }) => (
+              <li class="rounded-2xl border border-crust p-5">
+                <blockquote class="text-pretty leading-relaxed">“{data.quote}”</blockquote>
+                <p class="mt-3 text-sm text-ink-soft">
+                  <span class="font-semibold text-ink">{data.author}</span>
+                  {data.rating && <>{` · ${data.rating}★`}</>}
+                  {data.source !== "direct" && (
+                    <>
+                      {" · "}
+                      {data.sourceUrl ? (
+                        <a href={data.sourceUrl} target="_blank" rel="noopener">
+                          {SOURCE_LABEL[data.source]}
+                        </a>
+                      ) : (
+                        SOURCE_LABEL[data.source]
+                      )}
+                    </>
+                  )}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {summary && (
+          <p class="mt-8 text-center text-sm text-ink-soft">
+            {summary.rating}★ on {summary.platformLabel} · {summary.count}{" "}
+            {summary.count === 1 ? "review" : "reviews"}
+            {summary.url && (
+              <>
+                {" — "}
+                <a href={summary.url} target="_blank" rel="noopener" class="font-semibold underline">
+                  see more
+                </a>
+              </>
+            )}
+          </p>
+        )}
       </section>
     )}
   </div>
