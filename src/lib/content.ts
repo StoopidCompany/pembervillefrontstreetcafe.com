@@ -13,6 +13,12 @@ export async function getHours() {
   return sortHours(hours);
 }
 
+export async function getPage(slug: "about" | "menu") {
+  const entry = await getEntry("pages", slug);
+  if (!entry) throw new Error(`Page not found: content/pages/${slug}.md`);
+  return entry;
+}
+
 /** Resolve a Tina reference path (e.g. "content/menu-sections/handhelds.md") to its entry id. */
 function sectionId(refPath: string) {
   return refPath.replace(/^content\/menu-sections\//, "").replace(/\.md$/, "");

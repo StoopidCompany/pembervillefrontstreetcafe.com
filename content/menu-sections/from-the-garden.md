@@ -1,6 +1,6 @@
 ---
-title: From the Garden
+title: From the Garden (Salads)
 slug: from-the-garden
-order: 10
+order: 40
 published: true
 ---

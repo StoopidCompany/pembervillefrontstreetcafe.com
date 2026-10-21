@@ -98,6 +98,31 @@ export default defineConfig({
         ],
       },
       {
+        name: "about",
+        label: "About Page",
+        path: "content/pages",
+        format: "md",
+        match: { include: "about" },
+        ui: { allowedActions: { create: false, delete: false } },
+        fields: [
+          { type: "string", name: "headline", label: "Headline", required: true },
+          { type: "rich-text", name: "body", label: "Our Story", isBody: true, required: true },
+        ],
+      },
+      {
+        name: "menuPage",
+        label: "Menu Page",
+        path: "content/pages",
+        format: "md",
+        match: { include: "menu" },
+        ui: { allowedActions: { create: false, delete: false } },
+        fields: [
+          { type: "string", name: "headline", label: "Headline", required: true },
+          { type: "rich-text", name: "body", label: "Intro", isBody: true,
+            description: "Shown above the menu sections" },
+        ],
+      },
+      {
         name: "menuSection",
         label: "Menu Sections",
         path: "content/menu-sections",

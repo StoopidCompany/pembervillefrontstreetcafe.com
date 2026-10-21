@@ -59,6 +59,8 @@ fails the build instead of rendering blank.
 | Type          | Storage                      | Notes                                       |
 | ------------- | ---------------------------- | ------------------------------------------- |
 | Site Settings | `content/settings/site.json` | Singleton. NAP, socials and opening hours   |
+| About page    | `content/pages/about.md`     | Singleton. Body = the story                 |
+| Menu page     | `content/pages/menu.md`      | Singleton. Headline + intro above the menu  |
 | Menu Sections | `content/menu-sections/*.md` | `order` + `published`. Body = section blurb |
 | Menu Items    | `content/menu-items/*.md`    | `order` + `available`, `section` reference   |
 
@@ -81,20 +83,81 @@ Things worth knowing before changing any of it:
   it; item `available: false` hides one item. Both are toggles in the admin.
 - Singletons carry `allowedActions: { create: false, delete: false }` so Gavin cannot
   delete his own settings file.
+- **Item filenames are section-prefixed** (`sides-german-potato-cakes.md`) because item
+  names repeat across sections — German Potato Cakes is both an à la carte breakfast item
+  and a side, at different prices. Tina names new files after the title, so watch for
+  collisions when adding an item that already exists elsewhere on the menu.
+
+## Migrating the old site
+
+`_seed/` holds the old GoDaddy site exactly as it was scraped on 21 Oct 2026, for reference
+only. It is excluded from the TypeScript build and never read at runtime.
+
+```
+_seed/raw/*.html        the six live pages, verbatim
+_seed/text/*.txt        the same pages stripped to readable text
+_seed/images/           the two photos the live site had, as served
+_seed/image-urls.txt    where they came from, and what they are
+_seed/extract.py        raw/*.html -> text/*.txt
+_seed/build-content.py  text/menu.txt -> content/menu-sections + content/menu-items
+_seed/verify-content.py checks content/ back against text/menu.txt, item by item
+```
+
+The menu was parsed out of the scrape rather than retyped, so prices and descriptions
+can't drift from the source. To re-check the transcription at any time:
+
+```bash
+python3 -I _seed/verify-content.py .
+```
+
+It compares all 51 items by name, price and description and exits non-zero on any
+difference. Hand edits to `content/menu-items/` will show up there as expected drift once
+Gavin starts changing prices — at that point the check has done its job and can go.
+
+### What the old site actually had
+
+- The full menu: 51 items across 11 sections, all with prices, most with descriptions.
+- A good four-paragraph About story, migrated verbatim.
+- A bar menu that is **categories only** — Wine, Cocktails, Bourbon, Rye and so on, with no
+  drinks and no prices. Transcribed into the `bar` section body and left unpublished.
+- **Two photos in total**: the storefront (which the site also used as its logo) and a
+  ribeye at the bar. The Gallery page has zero `<img>` tags. Both photos are
+  GoDaddy-compressed copies, not originals.
+- No street address anywhere on the site. Phone `419-287-7016` is on the contact page.
+- A Reviews page with a heading and no reviews under it.
+- Every page served the entire menu, which is why the old site reads as duplicate content.
 
 ### Open items on the content
 
-- Menu items seeded here are a representative subset, prices taken from the live site.
-  Full transcription, descriptions and the bar list are phase 3; the `Bar Menu` section
-  exists but is unpublished.
-- The live menu groups sections under Breakfast / Lunch & Dinner / Bar. The model is flat
-  for now — decide in phase 3 whether that grouping needs a field or is just section order.
+- [COPY-REVIEW.md](COPY-REVIEW.md) is the list for Gavin: five copy fixes already applied,
+  and the questions that need his answer. **All of it is pending his sign-off**, including
+  whether the prices are current at all.
 - **Hours in `site.json` are provisional** — Tue–Sat 10:30–20:00, from the Facebook
-  snippet in [plan.md](plan.md). The live site's contact page says 09:00–17:00. These
-  conflict and must be confirmed by Gavin before launch. Nothing is deployed yet.
-- Address, phone, email and all social URLs are blank on purpose. The JSON-LD omits the
-  address entirely unless street, city, state and ZIP are all filled in — partial NAP is
-  worse than none.
+  snippet in [plan.md](plan.md). The live site's contact page says 09:00–17:00, and the
+  cafe serves breakfast, which fits neither. Must be confirmed before launch. Nothing is
+  deployed yet.
+- Street address, email and all social URLs are still blank. The JSON-LD omits the address
+  entirely unless street, city, state and ZIP are all filled in — partial NAP is worse
+  than none.
+- Home page copy ("Made From Scratch and handled with Care.", "Join us and discover what we
+  can do for you.") is recorded in `_seed/text/home.txt` but has no home in the content
+  model yet — phase 4 builds the home page and should pull it from there.
+- The old menu groups sections under Breakfast / Lunch & Dinner / Bar. The model stays flat;
+  section `order` already produces the same reading order, so grouping is a phase 4 layout
+  decision, not a content one.
+- Photos: two is not enough for the design phase. Chased in COPY-REVIEW.md.
+
+## Bulk image optimization
+
+After dropping a batch of photos into `public/uploads/`:
+
+```bash
+node scripts/optimize-images.mjs
+```
+
+Resizes to 2400px max width and re-encodes JPEGs at quality 82 with mozjpeg, in place,
+skipping anything under 400KB. The two scraped photos gained only ~2% — GoDaddy's CDN had
+already compressed them — so the originals from Gavin will benefit more than these did.
 
 ## Repo layout
 
@@ -107,4 +170,7 @@ src/
   pages/         Routes
   styles/        Global CSS + Tailwind theme tokens
 tina/            Tina schema + generated files
+scripts/         One-shot maintenance scripts
+_seed/           The old GoDaddy site as scraped (reference only)
+COPY-REVIEW.md   Copy changes and open questions for Gavin
 ```

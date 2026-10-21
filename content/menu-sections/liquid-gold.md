@@ -1,6 +1,8 @@
 ---
-title: Liquid Gold
+title: Liquid Gold (Soups)
 slug: liquid-gold
-order: 50
+order: 90
 published: true
 ---
+
+Made from scratch — never from a mix, never with preservatives

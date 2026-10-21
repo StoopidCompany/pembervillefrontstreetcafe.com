@@ -1,0 +1,16 @@
+# Every image the live GoDaddy site serves, found by scanning all six pages plus the
+# GoDaddy widget scripts they load (img1.wsimg.com/blobby/go/<site-id>/gpub/*/script.js).
+# There are two. The gallery page contains zero <img> tags.
+#
+# Site id: 948d1a97-3d79-49c3-a882-485fa8245bc8
+# Both are 1920x2560 JPEGs as served by the isteam CDN — already re-encoded by GoDaddy,
+# not Gavin's originals. Ask him for the originals before using them large.
+
+# Used as the site "logo"/header image on all six pages. Actually a photo of the
+# storefront; the hanging sign in it is the only logo artwork that exists anywhere.
+# -> _seed/images/storefront-blob-a0a5c77.jpg -> public/uploads/photos/storefront.jpg
+https://img1.wsimg.com/isteam/ip/948d1a97-3d79-49c3-a882-485fa8245bc8/blob-a0a5c77.png
+
+# Ribeye plate on the bar top. Only food photo on the site.
+# -> _seed/images/24e623a3-c267-4514-bfb6-00b944025aff.jpg -> public/uploads/photos/ribeye-at-the-bar.jpg
+https://img1.wsimg.com/isteam/ip/948d1a97-3d79-49c3-a882-485fa8245bc8/24e623a3-c267-4514-bfb6-00b944025aff.jpg

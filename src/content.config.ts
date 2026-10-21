@@ -62,6 +62,14 @@ const settings = defineCollection({
   }),
 });
 
+/** One file per singleton page: about.md, menu.md. Prose lives in the markdown body. */
+const pages = defineCollection({
+  loader: glob({ pattern: "*.md", base: "content/pages" }),
+  schema: z.object({
+    headline: z.string(),
+  }),
+});
+
 const menuSections = defineCollection({
   loader: glob({ pattern: "*.md", base: "content/menu-sections" }),
   schema: z.object({
@@ -90,4 +98,4 @@ const menuItems = defineCollection({
   }),
 });
 
-export const collections = { settings, menuSections, menuItems };
+export const collections = { settings, pages, menuSections, menuItems };
