@@ -101,6 +101,7 @@ const pages = defineCollection({
       .default([]),
     // contact
     mapQuery: optionalString,
+    responseTime: optionalString,
   }),
 });
 

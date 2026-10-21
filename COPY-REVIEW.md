@@ -91,16 +91,33 @@ name on your own About page. Easy to change.
 10. Which name should everything use — **Front Street Cafe** or **Pemberville Front Street
     Cafe**? Your current site uses both, and your listings should all say the same one.
 
+**The new message form**
+
+The Contact page now has a form on it. Someone can pick what they're asking about —
+catering, a private event, a large party, feedback, or something else — give a date and a
+headcount, and write a message. It arrives as an email.
+
+11. **Which inbox should these go to?** Yours, a shop address like
+    info@pembervillefrontstreetcafe.com, or both? Two things worth knowing: catering and
+    private-event enquiries are the ones most worth answering fast, and whoever gets them
+    needs to actually read that inbox. More than one address is fine.
+12. **How quickly do you reply?** If you tell me, the form can say so — "we usually reply
+    within a day" sets expectations and cuts down on people giving up and calling. Leave it
+    out if you'd rather not promise.
+
+Until you choose an inbox, the form is switched off and says so plainly, with your phone
+number next to it. It will not quietly swallow anyone's enquiry in the meantime.
+
 **Bar menu**
 
-11. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
+13. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
    Rye, Scotch and so on — with no actual drinks and no prices. I've carried those
    categories over but switched the bar section **off** so the site doesn't show an empty
    menu. Send me the real drinks list and prices and it goes on.
 
 **Photos**
 
-12. There are only **two photos** on your entire current site: the front of the building, and
+14. There are only **two photos** on your entire current site: the front of the building, and
    a ribeye on the bar. The Gallery page has no photos on it at all. Both of those two are
    copies that GoDaddy compressed, not your originals.
    - Could you send the originals of those two?
@@ -109,12 +126,12 @@ name on your own About page. Easy to change.
 
 **The map**
 
-13. The Contact page has a map on it. It looks up the cafe by name and the address in
+15. The Contact page has a map on it. It looks up the cafe by name and the address in
     question 6, so if that address is wrong, the pin will be too.
 
 **Two pages that are empty today**
 
-14. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
+16. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
     Neither is planned for the new site. Say the word if you want either back.
 
 ---

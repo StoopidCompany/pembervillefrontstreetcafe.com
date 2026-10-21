@@ -133,6 +133,52 @@ google-chrome --headless --window-size=390,844 \
   --screenshot=/tmp/home.png --user-data-dir=/tmp/chrome-prof http://localhost:4332/
 ```
 
+## Contact form
+
+[src/pages/contact.astro](src/pages/contact.astro) posts to
+[Web3Forms](https://web3forms.com), which emails the submission on. No server, no database.
+
+- The access key is read at **build time** from `PUBLIC_WEB3FORMS_KEY`, so it has to be set
+  in `.env.local` locally and as a repository secret for the deploy (phase 7). Rebuilding is
+  what picks up a change.
+- **Submissions go to whichever inbox created the key** at web3forms.com. That inbox is the
+  one decision still outstanding — see COPY-REVIEW.md. Extra recipients can be added in the
+  Web3Forms dashboard rather than in this repo.
+- Fields: name, email, phone, enquiry type (Catering / Private event / Large party /
+  Feedback / Other), date, number of guests, message. Date and headcount are there because
+  catering and private-event enquiries are useless without them.
+- `botcheck` is a hidden honeypot checkbox. Humans never see it; bots tick it and Web3Forms
+  drops the submission.
+
+### Failing loudly
+
+A broken form that silently eats enquiries is worse than no form, so there are two guards:
+
+1. With no key set, the page renders a visible notice above the form — "This form isn't
+   switched on yet", pointing the customer at the phone number, plus a line telling the
+   developer which variable is missing.
+2. The submit handler checks the key before going near the network. With no key it posts
+   nothing, shows an error, and **leaves the typed message in the box** so nothing is lost.
+   The same applies when Web3Forms rejects the request or the network fails.
+
+### Testing it without a real key
+
+Web3Forms refuses server-side requests, so `curl` can't exercise this; it has to be a
+browser. Both response branches were checked against a local stub that returns
+Web3Forms-shaped JSON:
+
+| Case | What the visitor sees | Form contents |
+|---|---|---|
+| No key configured | "This form isn't switched on yet… please call the cafe instead" | kept |
+| `{"success": false}` | "Sorry — we couldn't send that (Invalid Access Key)…" | kept |
+| Network failure | "Sorry — we couldn't send that (Failed to fetch)…" | kept |
+| `{"success": true}` | "Thank you — your message is on its way." | cleared |
+
+In every case the page does not navigate away and the button re-enables.
+
+**Not yet verified: that a real submission lands in the right inbox.** That needs a real
+access key and Gavin's chosen address, and it is the first thing to check in phase 7.
+
 ## SEO
 
 The old site served the entire menu on all six pages, so every page competed with every

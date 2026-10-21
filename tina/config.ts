@@ -199,6 +199,8 @@ export default defineConfig({
             ui: { component: "textarea" } },
           { type: "string", name: "headline", label: "Headline", required: true },
           { type: "rich-text", name: "body", label: "Intro", isBody: true },
+          { type: "string", name: "responseTime", label: "How quickly you reply",
+            description: "Shown under the form, e.g. 'We usually reply within a day'. Leave empty to show nothing." },
           { type: "string", name: "mapQuery", label: "Map Search Text",
             description: "What the embedded map should look up, e.g. 'Front Street Cafe, Pemberville, OH'" },
         ],
