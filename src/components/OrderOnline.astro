@@ -1,5 +1,7 @@
 ---
 import { getOrderingLinks } from "~/lib/content";
+import { getLogo, type LogoSlug } from "~/lib/logos";
+import BrandGlyph from "~/components/BrandGlyph.astro";
 
 interface Props {
   /** Extra classes for the button or summary pill. */
@@ -9,26 +11,35 @@ interface Props {
 }
 
 const { class: className, variant = "pill" } = Astro.props;
-const links = await getOrderingLinks();
+
+// A wordmark logo already says the platform's name, so printing it again would stutter.
+// With no logo file present, the name is all there is.
+const links = (await getOrderingLinks()).map((link) => {
+  const slug = link.label.toLowerCase().replace(/\s+/g, "") as LogoSlug;
+  const logo = getLogo(slug);
+  return { ...link, slug, logo, showName: !logo || logo.kind === "symbol" };
+});
 
 const pill =
-  "inline-flex items-center gap-1 rounded-full bg-brick px-3 py-1.5 text-xs font-semibold uppercase tracking-wider !text-cream hover:!bg-door transition-colors cursor-pointer";
+  "inline-flex items-center gap-1.5 rounded-full bg-brick px-3 py-1.5 text-xs font-semibold uppercase tracking-wider !text-cream hover:!bg-door transition-colors cursor-pointer";
 ---
+{/* The footer stays plain text. Logos sitting in a column of text links came out at
+    mismatched optical sizes, and "[Uber Eats logo] Order online" stutters. The marks do
+    their job in the header; here the words are tidier. */}
 {links.length > 0 && variant === "list" && (
   <ul class:list={["space-y-0.5 text-sm", className]}>
     {links.map((link) => (
-      <li><a href={link.href} target="_blank" rel="noopener">Order on {link.label}</a></li>
+      <li>
+        <a href={link.href} target="_blank" rel="noopener">Order on {link.label}</a>
+      </li>
     ))}
   </ul>
 )}
 
 {links.length === 1 && variant === "pill" && (
-  <a
-    href={links[0].href}
-    target="_blank"
-    rel="noopener"
-    class:list={[pill, className]}
-  >
+  <a href={links[0].href} target="_blank" rel="noopener" class:list={[pill, className]}>
+    {/* Reversed to cream on the brick button rather than recoloured. */}
+    {links[0].logo && <BrandGlyph slug={links[0].slug} class="h-3.5 w-auto" brandColor={false} />}
     Order on {links[0].label}
   </a>
 )}
@@ -43,18 +54,25 @@ const pill =
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
       </svg>
     </summary>
-    <ul
-      class="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-xl border border-crust bg-cream shadow-lg"
-    >
+    {/* normal-case: the desktop header nav sets uppercase, which would otherwise shout
+        "DOORDASH" at a brand that writes itself DoorDash. */}
+    <ul class="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-crust bg-cream normal-case tracking-normal shadow-lg">
       {links.map((link) => (
-        <li>
+        <li class="border-b border-crust/60 last:border-0">
           <a
             href={link.href}
             target="_blank"
             rel="noopener"
-            class="block px-4 py-2.5 text-sm !text-ink hover:bg-crust/50"
+            class="flex items-center gap-2.5 px-4 py-3 !text-ink hover:bg-crust/40"
           >
-            {link.label}
+            {link.logo ? (
+              <BrandGlyph slug={link.slug} class={`${link.logo.menuHeight} w-auto shrink-0`} />
+            ) : (
+              <span class="text-sm font-semibold">{link.label}</span>
+            )}
+            {link.logo && link.showName && (
+              <span class="text-sm font-semibold">{link.label}</span>
+            )}
           </a>
         </li>
       ))}

@@ -159,10 +159,11 @@ error, so nothing renders an empty shell and nothing throws.
   quotes are **typed out by hand**: Yelp's terms restrict reproducing review text outside
   their own widget.
 - The platform is shown by [SourceBadge.astro](src/components/SourceBadge.astro), which
-  looks for official marks at `public/logos/{google,yelp,facebook}.svg` and falls back to a
-  plain text label until they exist. Download the real assets from each platform's brand
-  page rather than redrawing them, and don't recolour them — both platforms' brand rules
-  say so.
+  looks for a mark at `public/logos/{google,yelp,facebook}.svg` and falls back to a plain
+  text label until one exists. Those three are **not** committed on purpose: Google is
+  strict about its G being used in its four colours, so take the files from each platform's
+  own brand page rather than redrawing them. Drop them in and they appear with no code
+  change.
 - About is deliberately untouched — it would only duplicate the home page.
 
 `aggregateRating` on the `Restaurant` JSON-LD is deliberately deferred. It is worth real
@@ -235,6 +236,29 @@ platform, or a `<details>` disclosure listing several — no JavaScript, keyboar
 appears in the header on every page (in the hours strip on phones, beside the nav on
 desktop) and in the footer, and **renders nothing at all** until at least one URL is set.
 Each URL also becomes an `OrderAction` in the structured data.
+
+The header menu shows each platform's own mark in its own colour, from
+`public/logos/{doordash,ubereats,grubhub}.svg` via
+[BrandGlyph.astro](src/components/BrandGlyph.astro) and [src/lib/logos.ts](src/lib/logos.ts).
+Three things about those files worth knowing before touching them:
+
+- They are **Simple Icons glyphs**, re-cropped. Simple Icons packs every mark into a 24×24
+  box, which leaves the two wordmark-style ones as a thin band floating in a square and
+  illegible at icon size; the committed files have tight `viewBox` values derived by
+  rasterising each mark and trimming. They carry `fill="currentColor"` so the colour comes
+  from CSS.
+- The brand hex values in `logos.ts` are each platform's own (`#FF3008`, `#06C167`,
+  `#F63440` — the last from an older Simple Icons release, since Grubhub has been dropped
+  from the current dataset). The marks are never recoloured, only reversed to cream when
+  they sit on the brick-coloured button.
+- `menuHeight` in `logos.ts` is **optical, not geometric**. Sized to the same box height,
+  Grubhub's single-line wordmark towers over Uber Eats' stacked one; those heights give
+  them all roughly the same cap height. A wordmark also suppresses the printed platform
+  name, because the mark already says it.
+
+These are third-party trademarks, used to link to the cafe's own listing on each platform.
+If any platform objects or changes its guidelines, delete the file and the badge degrades
+to text by itself.
 
 Making room for it on a phone meant the hours strip gave up its address slot, so the
 wordmark's "Pemberville, Ohio" is now visible on mobile too. Hours, phone and the town are
@@ -432,6 +456,7 @@ already compressed them — so the originals from Gavin will benefit more than t
 ```
 content/         Content files edited via Tina
 public/uploads/  Images uploaded via Tina (committed to git)
+public/logos/    Third-party brand marks for the order buttons and review badges
 src/
   layouts/       Base layout
   lib/           Content loaders (content.ts) + hours formatting (hours.ts)

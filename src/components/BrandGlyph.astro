@@ -1,0 +1,19 @@
+---
+import { getLogo, type LogoSlug } from "~/lib/logos";
+
+interface Props {
+  slug: LogoSlug;
+  class?: string;
+  /** Brand colour, or inherit the surrounding text colour (for use on a dark button). */
+  brandColor?: boolean;
+}
+
+const { slug, class: className = "h-4 w-auto", brandColor = true } = Astro.props;
+const logo = getLogo(slug);
+
+// The marks carry fill="currentColor", so the colour comes from CSS rather than the file.
+const svg = logo?.svg
+  .trim()
+  .replace("<svg ", `<svg class="${className}"${brandColor ? ` style="color:${logo.color}"` : ""} `);
+---
+{svg && <Fragment set:html={svg} />}
