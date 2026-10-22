@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
 /*
+ * The wordmark script, subset to just the letters in "Pemberville Front Street Cafe":
+ * 6.5KB instead of the 38KB full Latin face, for a font used by exactly one element.
+ * Regenerate with scripts/make-brand-assets.mjs if the name ever changes.
+ */
+@font-face {
+  font-family: "Pinyon Script Wordmark";
+  src: url("/fonts/pinyon-script-wordmark.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
  * The whole brand lives here: six colours, two fonts.
  *
  * Warm scratch-kitchen, pulled from the building itself — the brick, the butter-cream
@@ -17,6 +30,8 @@
 
   --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", Georgia, serif;
   --font-body: "Manrope Variable", "Manrope", system-ui, sans-serif;
+  /* The wordmark only. Matches the engraved script on the cafe's hanging sign. */
+  --font-script: "Pinyon Script Wordmark", "Pinyon Script", "Apple Chancery", cursive;
 }
 
 @layer base {

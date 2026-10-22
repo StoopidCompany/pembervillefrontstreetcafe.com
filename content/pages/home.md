@@ -1,5 +1,4 @@
 ---
-seoTitle: 'Scratch kitchen in Pemberville, Ohio'
 description: "A true scratch kitchen in Pemberville, Ohio: house-baked bread, churned butter, beef-tallow fries. Breakfast, lunch and dinner in Wood County."
 headline: Made from scratch and handled with care.
 heroSubtext: >-

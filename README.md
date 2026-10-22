@@ -110,6 +110,27 @@ Display font is Bricolage Grotesque, body is Manrope — both already in use on 
 so the cafe still looks like itself. All text pairings clear WCAG AA on cream: brick 6.2:1,
 ink-soft 5.8:1, door 11.3:1, ink 15.9:1.
 
+**The wordmark** is a third face, Pinyon Script, used by exactly one element. It was chosen
+by rendering four candidate scripts against a photo of the cafe's hanging sign; Pinyon's
+engraved copperplate look is the closest to the lettering painted on it. The header stacks
+it the way the sign does — "Pemberville" on one line, "Front Street Cafe" larger beneath,
+"FOOD · DRINK" in small caps under that — which is also what lets the full 29-character
+business name sit in the header without squeezing the type.
+
+Two notes on it:
+
+- It is **subset to the letters in the business name**: `public/fonts/pinyon-script-wordmark.woff2`
+  is 6.5KB against 38KB for the full Latin face. Regenerate with
+  `node scripts/make-brand-assets.mjs --wordmark-font` if the name ever changes — that needs
+  `fonttools` and the `@fontsource/pinyon-script` package, neither of which a normal build
+  or a fresh clone requires, since the font is committed.
+- It is preloaded alongside the display font. Without that, the wordmark visibly flips from
+  serif to script as the page loads, and it is the first thing anyone sees.
+
+A script face is harder to read than a sans, so it is sized larger than the sans wordmark it
+replaced (1.6rem rising to 2.3rem on desktop, against 1.35/2rem before) — at the old size
+Pinyon's hairlines disappeared.
+
 **Mobile is the design target.** Most of this traffic is someone on Front Street deciding
 where to eat, so:
 
@@ -493,6 +514,11 @@ after the DNS cutover, since only Google can speak for Google.
 
 - `verification.google` / `verification.bing` in settings render the Search Console and Bing
   meta tags, and nothing at all when empty.
+- **Titles use the full business name.** Since "Pemberville Front Street Cafe" already
+  contains the town, the page-specific halves no longer repeat it — "Menu", "Our story",
+  "Photos" — which keeps every title inside the ~60 characters Google shows. `shortName` in
+  settings is no longer displayed anywhere; its only job now is `alternateName` in the
+  structured data, so a search for the short form still matches.
 - GA4 loads only when `PUBLIC_GA4_ID` is set at build time. **It sets cookies**, so if it is
   switched on, the site needs a privacy note — the old GoDaddy site had a cookie banner and
   this one does not yet.

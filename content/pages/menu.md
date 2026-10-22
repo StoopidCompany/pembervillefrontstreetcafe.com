@@ -1,6 +1,6 @@
 ---
 headline: Menu
-seoTitle: Breakfast, lunch and dinner menu
+seoTitle: "Menu"
 description: "The full menu at Pemberville Front Street Cafe, Wood County: breakfast, salads, pastas, burgers, handhelds, scratch-made soups and chef plates."
 The full menu at Pemberville Front Street Cafe, Wood County: breakfast, salads, pastas,
   burgers, handhelds, scratch-made soups and chef plates.

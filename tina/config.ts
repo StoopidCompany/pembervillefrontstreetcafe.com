@@ -46,8 +46,8 @@ export default defineConfig({
         ui: { allowedActions: { create: false, delete: false } },
         fields: [
           { type: "string", name: "businessName", label: "Business Name", required: true },
-          { type: "string", name: "shortName", label: "Short Name",
-            description: "Used in the header and after page titles, where the full name is too long. e.g. 'Front Street Cafe'" },
+          { type: "string", name: "shortName", label: "Also Known As",
+            description: "The shorter name people search for, e.g. 'Front Street Cafe'. Not shown on the site — it goes into the data search engines read, so a search for the short name still finds you." },
           { type: "string", name: "tagline", label: "Tagline / Meta Description",
             description: "Short description used in browser tabs and search results" },
           {

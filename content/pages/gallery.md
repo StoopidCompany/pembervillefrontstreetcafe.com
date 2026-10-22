@@ -1,5 +1,5 @@
 ---
-seoTitle: Photos of the cafe
+seoTitle: "Photos"
 description: >-
   Photos of Pemberville Front Street Cafe: the historic brick building on Front Street
   in Pemberville, the bar, and food from our scratch kitchen.

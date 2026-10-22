@@ -1,6 +1,6 @@
 ---
 headline: About Pemberville Front Street Cafe
-seoTitle: Our story
+seoTitle: "Our story"
 description: "How Pemberville Front Street Cafe came to be: a true scratch kitchen in a historic brick building on Front Street, Wood County, Ohio, since 2023."
 How Pemberville Front Street Cafe came to be: a true scratch kitchen in a historic brick
   building on Front Street, Wood County, Ohio, since 2023.
