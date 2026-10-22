@@ -1,7 +1,7 @@
 ---
 import { render } from "astro:content";
 import Base from "~/layouts/Base.astro";
-import { getMenu, getPage, getSettings, formatPrice, telHref } from "~/lib/content";
+import { getMenu, getPage, getSettings, formatPrice, parsePrice, telHref } from "~/lib/content";
 
 const settings = await getSettings();
 const tel = telHref(settings.phone);
@@ -15,10 +15,61 @@ const sections = await Promise.all(
     Description: (await render(section)).Content,
   })),
 );
+
+/*
+ * The full menu as structured data, on this page only — 51 dishes in every page's head
+ * would be wasteful. Google documents no menu rich result, so this is entity hygiene
+ * rather than a visible win: it tells Google, Bing and anything else parsing the page
+ * exactly what is served and for how much.
+ */
+const menuSchema = [
+  {
+    "@type": "Menu",
+    "@id": new URL("/menu#menu", Astro.site).toString(),
+    name: `${settings.businessName} menu`,
+    hasMenuSection: sections.map(({ section, items }) => ({
+      "@type": "MenuSection",
+      name: section.data.title,
+      ...(items.length > 0 && {
+        hasMenuItem: items.map(({ data }) => {
+          const low = parsePrice(data.price);
+          const high = data.altPrice ? parsePrice(data.altPrice) : null;
+          /*
+           * A half/full dish costs $9 *or* $12.99, so a flat price of $9 would be a lie
+           * by omission. Those become a min/max range; a single price stays a single
+           * price; anything unparseable ("Market price") gets no offer at all.
+           */
+          const offers = high
+            ? {
+                "@type": "Offer",
+                priceCurrency: "USD",
+                priceSpecification: {
+                  "@type": "PriceSpecification",
+                  minPrice: low,
+                  maxPrice: high,
+                  priceCurrency: "USD",
+                },
+              }
+            : low
+              ? { "@type": "Offer", price: low, priceCurrency: "USD" }
+              : null;
+          return {
+            "@type": "MenuItem",
+            name: data.name,
+            ...(data.description && { description: data.description }),
+            ...(offers && { offers }),
+          };
+        }),
+      }),
+    })),
+  },
+];
 ---
 <Base
   title={page.data.seoTitle ?? page.data.headline}
   description={page.data.description ?? undefined}
+  breadcrumb="Menu"
+  schema={menuSchema}
 >
   <div class="mx-auto max-w-3xl px-5 py-10 lg:px-8">
     <h1 class="text-3xl sm:text-4xl">{page.data.headline}</h1>
@@ -67,7 +118,7 @@ const sections = await Promise.all(
       <p class="mt-14 rounded-2xl border border-crust bg-crust/30 p-5 text-sm">
         Prices and dishes change with the seasons. Call us on
         <a href={tel} class="font-semibold">{settings.phone}</a> if you need to check something
-        before you come in.
+        before you come in, or ask about <a href="/catering">catering and private events</a>.
       </p>
     )}
   </div>

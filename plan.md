@@ -1,8 +1,8 @@
-# Front Street Cafe — site rebuild plan
+# Pemberville Front Street Cafe — site rebuild plan
 
 Written 20 Oct 2026. Model: `~/Code/courtneyanton.com` (Astro 5 + Tailwind 4 + TinaCMS on GitHub Pages).
 Target: replace `pembervillefrontstreetcafe.com`, currently GoDaddy Website Builder 8.0.
-Owner: Gavin Shank (The Front Street Cafe, Pemberville OH).
+Owner: Gavin Shank (Pemberville Front Street Cafe, Pemberville OH).
 
 ## Why this stack fits
 
@@ -98,6 +98,10 @@ These disagree. Hours must come from Gavin, once, and then live in one place.
 11. `reviews/google-sync` + ordering CTA — pull Google reviews with manual approval, source
     badges, and an Order Online button in the header. Also dormant: needs Google API
     approval, an owner OAuth grant, and the delivery URLs.
+12. `seo/local-search` — responsive images (home page 851KB → 188KB on mobile), a linked
+    JSON-LD graph with breadcrumbs and the full menu, /reviews and /catering pages, a 404,
+    regional copy with measured drive times, and GA4 + Search Console plumbing. The
+    off-site half of this phase is a checklist in NAP.md and matters more than the code.
 
 ## Never cut
 

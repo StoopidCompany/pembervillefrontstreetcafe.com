@@ -1,12 +1,13 @@
 ---
-headline: About Front Street Cafe
+headline: About Pemberville Front Street Cafe
 seoTitle: Our story
-description: >-
-  How The Front Street Cafe came to be — a true scratch kitchen in a historic brick building on Front Street in Pemberville, Ohio, open since September 2023.
+description: "How Pemberville Front Street Cafe came to be: a true scratch kitchen in a historic brick building on Front Street, Wood County, Ohio, since 2023."
+How Pemberville Front Street Cafe came to be: a true scratch kitchen in a historic brick
+  building on Front Street, Wood County, Ohio, since 2023.
 image: /uploads/photos/ribeye-at-the-bar.jpg
 ---
 
-Front Street Cafe opened its doors in downtown Pemberville, Ohio on September 27, 2023, in a charming historic brick building on Front Street. We started this cafe because we believe food is medicine — and food loaded with additives and shelf stabilizers is the opposite. We wanted to build a place where you know exactly what you’re eating, made from ingredients you can trust, prepared where you can see it happen.
+Pemberville Front Street Cafe opened its doors in downtown Pemberville, Ohio on September 27, 2023, in a charming historic brick building on Front Street. We started this cafe because we believe food is medicine — and food loaded with additives and shelf stabilizers is the opposite. We wanted to build a place where you know exactly what you’re eating, made from ingredients you can trust, prepared where you can see it happen.
 
 That’s what “true scratch kitchen” means to us — not a marketing phrase, but a promise. We bake our own bread, churn our own butter, and build every dish from real ingredients, with a nut-oil free kitchen from top to bottom.
 

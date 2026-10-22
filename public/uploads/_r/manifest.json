@@ -1,0 +1,82 @@
+{
+  "/uploads/photos/IMG_4610.jpg": {
+    "width": 2000,
+    "height": 1500,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "/uploads/photos/IMG_7110.jpg": {
+    "width": 2000,
+    "height": 1500,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "/uploads/photos/IMG_7111.jpg": {
+    "width": 2000,
+    "height": 1500,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "/uploads/photos/IMG_7112.jpg": {
+    "width": 2000,
+    "height": 1500,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "/uploads/photos/IMG_7120.jpg": {
+    "width": 2000,
+    "height": 1500,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "/uploads/photos/IMG_7367.jpg": {
+    "width": 2000,
+    "height": 1500,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "/uploads/photos/ribeye-at-the-bar.jpg": {
+    "width": 1920,
+    "height": 2560,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "/uploads/photos/storefront.jpg": {
+    "width": 1920,
+    "height": 2560,
+    "widths": [
+      480,
+      800,
+      1200,
+      1600
+    ]
+  }
+}

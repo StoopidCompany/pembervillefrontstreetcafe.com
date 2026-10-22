@@ -1,0 +1,91 @@
+---
+import Base from "~/layouts/Base.astro";
+import VisitInfo from "~/components/VisitInfo.astro";
+import { getSettings, telHref } from "~/lib/content";
+
+const settings = await getSettings();
+const tel = telHref(settings.phone);
+
+// Real driving times, measured with OSRM against the cafe's coordinates rather than
+// guessed. Re-check if the address ever changes.
+const nearby = [
+  { town: "Luckey", drive: "11 minutes" },
+  { town: "Woodville", drive: "11 minutes" },
+  { town: "Bowling Green", drive: "21 minutes" },
+  { town: "Genoa", drive: "23 minutes" },
+  { town: "Perrysburg", drive: "25 minutes" },
+  { town: "Toledo", drive: "32 minutes" },
+];
+---
+<Base
+  title="Catering & private events"
+  description="Catering, private events and large parties at Pemberville Front Street Cafe — a scratch kitchen in Wood County, northwest Ohio. Tell us what you need."
+  breadcrumb="Catering & private events"
+>
+  <div class="mx-auto max-w-3xl px-5 py-10 lg:px-8">
+    <h1 class="text-3xl sm:text-4xl">Catering & private events</h1>
+
+    <p class="mt-4 text-lg text-ink-soft text-pretty">
+      Everything here is made from scratch — we bake our own bread, churn our own butter and
+      hand-cut the fries. If you are feeding a group in Pemberville or anywhere nearby in
+      Wood County, start by telling us what you have in mind.
+    </p>
+
+    <section class="mt-10 rounded-2xl border border-crust bg-crust/30 p-6 sm:p-8">
+      <h2 class="font-display text-xl">Tell us what you need</h2>
+      <p class="mt-2 text-sm leading-relaxed">
+        Every group is different, so rather than publish a package list we would rather hear
+        the details and tell you honestly what the kitchen can do. Useful things to include:
+      </p>
+      <ul class="mt-4 space-y-1.5 text-sm">
+        <li>— The date, and roughly what time</li>
+        <li>— How many people</li>
+        <li>— Whether you want the dining room to yourselves, or food to collect</li>
+        <li>— Anything anyone cannot eat</li>
+      </ul>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a
+          href="/contact#contact-form"
+          class="rounded-full bg-brick px-6 py-3 text-sm font-semibold uppercase tracking-wider !text-cream hover:!bg-door transition-colors"
+        >
+          Send an enquiry
+        </a>
+        {tel && (
+          <a
+            href={tel}
+            class="rounded-full border border-brick px-6 py-3 text-sm font-semibold uppercase tracking-wider !text-brick hover:bg-brick hover:!text-cream transition-colors"
+          >
+            Call {settings.phone}
+          </a>
+        )}
+      </div>
+      <p class="mt-4 text-sm text-ink-soft">
+        The enquiry form has options for catering, a private event or a large party, and
+        asks for your date and headcount.
+      </p>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="text-2xl">Where we are</h2>
+      <p class="mt-2 text-ink-soft">
+        The cafe is on Front Street in Pemberville, in eastern Wood County — an easy drive
+        from most of northwest Ohio.
+      </p>
+      <ul class="mt-4 grid gap-x-8 gap-y-1.5 text-sm sm:grid-cols-2">
+        {nearby.map((place) => (
+          <li class="flex justify-between border-b border-crust/60 py-1">
+            <span class="font-semibold">{place.town}</span>
+            <span class="text-ink-soft">{place.drive}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <VisitInfo class="mt-12 bg-crust/30" heading="Hours and address" />
+
+    <p class="mt-10 text-sm text-ink-soft">
+      Have a look at <a href="/menu">the full menu</a> to see what the kitchen does, or
+      <a href="/reviews">what guests say</a>.
+    </p>
+  </div>
+</Base>

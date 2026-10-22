@@ -46,6 +46,8 @@ export default defineConfig({
         ui: { allowedActions: { create: false, delete: false } },
         fields: [
           { type: "string", name: "businessName", label: "Business Name", required: true },
+          { type: "string", name: "shortName", label: "Short Name",
+            description: "Used in the header and after page titles, where the full name is too long. e.g. 'Front Street Cafe'" },
           { type: "string", name: "tagline", label: "Tagline / Meta Description",
             description: "Short description used in browser tabs and search results" },
           {
@@ -92,6 +94,16 @@ export default defineConfig({
               { type: "string", name: "tiktok", label: "TikTok URL" },
               { type: "string", name: "google", label: "Google Business Profile URL" },
               { type: "string", name: "yelp", label: "Yelp URL" },
+            ],
+          },
+          {
+            type: "object", name: "verification", label: "Search Engine Verification",
+            description:
+              "Verification codes from Google Search Console and Bing Webmaster Tools. " +
+              "Paste only the code, not the whole meta tag. Leave empty and nothing is added.",
+            fields: [
+              { type: "string", name: "google", label: "Google Search Console code" },
+              { type: "string", name: "bing", label: "Bing Webmaster code" },
             ],
           },
           {
@@ -147,7 +159,7 @@ export default defineConfig({
             ],
           },
           { type: "string", name: "footerText", label: "Footer Text",
-            description: "e.g. © The Front Street Cafe 2026" },
+            description: "e.g. © Pemberville Front Street Cafe 2026" },
         ],
       },
       {
@@ -232,7 +244,7 @@ export default defineConfig({
           { type: "string", name: "responseTime", label: "How quickly you reply",
             description: "Shown under the form, e.g. 'We usually reply within a day'. Leave empty to show nothing." },
           { type: "string", name: "mapQuery", label: "Map Search Text",
-            description: "What the embedded map should look up, e.g. 'Front Street Cafe, Pemberville, OH'" },
+            description: "What the embedded map should look up, e.g. 'Pemberville Front Street Cafe, Pemberville, OH'" },
         ],
       },
       {

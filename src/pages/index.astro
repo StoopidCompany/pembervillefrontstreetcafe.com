@@ -3,6 +3,7 @@ import { render } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import VisitInfo from "~/components/VisitInfo.astro";
 import SourceBadge from "~/components/SourceBadge.astro";
+import Photo from "~/components/Photo.astro";
 import {
   getPage,
   getSettings,
@@ -55,11 +56,11 @@ const summary =
     <!-- object-top: the only photo of the building is portrait and the sign sits high in it,
          so a wide hero crop has to be anchored to the top to show the cafe's name. -->
     {heroImage && (
-      <img
+      <Photo
         src={heroImage}
         alt=""
-        width="1920"
-        height="2560"
+        sizes="100vw"
+        loading="eager"
         fetchpriority="high"
         class="absolute inset-0 -z-10 h-full w-full object-cover object-top"
       />
@@ -109,6 +110,8 @@ const summary =
         </ul>
         <p class="mt-8 text-center">
           <a href="/menu" class="font-semibold underline">See the whole menu</a>
+          <span class="mx-2 text-ink-soft">·</span>
+          <a href="/about" class="font-semibold underline">Read our story</a>
         </p>
       </section>
     )}
@@ -171,14 +174,8 @@ const summary =
           <p class="mt-8 text-center text-sm text-ink-soft">
             {summary.rating}★ on {summary.platformLabel} · {summary.count}{" "}
             {summary.count === 1 ? "review" : "reviews"}
-            {summary.url && (
-              <>
-                {" — "}
-                <a href={summary.url} target="_blank" rel="noopener" class="font-semibold underline">
-                  see more
-                </a>
-              </>
-            )}
+            {" — "}
+            <a href="/reviews" class="font-semibold underline">read more</a>
           </p>
         )}
       </section>
