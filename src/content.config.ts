@@ -150,6 +150,7 @@ const menuItems = defineCollection({
     // on a dangling section.
     section: z.string(),
     description: optionalString,
+    image: optionalString,
     price: z.string().min(1, "price is required — use 'Market price' if it varies"),
     priceNote: optionalString,
     altPrice: optionalString,

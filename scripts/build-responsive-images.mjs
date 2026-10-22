@@ -24,14 +24,16 @@ const UPLOADS = join(ROOT, "public/uploads");
 const OUT = join(UPLOADS, "_r");
 const MANIFEST = join(OUT, "manifest.json");
 
-const WIDTHS = [480, 800, 1200, 1600];
+// 160 and 320 exist for menu-item thumbnails: a 64px square pulling a 480px file was
+// 39KB per dish, which on a 51-item menu is not acceptable.
+const WIDTHS = [160, 320, 480, 800, 1200, 1600];
 
 /**
  * Quality falls as the variant grows. A 1600px hero is viewed at arm's length behind a
  * dark gradient, where 68 is indistinguishable from 80 and roughly half the bytes; a 480px
  * variant on a phone held close keeps the higher setting.
  */
-const QUALITY = { 480: 80, 800: 78, 1200: 72, 1600: 68 };
+const QUALITY = { 160: 82, 320: 82, 480: 80, 800: 78, 1200: 72, 1600: 68 };
 const FORCE = process.argv.includes("--force");
 
 async function* walk(dir) {

@@ -93,9 +93,20 @@ const summary =
     {signatures.length > 0 && (
       <section class="mt-16">
         <h2 class="text-center font-display text-2xl sm:text-3xl">What people come back for</h2>
-        <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+        {/* items-start: a card with a photo is taller, and stretching its neighbour to
+            match left a large empty panel. */}
+        <ul class="mt-8 grid items-start gap-4 sm:grid-cols-2">
           {signatures.map((dish) => (
-            <li class="rounded-2xl border border-crust p-5">
+            <li class="overflow-hidden rounded-2xl border border-crust">
+              {dish.data.image && (
+                <Photo
+                  src={dish.data.image}
+                  alt={dish.data.name}
+                  sizes="(min-width: 640px) 50vw, 100vw"
+                  class="h-36 w-full object-cover sm:h-40"
+                />
+              )}
+              <div class="p-5">
               <div class="flex items-baseline justify-between gap-4">
                 <h3 class="font-display text-xl">{dish.data.name}</h3>
                 <span class="whitespace-nowrap text-sm font-semibold text-brick">
@@ -105,6 +116,7 @@ const summary =
               {dish.data.description && (
                 <p class="mt-2 text-sm leading-relaxed text-ink-soft">{dish.data.description}</p>
               )}
+              </div>
             </li>
           ))}
         </ul>

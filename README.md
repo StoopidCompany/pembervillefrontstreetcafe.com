@@ -474,6 +474,32 @@ down to 68 at 1600px) because a big hero sits behind a dark gradient where nobod
 the difference. A photo uploaded through Tina since the last run still renders — `Photo`
 falls back to a plain `<img>` — it just is not responsive until the script runs again.
 
+### Photos on the menu — two ways, use either or both
+
+Both exist because it is not obvious in advance which reads better, and the answer may
+differ per dish.
+
+| | Where it lives | How it renders |
+|---|---|---|
+| **Per dish** | `image` on a menu item | A thumbnail on `/menu` (56px on a phone, 80px above it), on the **right** of the row so dishes with and without a photo keep the same left edge. If the dish is also a home-page signature, the same photo becomes a banner on its card |
+| **Per page** | `images` on the menu page singleton | A captioned grid above the menu sections. Caption each one with the dish it shows |
+
+Neither is required. A dish with no photo renders exactly as it always did, and the page
+grid disappears when the list is empty. Shipped examples: the 10 oz Ribeye has a per-dish
+photo, and the menu page has two captioned ones.
+
+Two things worth knowing:
+
+- The home-page signature grid uses `items-start`. A card with a photo is taller, and
+  stretching its neighbour to match left a large empty panel.
+- **Run `node scripts/build-responsive-images.mjs` after uploading a dish photo.** The 160
+  and 320px variants exist for these thumbnails — without them a 56px thumbnail would pull
+  a 480px file, which on a 51-item menu is not acceptable. A photo uploaded through Tina
+  still renders before the script runs, just unoptimised.
+
+With one thumbnail and two captioned photos, `/menu` scrolled to the bottom is 227KB, 55KB
+of it images.
+
 Measured effect on the home page, headless Chrome at 390×844:
 
 | | before | after |
