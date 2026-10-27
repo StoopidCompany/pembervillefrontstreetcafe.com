@@ -123,6 +123,40 @@ repo. None of it is code.
       `socials.google`. A card on the table or a line on the receipt does more than a
       website button ever will.
 
+## DNS, checked 27 Oct 2026
+
+Both of plan.md's open questions about the domain are now answered:
+
+- **DNS is hosted at GoDaddy.** The nameservers are `ns57.domaincontrol.com` and
+  `ns58.domaincontrol.com`, which is GoDaddy's. So the registrar and the DNS host are the
+  same place, and the cutover is done in the GoDaddy DNS panel.
+- **There are no MX records on the domain — no email to break.** The apex returns no MX
+  answer at all, and the business uses `frontstreetcafe16@gmail.com`. plan.md's "check MX
+  before cancelling anything at GoDaddy" is therefore satisfied: cancelling the Website
+  Builder subscription cannot take down mail, because no mail runs here.
+- The apex currently points at `76.223.105.230` and `13.248.243.5` — GoDaddy's Website
+  Builder hosting. `www` is a CNAME to the apex.
+
+Worth knowing while in the DNS panel: with no MX and no SPF or DMARC records, anyone can
+send mail that claims to be from this domain. A null MX (`0 .`) plus an SPF record of
+`v=spf1 -all` tells the world the domain never sends mail, which is cheap anti-spoofing. Not
+required for launch.
+
+### The cutover itself
+
+Replace the two A records with GitHub's four, from GitHub's own docs:
+
+```
+A     @    185.199.108.153
+A     @    185.199.109.153
+A     @    185.199.110.153
+A     @    185.199.111.153
+```
+
+Optionally the AAAA records too (`2606:50c0:8000::153` through `2606:50c0:8003::153`), and
+leave `www` as a CNAME — pointed at `stoopidcompany.github.io` rather than the apex, so
+GitHub handles the www-to-apex redirect itself.
+
 ## After launch
 
 - [ ] Submit `https://pembervillefrontstreetcafe.com/sitemap-index.xml` in Google Search

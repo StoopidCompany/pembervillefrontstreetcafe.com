@@ -45,10 +45,51 @@ See [`.env.example`](.env.example):
 ## Domain
 
 **Apex, no `www`.** `pembervillefrontstreetcafe.com` is what is currently indexed, so that
-stays the canonical host: `site:` in [astro.config.mjs](astro.config.mjs), the sitemap URL in
-[public/robots.txt](public/robots.txt), and the `public/CNAME` written at cutover must all
-agree on the apex. Apex on GitHub Pages needs four A records (or ALIAS/ANAME if the DNS host
-supports it), not a CNAME — settle that during phase 8.
+stays the canonical host: `site:` in [astro.config.mjs](astro.config.mjs) and the sitemap URL
+in [public/robots.txt](public/robots.txt) both agree on the apex.
+
+There is **no `public/CNAME` file**, deliberately. GitHub's docs are explicit that with
+Actions publishing "no `CNAME` file is created, and any existing `CNAME` file is ignored and
+is not required" — the custom domain lives in the repository's Pages settings instead. The
+reference repo's `public/CNAME` is for branch-based publishing, which this project does not
+use.
+
+## Deploying
+
+[.github/workflows/deploy.yml](.github/workflows/deploy.yml) builds and publishes to GitHub
+Pages. **Manual trigger only** (`workflow_dispatch`) so a content edit cannot publish before
+anyone has looked at it; the `push` trigger is written but commented out, to be enabled after
+the DNS cutover.
+
+Repository settings → Pages → Source must be **GitHub Actions**, not a branch.
+
+Secrets it reads, all optional — the build succeeds without any of them:
+
+| Secret | Without it |
+|---|---|
+| `TINA_CLIENT_ID`, `TINA_TOKEN` | The Tina admin build is **skipped entirely**, so `/admin` does not exist. The site itself is unaffected |
+| `WEB3FORMS_KEY` | The contact form renders its "not switched on yet" notice and posts nothing |
+| `GA4_ID` | No analytics script at all |
+
+`npx astro check` runs before the artifact is uploaded, so a type error stops a deploy rather
+than landing on the live site.
+
+`public/.nojekyll` is insurance only. Actions-based Pages does not run Jekyll, but if anyone
+ever switches to branch publishing, Jekyll would silently strip `_astro/` and `uploads/_r/`
+— which is to say, every stylesheet and every responsive image.
+
+### Verifying before the DNS flip
+
+GitHub serves a configured custom domain from its own edge regardless of where DNS points,
+so the deployed site can be checked on its real hostname **before** the registrar is
+touched:
+
+```bash
+curl -sS -k --resolve pembervillefrontstreetcafe.com:443:185.199.108.153 \
+  https://pembervillefrontstreetcafe.com/menu | head -20
+```
+
+`-k` is needed only because the TLS certificate cannot be issued until DNS resolves.
 
 ## Content model
 
