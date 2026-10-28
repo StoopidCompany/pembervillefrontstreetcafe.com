@@ -74,6 +74,17 @@ Secrets it reads, all optional — the build succeeds without any of them:
 `npx astro check` runs before the artifact is uploaded, so a type error stops a deploy rather
 than landing on the live site.
 
+Two memory notes, both measured rather than guessed, because the first deploy died with
+"JavaScript heap out of memory":
+
+- **`public` is excluded in [tsconfig.json](tsconfig.json).** It holds no TypeScript, but
+  `include: ["**/*"]` made the compiler enumerate all 200 files in it — mostly generated
+  image variants — and that pushed `astro check` from 663MB to **4.4GB**, over a runner's
+  default heap. The responsive-image work is what tipped it over, which is why this only
+  started failing recently.
+- **`tinacms build` gets `--max-old-space-size=4096`.** It OOMs at a 1GB heap and passes at
+  2GB, close enough to a runner's default to be worth stating outright.
+
 `public/.nojekyll` is insurance only. Actions-based Pages does not run Jekyll, but if anyone
 ever switches to branch publishing, Jekyll would silently strip `_astro/` and `uploads/_r/`
 — which is to say, every stylesheet and every responsive image.
