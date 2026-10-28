@@ -26,17 +26,19 @@ const [openRow] = summarizeHours(settings.hours);
 <header class="site-header fixed top-0 left-0 right-0 z-50 bg-cream/95 backdrop-blur border-b border-crust">
   <div class="site-header-inner mx-auto max-w-6xl px-5 lg:px-8 flex items-center justify-between gap-4">
     <a href="/" class="shrink-0 group" aria-label={`${settings.businessName} — home`}>
-      <span class="site-wordmark block font-display text-door leading-none tracking-tight">
-        Front Street Cafe
+      {/* Two lines of script, the way the hanging sign stacks them. "Pemberville" on its
+          own line keeps the full name in the header without squeezing the type, and the
+          town still appears on every page without scrolling. */}
+      <span class="site-wordmark block text-door" style={`font-family: var(--font-script)`}>
+        <span class="site-wordmark-town block leading-none">Pemberville</span>
+        <span class="site-wordmark-name block leading-none">Front Street Cafe</span>
       </span>
-      {/* Visible on phones too: the hours strip below gave up its address slot to the
-          Order button, and the town should still be on every page without scrolling. */}
-      <span class="block font-body text-[0.6rem] sm:text-[0.65rem] uppercase tracking-[0.2em] text-ink-soft mt-0.5 sm:mt-1">
-        Pemberville, Ohio
+      <span class="block font-body text-[0.55rem] sm:text-[0.6rem] uppercase tracking-[0.25em] text-ink-soft mt-1">
+        Food · Drink
       </span>
     </a>
 
-    <nav class="hidden md:flex items-center gap-7 font-body text-sm uppercase tracking-wide">
+    <nav class="hidden md:flex items-center gap-4 lg:gap-7 font-body text-sm uppercase tracking-wide">
       {navLinks.map((link) => (
         <a
           href={link.href}
@@ -53,7 +55,7 @@ const [openRow] = summarizeHours(settings.hours);
       {tel && (
         <a
           href={tel}
-          class="rounded-full border border-brick px-4 py-2 text-xs font-semibold uppercase tracking-wider !text-brick hover:bg-brick hover:!text-cream transition-colors"
+          class="whitespace-nowrap rounded-full border border-brick px-4 py-2 text-xs font-semibold uppercase tracking-wider !text-brick hover:bg-brick hover:!text-cream transition-colors"
         >
           {settings.phone}
         </a>
@@ -134,33 +136,51 @@ const [openRow] = summarizeHours(settings.hours);
 </script>
 
 <style>
+  /*
+   * Pinyon Script has a small x-height and fine hairlines, so it is set larger than the
+   * sans wordmark it replaced — at the old 1.35rem the thin strokes disappeared. The town
+   * line runs smaller than the name, as on the sign.
+   */
   .site-header-inner {
-    height: 60px;
+    height: 74px;
     transition: height 300ms ease;
   }
-  .site-wordmark {
-    font-size: 1.35rem;
+  .site-wordmark-town {
+    font-size: 1.05rem;
+    transition: font-size 300ms ease;
+  }
+  .site-wordmark-name {
+    font-size: 1.6rem;
     transition: font-size 300ms ease;
   }
   .site-header.is-scrolled .site-header-inner {
-    height: 52px;
+    height: 62px;
   }
-  .site-header.is-scrolled .site-wordmark {
-    font-size: 1.15rem;
+  .site-header.is-scrolled .site-wordmark-town {
+    font-size: 0.9rem;
+  }
+  .site-header.is-scrolled .site-wordmark-name {
+    font-size: 1.3rem;
   }
 
   @media (min-width: 768px) {
     .site-header-inner {
-      height: 92px;
+      height: 104px;
     }
-    .site-wordmark {
-      font-size: 2rem;
+    .site-wordmark-town {
+      font-size: 1.35rem;
+    }
+    .site-wordmark-name {
+      font-size: 2.3rem;
     }
     .site-header.is-scrolled .site-header-inner {
-      height: 68px;
+      height: 76px;
     }
-    .site-header.is-scrolled .site-wordmark {
-      font-size: 1.5rem;
+    .site-header.is-scrolled .site-wordmark-town {
+      font-size: 1rem;
+    }
+    .site-header.is-scrolled .site-wordmark-name {
+      font-size: 1.7rem;
     }
   }
 </style>

@@ -2,6 +2,7 @@
 import { render } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import VisitInfo from "~/components/VisitInfo.astro";
+import Photo from "~/components/Photo.astro";
 import { getPage } from "~/lib/content";
 
 const page = await getPage("about");
@@ -10,17 +11,18 @@ const { Content } = await render(page);
 <Base
   title={page.data.seoTitle ?? page.data.headline}
   description={page.data.description ?? undefined}
+  breadcrumb="About"
 >
   <article class="mx-auto max-w-3xl px-5 py-10 lg:px-8">
     <h1 class="text-3xl sm:text-4xl">{page.data.headline}</h1>
 
     {page.data.image && (
-      <img
+      <Photo
         src={page.data.image}
         alt="Inside the cafe"
-        width="1920"
-        height="2560"
-        loading="lazy"
+        sizes="(min-width: 768px) 768px, 100vw"
+        loading="eager"
+        fetchpriority="high"
         class="mt-6 aspect-[4/3] w-full rounded-2xl object-cover"
       />
     )}
@@ -28,6 +30,12 @@ const { Content } = await render(page);
     <div class="mt-8 space-y-5 text-lg leading-relaxed text-pretty">
       <Content />
     </div>
+
+    <p class="mt-8 text-ink-soft">
+      Have a look at <a href="/menu">the menu</a>, see
+      <a href="/reviews">what guests say</a>, or ask about
+      <a href="/catering">catering and private events</a>.
+    </p>
 
     <VisitInfo class="mt-14 bg-crust/30" heading="Come and see us" />
   </article>

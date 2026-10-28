@@ -1,8 +1,8 @@
-# Front Street Cafe — site rebuild plan
+# Pemberville Front Street Cafe — site rebuild plan
 
 Written 20 Oct 2026. Model: `~/Code/courtneyanton.com` (Astro 5 + Tailwind 4 + TinaCMS on GitHub Pages).
 Target: replace `pembervillefrontstreetcafe.com`, currently GoDaddy Website Builder 8.0.
-Owner: Gavin Shank (The Front Street Cafe, Pemberville OH).
+Owner: Gavin Shank (Pemberville Front Street Cafe, Pemberville OH).
 
 ## Why this stack fits
 
@@ -71,9 +71,10 @@ These disagree. Hours must come from Gavin, once, and then live in one place.
 1. 210 E. Front St., Pemberville, OH 43450 and (419) 287-7016 — from a Facebook search
    snippet only. Confirm before they go into JSON-LD.
 2. Real hours (see conflict).
-3. Who owns the domain registration and where DNS is hosted. Assumed GoDaddy, not checked.
-4. Whether any email (@pembervillefrontstreetcafe.com) runs on that GoDaddy plan. If yes,
-   cancelling the builder subscription could kill mail. Check MX before touching anything.
+3. ~~Who owns the domain registration and where DNS is hosted.~~ **Checked 27 Oct 2026:**
+   nameservers are `ns57`/`ns58.domaincontrol.com`, so DNS is at GoDaddy. See NAP.md.
+4. ~~Whether any email runs on that GoDaddy plan.~~ **Checked 27 Oct 2026: no MX records at
+   all**, and the business uses a Gmail address. Cancelling the builder cannot kill mail.
 5. Is the GoDaddy Online Store live / taking orders? (the 401 sitemap)
 6. DoorDash listing exists (store 37582213) — is it the only delivery channel, and should
    the site link to it?
@@ -98,6 +99,10 @@ These disagree. Hours must come from Gavin, once, and then live in one place.
 11. `reviews/google-sync` + ordering CTA — pull Google reviews with manual approval, source
     badges, and an Order Online button in the header. Also dormant: needs Google API
     approval, an owner OAuth grant, and the delivery URLs.
+12. `seo/local-search` — responsive images (home page 851KB → 188KB on mobile), a linked
+    JSON-LD graph with breadcrumbs and the full menu, /reviews and /catering pages, a 404,
+    regional copy with measured drive times, and GA4 + Search Console plumbing. The
+    off-site half of this phase is a checklist in NAP.md and matters more than the code.
 
 ## Never cut
 

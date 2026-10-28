@@ -1,0 +1,60 @@
+---
+import { getPhoto } from "~/lib/photos";
+
+interface Props {
+  /** A path under public/uploads, e.g. "/uploads/photos/storefront.jpg". */
+  src: string;
+  alt: string;
+  /** How wide the image renders, for the browser to pick a variant. */
+  sizes?: string;
+  class?: string;
+  loading?: "lazy" | "eager";
+  fetchpriority?: "high" | "low" | "auto";
+}
+
+const {
+  src,
+  alt,
+  sizes = "100vw",
+  class: className,
+  loading = "lazy",
+  fetchpriority = "auto",
+} = Astro.props;
+
+const photo = getPhoto(src);
+const base = src.replace(/\.[^.]+$/, "");
+const variants = photo?.widths ?? [];
+const srcset = (ext: string) =>
+  variants.map((w) => `${base.replace("/uploads/", "/uploads/_r/")}-${w}.${ext} ${w}w`).join(", ");
+---
+{
+  variants.length > 0 ? (
+    <picture>
+      <source type="image/webp" srcset={srcset("webp")} sizes={sizes} />
+      <img
+        src={src}
+        srcset={srcset("jpg")}
+        sizes={sizes}
+        width={photo!.width}
+        height={photo!.height}
+        alt={alt}
+        loading={loading}
+        fetchpriority={fetchpriority}
+        decoding={loading === "eager" ? "sync" : "async"}
+        class={className}
+      />
+    </picture>
+  ) : (
+    /* No variants yet — a photo uploaded through Tina since the last run of
+       scripts/build-responsive-images.mjs. Still renders, just unoptimised. */
+    <img
+      src={src}
+      width={photo?.width}
+      height={photo?.height}
+      alt={alt}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      class={className}
+    />
+  )
+}

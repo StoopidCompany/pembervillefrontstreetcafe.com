@@ -1,4 +1,4 @@
-# Copy review — new Front Street Cafe website
+# Copy review — new Pemberville Front Street Cafe website
 
 Gavin — the words on the new site are copied straight from your current site. Your whole
 menu (51 items, every price, every description), your About story and your bar categories
@@ -88,7 +88,7 @@ name on your own About page. Easy to change.
    than saying the wrong thing. Yes or no is all I need.
 9. We tell Google the cafe serves **American** food and sits in the **$$** price band
    ($10–$25 a head). Both are guesses from your menu. Correct?
-10. Which name should everything use — **Front Street Cafe** or **Pemberville Front Street
+10. Which name should everything use — **Pemberville Front Street Cafe** or **Pemberville Front Street
     Cafe**? Your current site uses both, and your listings should all say the same one.
 
 **The new message form**
@@ -157,16 +157,47 @@ menu items. Google reviews can now arrive on their own, too — see question 16.
     DoorDash says you close at 5 and the site says 8, that's the kind of mismatch Google
     notices too.
 
+**A few questions that are also searches**
+
+People type these into Google before deciding where to eat, so answering them on the site
+wins visits. Short answers are fine — a sentence each.
+
+19. **Is there parking?** Street parking, a lot, both?
+20. **Do you take reservations, or is it walk-in?** This one also goes into the data Google
+    reads, and is currently left blank rather than guessed.
+21. **Are kids welcome? Highchairs?**
+22. **Can you take over the dining room for a private event?** Roughly how many people fit?
+23. **What happens if someone cannot eat gluten, or has a nut allergy?** The site says the
+    kitchen is nut-oil free, which is your own wording from the old site. I have not written
+    anything about gluten, because that needs to come from you.
+24. **Do you do takeout?** The menu does not say, and "takeout" is a common search.
+
+**Two things guests say that the site does not**
+
+Across your 80 written Google reviews, people describe the cafe as **farm to table** (8% of
+them) and **organic** (3%), and your Instagram bio says both. The site currently says
+neither in its own voice — only "true scratch kitchen" and "nut-oil free", which are your
+own words from the old site.
+
+25. **May the site say "farm to table" and "locally sourced"?** These are strong search
+    terms and your guests already use them.
+26. **May it say "organic"?** I would rather ask twice about this one: "organic" is a
+    regulated term in the US, so it carries more risk than the others. Only worth saying if
+    it is accurate and you are comfortable standing behind it.
+
+Either way, those words already appear on the site inside guest quotes, which is different —
+that is a customer describing you, not a claim the business is making.
+
 **Bar menu**
 
-19. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
+27. Your current site lists bar *categories* only — Wine, Cocktails, Mocktails, Bourbon,
    Rye, Scotch and so on — with no actual drinks and no prices. I've carried those
    categories over but switched the bar section **off** so the site doesn't show an empty
    menu. Send me the real drinks list and prices and it goes on.
 
 **Photos**
 
-20. There are only **two photos** on your entire current site: the front of the building, and
+28. There are only **two photos** on your entire current site: the front of the building, and
    a ribeye on the bar. The Gallery page has no photos on it at all. Both of those two are
    copies that GoDaddy compressed, not your originals.
    - Could you send the originals of those two?
@@ -175,14 +206,14 @@ menu items. Google reviews can now arrive on their own, too — see question 16.
 
 **The map**
 
-21. The Contact page has a map on it. It looks up the cafe by name and the address in
+29. The Contact page has a map on it. It looks up the cafe by name and the address in
     question 6, so if that address is wrong, the pin will be too.
 
 **Two pages that are empty today**
 
-22. Your Reviews page has a heading and nothing under it, and your Gallery page is blank.
-    Neither is planned as a page on the new site — guest quotes now sit on the front page
-    instead (see questions 13–15). Say the word if you want either page back.
+30. Your old Reviews page had a heading and nothing under it, and your Gallery page is
+    blank. Both exist properly on the new site now: Reviews lists all 70 of the reviews you
+    approved, and the Gallery has your photos.
 
 ---
 

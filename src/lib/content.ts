@@ -91,6 +91,16 @@ export async function getMenu(): Promise<MenuSection[]> {
     }));
 }
 
+/**
+ * A single unambiguous dollar amount, or null. "$17" and "$16.99" parse; "Half $9 / Full
+ * $12.99", "Market price" and "Ask your server" deliberately do not — structured data with
+ * a guessed price is worse than structured data with no price.
+ */
+export function parsePrice(price: string): string | null {
+  const match = /^\$(\d+(?:\.\d{2})?)$/.exec(price.trim());
+  return match ? match[1] : null;
+}
+
 /** "$8.99", or "Half $8.99 / Full $11.99" when a second size is set. */
 export function formatPrice(item: CollectionEntry<"menuItems">["data"]): string {
   const label = (note: string | null | undefined, price: string) =>

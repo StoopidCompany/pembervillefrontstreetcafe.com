@@ -16,7 +16,7 @@ Source of truth: `content/settings/site.json`, rendered into the `Restaurant` JS
 
 | Field | Exact string |
 |---|---|
-| Name | `The Front Street Cafe` |
+| Name | `Pemberville Front Street Cafe` |
 | Street | `210 E. Front St.` |
 | City | `Pemberville` |
 | State | `OH` |
@@ -34,7 +34,7 @@ Source of truth: `content/settings/site.json`, rendered into the `Restaurant` JS
 |---|---|---|
 | Name | The old site's own header | Certain. Note the old site also writes "Pemberville Front Street Cafe" — see below |
 | Phone | The old site's contact page | Certain |
-| Street, city, ZIP | OpenStreetMap node for "Front Street Cafe", which agrees with the Facebook listing in [plan.md](plan.md) | **Two independent sources agree, but Gavin has not confirmed it** |
+| Street, city, ZIP | OpenStreetMap node for "Pemberville Front Street Cafe", which agrees with the Facebook listing in [plan.md](plan.md) | **Two independent sources agree, but Gavin has not confirmed it** |
 | Latitude, longitude | Same OpenStreetMap node | As above |
 | Hours | Facebook listing. The old site's contact page says 09:00–17:00 instead | **Unresolved conflict — see COPY-REVIEW.md question 5** |
 | Cuisine, price range | Inferred from the menu ($3–$25, mains $17–$24) | Reasonable, worth a glance |
@@ -83,12 +83,79 @@ Only verified URLs belong in settings: a wrong one would point the footer links,
 
 ## The name question
 
-The old site uses two names: the header says **Front Street Cafe**, the page titles say
+The old site uses two names: the header says **Pemberville Front Street Cafe**, the page titles say
 **Pemberville Front Street Cafe**, and the Facebook page (ID `663507927121014`, linked from
-`socials.facebook`) is titled **Pemberville Front Street Cafe**. The new site uses *The Front Street Cafe* as
-the business name and *Front Street Cafe* in the header wordmark. The listings should all
+`socials.facebook`) is titled **Pemberville Front Street Cafe**. The new site uses *Pemberville Front Street Cafe* as
+the business name and *Pemberville Front Street Cafe* in the header wordmark. The listings should all
 carry whichever single form Gavin wants, and `businessName` in settings should match it
 exactly. Worth settling at the same time as the rest of this.
+
+## Off-site: where local ranking actually comes from
+
+The website supports the Business Profile; it does not replace it. For "food near me" in
+Wood County the local pack is drawn from the profile, so this list outranks anything in the
+repo. None of it is code.
+
+**Google Business Profile**
+
+- [ ] **Primary category.** This single field moves more than any markup on the site.
+      "Restaurant", "Cafe" and "Breakfast restaurant" compete for different queries — pick
+      the one that matches what the cafe wants to be found for, then add the others as
+      secondary categories.
+- [ ] Every attribute filled in: service options, dining options, accessibility, parking,
+      payments, "good for kids", bar on site.
+- [ ] Menu link pointed at `https://pembervillefrontstreetcafe.com/menu`, order links set.
+- [ ] **Photos on a cadence.** Profiles with recent photos surface more often. A phone is
+      enough; interior, food, and the storefront in daylight.
+- [ ] **Posts**, roughly weekly. The chef's weekly special is a natural fit and takes a
+      minute.
+- [ ] **Q&A seeded** with the same questions as the site FAQ, answered by the owner.
+- [ ] **Reply to reviews — all 206 of them**, including the nine unhappy ones. A visible
+      response rate is a trust signal, and prospective customers read the replies to 1★
+      reviews more closely than the reviews themselves.
+- [ ] Hours kept in step with `content/settings/site.json`, including holiday hours.
+
+**Other surfaces**
+
+- [ ] Apple Business Connect and Bing Places — far less contested than Google and, as far as
+      we know, unclaimed.
+- [ ] Review velocity: the "Review us on Google" button is built and waiting on
+      `socials.google`. A card on the table or a line on the receipt does more than a
+      website button ever will.
+
+## DNS, checked 27 Oct 2026
+
+Both of plan.md's open questions about the domain are now answered:
+
+- **DNS is hosted at GoDaddy.** The nameservers are `ns57.domaincontrol.com` and
+  `ns58.domaincontrol.com`, which is GoDaddy's. So the registrar and the DNS host are the
+  same place, and the cutover is done in the GoDaddy DNS panel.
+- **There are no MX records on the domain — no email to break.** The apex returns no MX
+  answer at all, and the business uses `frontstreetcafe16@gmail.com`. plan.md's "check MX
+  before cancelling anything at GoDaddy" is therefore satisfied: cancelling the Website
+  Builder subscription cannot take down mail, because no mail runs here.
+- The apex currently points at `76.223.105.230` and `13.248.243.5` — GoDaddy's Website
+  Builder hosting. `www` is a CNAME to the apex.
+
+Worth knowing while in the DNS panel: with no MX and no SPF or DMARC records, anyone can
+send mail that claims to be from this domain. A null MX (`0 .`) plus an SPF record of
+`v=spf1 -all` tells the world the domain never sends mail, which is cheap anti-spoofing. Not
+required for launch.
+
+### The cutover itself
+
+Replace the two A records with GitHub's four, from GitHub's own docs:
+
+```
+A     @    185.199.108.153
+A     @    185.199.109.153
+A     @    185.199.110.153
+A     @    185.199.111.153
+```
+
+Optionally the AAAA records too (`2606:50c0:8000::153` through `2606:50c0:8003::153`), and
+leave `www` as a CNAME — pointed at `stoopidcompany.github.io` rather than the apex, so
+GitHub handles the www-to-apex redirect itself.
 
 ## After launch
 

@@ -1,7 +1,8 @@
 ---
 import { render } from "astro:content";
 import Base from "~/layouts/Base.astro";
-import { getMenu, getPage, getSettings, formatPrice, telHref } from "~/lib/content";
+import Photo from "~/components/Photo.astro";
+import { getMenu, getPage, getSettings, formatPrice, parsePrice, telHref } from "~/lib/content";
 
 const settings = await getSettings();
 const tel = telHref(settings.phone);
@@ -15,10 +16,61 @@ const sections = await Promise.all(
     Description: (await render(section)).Content,
   })),
 );
+
+/*
+ * The full menu as structured data, on this page only — 51 dishes in every page's head
+ * would be wasteful. Google documents no menu rich result, so this is entity hygiene
+ * rather than a visible win: it tells Google, Bing and anything else parsing the page
+ * exactly what is served and for how much.
+ */
+const menuSchema = [
+  {
+    "@type": "Menu",
+    "@id": new URL("/menu#menu", Astro.site).toString(),
+    name: `${settings.businessName} menu`,
+    hasMenuSection: sections.map(({ section, items }) => ({
+      "@type": "MenuSection",
+      name: section.data.title,
+      ...(items.length > 0 && {
+        hasMenuItem: items.map(({ data }) => {
+          const low = parsePrice(data.price);
+          const high = data.altPrice ? parsePrice(data.altPrice) : null;
+          /*
+           * A half/full dish costs $9 *or* $12.99, so a flat price of $9 would be a lie
+           * by omission. Those become a min/max range; a single price stays a single
+           * price; anything unparseable ("Market price") gets no offer at all.
+           */
+          const offers = high
+            ? {
+                "@type": "Offer",
+                priceCurrency: "USD",
+                priceSpecification: {
+                  "@type": "PriceSpecification",
+                  minPrice: low,
+                  maxPrice: high,
+                  priceCurrency: "USD",
+                },
+              }
+            : low
+              ? { "@type": "Offer", price: low, priceCurrency: "USD" }
+              : null;
+          return {
+            "@type": "MenuItem",
+            name: data.name,
+            ...(data.description && { description: data.description }),
+            ...(offers && { offers }),
+          };
+        }),
+      }),
+    })),
+  },
+];
 ---
 <Base
   title={page.data.seoTitle ?? page.data.headline}
   description={page.data.description ?? undefined}
+  breadcrumb="Menu"
+  schema={menuSchema}
 >
   <div class="mx-auto max-w-3xl px-5 py-10 lg:px-8">
     <h1 class="text-3xl sm:text-4xl">{page.data.headline}</h1>
@@ -36,6 +88,28 @@ const sections = await Promise.all(
       ))}
     </nav>
 
+    {/* The other way to do this: photos on the page rather than per dish, each captioned
+        with what it shows. Renders nothing when the list is empty. */}
+    {page.data.images.length > 0 && (
+      <ul class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {page.data.images.map((photo) => (
+          <li>
+            <figure>
+              <Photo
+                src={photo.image}
+                alt={photo.alt}
+                sizes="(min-width: 640px) 220px, 45vw"
+                class="aspect-[4/3] w-full rounded-xl object-cover"
+              />
+              {photo.caption && (
+                <figcaption class="mt-1.5 text-xs text-ink-soft">{photo.caption}</figcaption>
+              )}
+            </figure>
+          </li>
+        ))}
+      </ul>
+    )}
+
     {sections.map(({ section, items, Description }) => (
       <section id={section.data.slug} class="mt-12 scroll-mt-28">
         <h2 class="border-b border-crust pb-2 text-2xl">{section.data.title}</h2>
@@ -44,17 +118,30 @@ const sections = await Promise.all(
         {items.length > 0 && (
           <ul class="mt-5 space-y-5">
             {items.map((item) => (
-              <li>
-                <div class="flex items-baseline justify-between gap-4">
-                  <h3 class="font-display text-lg leading-snug">{item.data.name}</h3>
-                  <span class="whitespace-nowrap text-sm font-semibold text-brick">
-                    {formatPrice(item.data)}
-                  </span>
+              <li class:list={[item.data.image && "flex items-start gap-4"]}>
+                {/* A dish photo is optional, and sits to the right so that rows with and
+                    without one keep the same left edge — a thumbnail on the left indented
+                    photographed dishes and made the list look ragged. */}
+                <div class:list={[item.data.image && "min-w-0 flex-1"]}>
+                  <div class="flex items-baseline justify-between gap-4">
+                    <h3 class="font-display text-lg leading-snug">{item.data.name}</h3>
+                    <span class="whitespace-nowrap text-sm font-semibold text-brick">
+                      {formatPrice(item.data)}
+                    </span>
+                  </div>
+                  {item.data.description && (
+                    <p class="mt-1 max-w-prose text-sm leading-relaxed text-ink-soft">
+                      {item.data.description}
+                    </p>
+                  )}
                 </div>
-                {item.data.description && (
-                  <p class="mt-1 max-w-prose text-sm leading-relaxed text-ink-soft">
-                    {item.data.description}
-                  </p>
+                {item.data.image && (
+                  <Photo
+                    src={item.data.image}
+                    alt={item.data.name}
+                    sizes="(min-width: 640px) 80px, 56px"
+                    class="h-14 w-14 shrink-0 rounded-xl object-cover sm:h-20 sm:w-20"
+                  />
                 )}
               </li>
             ))}
@@ -67,7 +154,7 @@ const sections = await Promise.all(
       <p class="mt-14 rounded-2xl border border-crust bg-crust/30 p-5 text-sm">
         Prices and dishes change with the seasons. Call us on
         <a href={tel} class="font-semibold">{settings.phone}</a> if you need to check something
-        before you come in.
+        before you come in, or ask about <a href="/catering">catering and private events</a>.
       </p>
     )}
   </div>

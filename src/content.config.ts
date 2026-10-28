@@ -40,6 +40,7 @@ const settings = defineCollection({
   }),
   schema: z.object({
     businessName: z.string(),
+    shortName: optionalString,
     tagline: optionalString,
     address: z.object({
       street: optionalString,
@@ -62,6 +63,13 @@ const settings = defineCollection({
       google: optionalString,
       yelp: optionalString,
     }),
+    verification: z
+      .object({
+        google: optionalString,
+        bing: optionalString,
+      })
+      .nullish()
+      .transform((value) => value ?? {}),
     ordering: z
       .object({
         doordash: optionalString,
@@ -142,6 +150,7 @@ const menuItems = defineCollection({
     // on a dangling section.
     section: z.string(),
     description: optionalString,
+    image: optionalString,
     price: z.string().min(1, "price is required — use 'Market price' if it varies"),
     priceNote: optionalString,
     altPrice: optionalString,

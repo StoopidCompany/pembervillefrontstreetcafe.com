@@ -98,13 +98,18 @@ for page in sorted(pages):
             problems.append(f"{label}: JSON does not parse — {exc}")
             continue
         if first_blob is None:
-            first_blob = data
+            # Google's field expectations are about the business node.
+            graph = data.get("@graph", [data])
+            first_blob = next((n for n in graph if n.get("@type") == "Restaurant"), data)
         if "@context" not in data:
             problems.append(f"{label}: missing @context")
-        check(data, data.get("@type", "Thing"), label, problems)
+        # A page may carry one node or a linked @graph of them.
+        nodes = data.get("@graph", [data])
+        for node in nodes:
+            check(node, node.get("@type", "Thing"), f"{label}:{node.get('@type', '?')}", problems)
 
 print(f"{found} JSON-LD block(s) across {len(pages)} built pages")
-print(f"type: {first_blob.get('@type')}   @id: {first_blob.get('@id')}")
+print(f"business node: {first_blob.get('@type')}   @id: {first_blob.get('@id')}")
 
 missing_required = [f for f in GOOGLE_REQUIRED if f not in first_blob]
 missing_recommended = [f for f in GOOGLE_RECOMMENDED if f not in first_blob]

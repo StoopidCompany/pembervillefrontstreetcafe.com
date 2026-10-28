@@ -12,7 +12,7 @@
  * Then:
  *   GOOGLE_CLIENT_ID=... GOOGLE_CLIENT_SECRET=... node scripts/google-oauth-setup.mjs
  *
- * Sign in as the account that **owns or manages** the Front Street Cafe profile — Gavin,
+ * Sign in as the account that **owns or manages** the Pemberville Front Street Cafe profile — Gavin,
  * not you, unless he has made you a manager. Paste the printed refresh token into
  * .env.local for local runs and into the repository secrets for the Action.
  */

@@ -46,6 +46,8 @@ export default defineConfig({
         ui: { allowedActions: { create: false, delete: false } },
         fields: [
           { type: "string", name: "businessName", label: "Business Name", required: true },
+          { type: "string", name: "shortName", label: "Also Known As",
+            description: "The shorter name people search for, e.g. 'Front Street Cafe'. Not shown on the site — it goes into the data search engines read, so a search for the short name still finds you." },
           { type: "string", name: "tagline", label: "Tagline / Meta Description",
             description: "Short description used in browser tabs and search results" },
           {
@@ -92,6 +94,16 @@ export default defineConfig({
               { type: "string", name: "tiktok", label: "TikTok URL" },
               { type: "string", name: "google", label: "Google Business Profile URL" },
               { type: "string", name: "yelp", label: "Yelp URL" },
+            ],
+          },
+          {
+            type: "object", name: "verification", label: "Search Engine Verification",
+            description:
+              "Verification codes from Google Search Console and Bing Webmaster Tools. " +
+              "Paste only the code, not the whole meta tag. Leave empty and nothing is added.",
+            fields: [
+              { type: "string", name: "google", label: "Google Search Console code" },
+              { type: "string", name: "bing", label: "Bing Webmaster code" },
             ],
           },
           {
@@ -147,7 +159,7 @@ export default defineConfig({
             ],
           },
           { type: "string", name: "footerText", label: "Footer Text",
-            description: "e.g. © The Front Street Cafe 2026" },
+            description: "e.g. © Pemberville Front Street Cafe 2026" },
         ],
       },
       {
@@ -232,7 +244,7 @@ export default defineConfig({
           { type: "string", name: "responseTime", label: "How quickly you reply",
             description: "Shown under the form, e.g. 'We usually reply within a day'. Leave empty to show nothing." },
           { type: "string", name: "mapQuery", label: "Map Search Text",
-            description: "What the embedded map should look up, e.g. 'Front Street Cafe, Pemberville, OH'" },
+            description: "What the embedded map should look up, e.g. 'Pemberville Front Street Cafe, Pemberville, OH'" },
         ],
       },
       {
@@ -269,6 +281,22 @@ export default defineConfig({
           { type: "string", name: "headline", label: "Headline", required: true },
           { type: "rich-text", name: "body", label: "Intro", isBody: true,
             description: "Shown above the menu sections" },
+          {
+            type: "object", name: "images", label: "Photos",
+            description:
+              "A row of photos above the menu. Caption each one with the dish it shows. " +
+              "Use this instead of per-dish photos if you would rather keep the menu itself " +
+              "as a plain list — both work, and you can use either or both.",
+            list: true,
+            ui: { itemProps: (item) => ({ label: item?.caption || item?.alt || "Photo" }) },
+            fields: [
+              { type: "image", name: "image", label: "Photo", required: true },
+              { type: "string", name: "alt", label: "Describe the photo", required: true,
+                description: "For people using a screen reader" },
+              { type: "string", name: "caption", label: "Caption",
+                description: "Which dish this is, e.g. '10 oz Ribeye'" },
+            ],
+          },
         ],
       },
       {
@@ -304,6 +332,11 @@ export default defineConfig({
           },
           { type: "string", name: "description", label: "Description",
             ui: { component: "textarea" } },
+          { type: "image", name: "image", label: "Photo of this dish (optional)",
+            description:
+              "Shows as a thumbnail next to the dish on the menu, and as a photo on the " +
+              "home page if the dish is one of the featured ones. Leave empty and the dish " +
+              "just appears without a picture." },
           { type: "string", name: "price", label: "Price", required: true,
             description:
               "Typed exactly as it should appear — '$16.99', '$3', 'Market price'. " +
