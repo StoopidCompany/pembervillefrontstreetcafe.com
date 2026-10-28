@@ -1,4 +1,50 @@
 {
+  "/uploads/3ec6aed1-6f7c-4103-bea7-4eb103216bc3.jpg": {
+    "width": 1920,
+    "height": 1080,
+    "widths": [
+      160,
+      320,
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "/uploads/Alfredo.jpg": {
+    "width": 1080,
+    "height": 1080,
+    "widths": [
+      160,
+      320,
+      480,
+      800
+    ]
+  },
+  "/uploads/a7fec9c7-5494-4f97-82d4-d82d8ea88a3b.jpg": {
+    "width": 1920,
+    "height": 1080,
+    "widths": [
+      160,
+      320,
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
+  "/uploads/c6f4ecdb-8a25-4e96-af8d-fb3bd1fc4adc.jpg": {
+    "width": 1920,
+    "height": 1080,
+    "widths": [
+      160,
+      320,
+      480,
+      800,
+      1200,
+      1600
+    ]
+  },
   "/uploads/photos/IMG_4610.jpg": {
     "width": 2000,
     "height": 1500,

@@ -40,6 +40,13 @@ jobs:
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.TINA_CLIENT_ID }}
 
+      # Gavin uploads photos through Tina, which commits the originals to public/uploads
+      # with no responsive variants. Generating them here means an uploaded phone photo is
+      # optimised in the deployed site without anyone remembering to run a script. Variants
+      # stay committed too, so local builds and a fresh clone need nothing.
+      - name: Generate responsive image variants
+        run: node scripts/build-responsive-images.mjs
+
       - name: Build the site
         run: npm run build
         env:
