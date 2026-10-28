@@ -138,6 +138,8 @@ fails the build instead of rendering blank.
 | About page    | `content/pages/about.md`     | Singleton. Body = the story, plus a photo   |
 | Gallery page  | `content/pages/gallery.md`   | Singleton. Photo list with alt text         |
 | Contact page  | `content/pages/contact.md`   | Singleton. Intro + what the map looks up    |
+| Reviews page  | `content/pages/reviews.md`   | Singleton. Headline + closing note; the reviews themselves are below |
+| Catering page | `content/pages/catering.md`  | Singleton. Headline + intro above the enquiry box |
 | 404 page      | `content/pages/404.md`       | Singleton. Headline, message and an optional photo |
 | Privacy       | `content/pages/privacy.md`   | Singleton. Prose                            |
 | Accessibility | `content/pages/accessibility.md` | Singleton. Prose                        |
@@ -164,6 +166,13 @@ Things worth knowing before changing any of it:
   it; item `available: false` hides one item. Both are toggles in the admin.
 - Singletons carry `allowedActions: { create: false, delete: false }` so Gavin cannot
   delete his own settings file.
+- **Every page singleton has the same three sharing-card fields** (`socialImage`,
+  `socialImageAlt`, `socialImageFocus`), falling back to `social` in Site Settings. See
+  [Link previews](#link-previews-the-picture-people-see-when-they-paste-a-link).
+- **The drive-time table on `/catering` stays in code.** It is measured data, not copy —
+  real OSRM driving times from the cafe's coordinates — and inviting edits to it invites
+  wrong numbers. Same for the "Tell us what you need" checklist, which is structure rather
+  than prose.
 - **Item filenames are section-prefixed** (`sides-german-potato-cakes.md`) because item
   names repeat across sections — German Potato Cakes is both an à la carte breakfast item
   and a side, at different prices. Tina names new files after the title, so watch for
@@ -587,6 +596,68 @@ Measured effect on the home page, headless Chrome at 390×844:
 
 Desktop at 1440×900 went 857KB → 424KB.
 
+### Link previews (the picture people see when they paste a link)
+
+Every page carries a full set of Open Graph and Twitter card tags, and a **1200×630 card**
+built from a photo chosen in the admin: the storefront with the sign, darkened at the
+bottom, with the cafe's name in the sign's script across the lower left.
+
+**To change a card, change it in Tina** — no code, no script:
+
+| What | Where in the admin |
+|---|---|
+| The photo used everywhere by default | Site Settings → **Link Sharing Card** |
+| A different photo for one page | that page → **Sharing Photo** |
+| What survives the crop | **Which part of the photo to keep** — top / middle / bottom |
+
+The card is wide and most phone photos are tall, so something always gets cut. That is what
+the crop picker is for. A landscape photo makes a better card than a portrait one.
+
+Shipped: the storefront (cropped from the top, so the hanging sign survives) sitewide, and
+the ribeye at the bar (cropped from the bottom, so the plate survives) on `/menu`.
+
+```bash
+npm run social          # build cards for anything new or changed
+npm run social -- --force
+```
+
+Three things about this worth knowing:
+
+- **The deploy workflow runs it**, so a photo chosen in the admin is live without anyone
+  remembering a script — the same arrangement as the responsive image variants.
+- **Filenames carry a hash** of the photo, the crop and the overlay
+  (`storefront-top-20ff18e1.jpg`). Facebook and X cache card images hard, so a changed photo
+  has to produce a changed URL or the old card keeps appearing for days. Cards whose inputs
+  are gone get pruned on the next run.
+- **A chosen photo whose card has not been generated is ignored**, falling back to the
+  sitewide photo and then to the committed `og-default.jpg`. Pointing `og:image` at a
+  portrait original looks worse in a feed than the generic card does.
+
+The wordmark overlay is a pre-rendered transparent PNG, `public/social/wordmark.png`,
+committed. It cannot be drawn at card-build time: the wordmark face is a woff2, which
+sharp's text rendering cannot load, and CI has no browser. Regenerate it only if the cafe's
+name changes, on a machine with Chrome:
+
+```bash
+node scripts/make-brand-assets.mjs --wordmark
+```
+
+`og:type` is `website`. It used to say `restaurant`, which is not an Open Graph type — the
+spec defines `article`, `book`, `payment.link`, `profile`, `website` and the music/video
+namespaces — so the page was effectively untyped. There is no `twitter:site` because there
+is no X account, and an empty handle renders worse than a missing one.
+
+[_seed/validate-social.py](_seed/validate-social.py) gates the deploy: it checks every page
+for the full tag set, rejects an og:type outside the spec, requires `og:url` to equal the
+canonical, and confirms each `og:image` exists in `dist/`, really is a 1200×630 JPEG under
+1MB, is described by matching width and height, has a non-empty alt, and that no two pages
+share a title or description. Each of those six checks was proven to fire by breaking a
+built page on purpose.
+
+X's own card validator and Facebook's sharing debugger both need a login, so **spot-check
+the live URLs in them after deploying** — that is the one step that cannot be done from
+here.
+
 ### What has actually been checked
 
 Google's Rich Results Test can't be driven from here, so the structured data was validated
@@ -733,9 +804,11 @@ already compressed them — so the originals from Gavin will benefit more than t
 content/         Content files edited via Tina
 public/uploads/  Images uploaded via Tina (committed to git)
 public/logos/    Third-party brand marks for the order buttons and review badges
+public/social/   Generated 1200x630 link-preview cards + the wordmark overlay
 src/
   layouts/       Base layout
-  lib/           Content loaders (content.ts) + hours formatting (hours.ts)
+  lib/           Content loaders (content.ts), hours formatting (hours.ts),
+                 image manifests (photos.ts, social.ts)
   pages/         Routes
   styles/        Global CSS + Tailwind theme tokens
 tina/            Tina schema + generated files

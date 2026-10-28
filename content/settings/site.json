@@ -33,6 +33,11 @@
     "rating": "4.4",
     "count": 206
   },
+  "social": {
+    "image": "/uploads/photos/IMG_7110.jpg",
+    "imageAlt": "The Pemberville Front Street Cafe storefront, with its hanging Food & Drink sign above the door",
+    "imageFocus": "top"
+  },
   "hours": [
     {
       "day": "monday",

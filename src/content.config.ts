@@ -6,6 +6,9 @@ const time = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Time must be 24-hour
 
 const optionalString = z.string().nullable().optional();
 
+/** Which part of a tall photo survives the wide crop of a social card. Matches tina/config.ts. */
+const focus = z.enum(["top", "centre", "bottom"]).nullable().optional();
+
 const hoursEntry = z
   .object({
     day: z.enum([
@@ -89,12 +92,22 @@ const settings = defineCollection({
       .nullish()
       .transform((value) => value ?? {}),
     hours: z.array(hoursEntry).default([]),
+    // The sitewide link-sharing card, which every page falls back to.
+    social: z
+      .object({
+        image: optionalString,
+        imageAlt: optionalString,
+        imageFocus: focus,
+      })
+      .nullish()
+      .transform((value) => value ?? {}),
     footerText: optionalString,
   }),
 });
 
 /**
- * One file per singleton page: home.md, menu.md, about.md, gallery.md, contact.md.
+ * One file per singleton page: home.md, menu.md, about.md, gallery.md, contact.md,
+ * reviews.md, catering.md, 404.md, privacy.md, accessibility.md.
  * Prose lives in the markdown body. Everything past `headline` belongs to one page or
  * another, so it is all optional — same shape as the Tina collections above it.
  */
@@ -129,6 +142,10 @@ const pages = defineCollection({
     // contact
     mapQuery: optionalString,
     responseTime: optionalString,
+    // every page: the link-sharing card, falling back to settings.social
+    socialImage: optionalString,
+    socialImageAlt: optionalString,
+    socialImageFocus: focus,
   }),
 });
 

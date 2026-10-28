@@ -22,6 +22,33 @@ const validateTime = (value?: string) =>
     ? undefined
     : "Use 24-hour HH:MM — e.g. 10:30 for 10:30am, 20:00 for 8pm";
 
+const FOCUS = [
+  { value: "centre", label: "Middle of the photo" },
+  { value: "top", label: "Top of the photo" },
+  { value: "bottom", label: "Bottom of the photo" },
+];
+
+/**
+ * The three fields that control a page's sharing card — the picture that appears when
+ * someone pastes a link into a text message, Facebook or X. Every page gets them, and any
+ * page that leaves them empty falls back to the sitewide photo in Site Settings.
+ *
+ * The crop matters because a card is wide (1200x630) and most phone photos are tall, so
+ * something always gets cut off. The picker decides what survives.
+ */
+const socialFields = [
+  { type: "image" as const, name: "socialImage", label: "Sharing Photo",
+    description:
+      "Shown when this page's link is pasted into a text message, Facebook or X. " +
+      "Leave empty to use the sitewide photo from Site Settings. Landscape photos work " +
+      "best — a tall photo loses its top and bottom." },
+  { type: "string" as const, name: "socialImageAlt", label: "Describe the sharing photo",
+    description: "For people using a screen reader. Leave empty to use the sitewide one." },
+  { type: "string" as const, name: "socialImageFocus", label: "Which part of the photo to keep",
+    description: "The card is wide, so a tall photo gets cropped. This picks what stays.",
+    options: FOCUS },
+];
+
 export default defineConfig({
   branch,
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "",
@@ -137,6 +164,22 @@ export default defineConfig({
             ],
           },
           {
+            type: "object", name: "social", label: "Link Sharing Card",
+            description:
+              "The picture people see when a link to this site is pasted into a text " +
+              "message, Facebook or X. Each page can override this; this is the default.",
+            fields: [
+              { type: "image", name: "image", label: "Default Sharing Photo",
+                description:
+                  "Landscape photos work best. Leave empty and the storefront photo is used." },
+              { type: "string", name: "imageAlt", label: "Describe the photo",
+                description: "For people using a screen reader" },
+              { type: "string", name: "imageFocus", label: "Which part of the photo to keep",
+                description: "The card is wide, so a tall photo gets cropped.",
+                options: FOCUS },
+            ],
+          },
+          {
             type: "object", name: "hours", label: "Opening Hours",
             description:
               "One row per day. These feed both the hours shown on the site and the " +
@@ -194,6 +237,7 @@ export default defineConfig({
           },
           { type: "string", name: "ctaText", label: "Button Text" },
           { type: "string", name: "ctaHref", label: "Button Link" },
+          ...socialFields,
         ],
       },
       {
@@ -224,6 +268,7 @@ export default defineConfig({
               { type: "string", name: "caption", label: "Caption (optional)" },
             ],
           },
+          ...socialFields,
         ],
       },
       {
@@ -245,6 +290,7 @@ export default defineConfig({
             description: "Shown under the form, e.g. 'We usually reply within a day'. Leave empty to show nothing." },
           { type: "string", name: "mapQuery", label: "Map Search Text",
             description: "What the embedded map should look up, e.g. 'Pemberville Front Street Cafe, Pemberville, OH'" },
+          ...socialFields,
         ],
       },
       {
@@ -261,6 +307,41 @@ export default defineConfig({
             description: "Shown above the links. Leave empty and the page just has no photo." },
           { type: "string", name: "imageAlt", label: "Describe the photo",
             description: "For people using a screen reader" },
+          ...socialFields,
+        ],
+      },
+      {
+        name: "reviews",
+        label: "Reviews Page",
+        path: "content/pages",
+        format: "md",
+        match: { include: "reviews" },
+        ui: { allowedActions: { create: false, delete: false } },
+        fields: [
+          { type: "string", name: "seoTitle", label: "Title for Google / browser tab" },
+          { type: "string", name: "description", label: "Search Description",
+            ui: { component: "textarea" } },
+          { type: "string", name: "headline", label: "Headline", required: true },
+          { type: "rich-text", name: "body", label: "Closing Note", isBody: true,
+            description: "Shown under the reviews. The reviews themselves are in Reviews." },
+          ...socialFields,
+        ],
+      },
+      {
+        name: "catering",
+        label: "Catering Page",
+        path: "content/pages",
+        format: "md",
+        match: { include: "catering" },
+        ui: { allowedActions: { create: false, delete: false } },
+        fields: [
+          { type: "string", name: "seoTitle", label: "Title for Google / browser tab" },
+          { type: "string", name: "description", label: "Search Description",
+            ui: { component: "textarea" } },
+          { type: "string", name: "headline", label: "Headline", required: true },
+          { type: "rich-text", name: "body", label: "Intro", isBody: true,
+            description: "The opening paragraph, above the enquiry box" },
+          ...socialFields,
         ],
       },
       {
@@ -276,6 +357,7 @@ export default defineConfig({
           { type: "string", name: "description", label: "Search Description",
             ui: { component: "textarea" } },
           { type: "rich-text", name: "body", label: "Policy", isBody: true, required: true },
+          ...socialFields,
         ],
       },
       {
@@ -291,6 +373,7 @@ export default defineConfig({
           { type: "string", name: "description", label: "Search Description",
             ui: { component: "textarea" } },
           { type: "rich-text", name: "body", label: "Statement", isBody: true, required: true },
+          ...socialFields,
         ],
       },
       {
@@ -309,6 +392,7 @@ export default defineConfig({
           { type: "string", name: "headline", label: "Headline", required: true },
           { type: "image", name: "image", label: "Photo" },
           { type: "rich-text", name: "body", label: "Our Story", isBody: true, required: true },
+          ...socialFields,
         ],
       },
       {
@@ -343,6 +427,7 @@ export default defineConfig({
                 description: "Which dish this is, e.g. '10 oz Ribeye'" },
             ],
           },
+          ...socialFields,
         ],
       },
       {

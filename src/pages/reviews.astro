@@ -1,9 +1,12 @@
 ---
+import { render } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import SourceBadge from "~/components/SourceBadge.astro";
 import ReviewAsk from "~/components/ReviewAsk.astro";
-import { getSettings, getTestimonials, getReviewLink } from "~/lib/content";
+import { getSettings, getPage, getTestimonials, getReviewLink } from "~/lib/content";
 
+const page = await getPage("reviews");
+const { Content } = await render(page);
 const { reviewsSummary } = await getSettings();
 const reviews = await getTestimonials();
 
@@ -22,12 +25,13 @@ const summary =
     : null;
 ---
 <Base
-  title="Reviews"
-  description="What guests say about Pemberville Front Street Cafe — reviews from people who have eaten in the dining room and at the bar on Front Street."
+  title={page.data.seoTitle ?? "Reviews"}
+  description={page.data.description ?? undefined}
   breadcrumb="Reviews"
+  social={page.data}
 >
   <div class="mx-auto max-w-3xl px-5 py-10 lg:px-8">
-    <h1 class="text-3xl sm:text-4xl">What guests say</h1>
+    <h1 class="text-3xl sm:text-4xl">{page.data.headline}</h1>
 
     {summary && (
       <p class="mt-3 text-lg text-ink-soft">
@@ -90,9 +94,6 @@ const summary =
 
     <ReviewAsk class="mt-12 bg-crust/30" heading="Been in recently?" />
 
-    <p class="mt-10 text-sm text-ink-soft">
-      Reviews are reproduced as guests wrote them. Have a look at
-      <a href="/menu">the menu</a> or <a href="/contact">come and find us</a>.
-    </p>
+    <div class="mt-10 space-y-3 text-sm text-ink-soft"><Content /></div>
   </div>
 </Base>
