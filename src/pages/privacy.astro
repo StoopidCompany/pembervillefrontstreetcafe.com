@@ -1,0 +1,23 @@
+---
+import { render } from "astro:content";
+import Base from "~/layouts/Base.astro";
+import { getPage } from "~/lib/content";
+
+const page = await getPage("privacy");
+const { Content } = await render(page);
+---
+<Base
+  title={page.data.seoTitle ?? page.data.headline}
+  description={page.data.description ?? undefined}
+  breadcrumb={page.data.headline}
+>
+  <article class="mx-auto max-w-2xl px-5 py-10 lg:px-8">
+    <h1 class="text-3xl sm:text-4xl">{page.data.headline}</h1>
+    {/* Long-form prose: headings and lists need spacing the rest of the site does not. */}
+    <div
+      class="mt-6 space-y-4 leading-relaxed [&_a]:underline [&_h2]:mt-10 [&_h2]:text-xl [&_li]:ml-5 [&_li]:list-disc [&_ul]:space-y-1.5"
+    >
+      <Content />
+    </div>
+  </article>
+</Base>

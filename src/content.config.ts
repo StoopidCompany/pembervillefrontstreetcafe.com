@@ -113,8 +113,9 @@ const pages = defineCollection({
       .default([]),
     ctaText: optionalString,
     ctaHref: optionalString,
-    // about
+    // about, 404
     image: optionalString,
+    imageAlt: optionalString,
     // gallery
     images: z
       .array(

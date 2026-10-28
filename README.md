@@ -54,12 +54,34 @@ is not required" — the custom domain lives in the repository's Pages settings 
 reference repo's `public/CNAME` is for branch-based publishing, which this project does not
 use.
 
+## Standard pages
+
+- **`/404`** is content-driven like any other page, including an optional photo Gavin can
+  swap in the admin. It renders fine with no photo. Astro's sitemap integration leaves it
+  out of the sitemap by itself.
+- **`/privacy`** describes what the site actually does, checked against the deployed HTML
+  rather than written from a template: Google Analytics is live and sets cookies, the
+  contact form hands submissions to Web3Forms, the contact page embeds a Google map, and
+  reviewer photos are served by Google. It also says what the site does *not* do, including
+  that the fonts and photographs are self-hosted.
+  **If `PUBLIC_GA4_ID` is ever removed, edit the Analytics section** — the page is content,
+  so it cannot know.
+- **`/accessibility`** lists what was actually built (measured contrast, visible focus,
+  alt text everywhere, reduced-motion support, a no-JavaScript order menu) and, more
+  usefully, where it falls short: the Google map, and guest reviews quoted with their
+  original typos.
+- Both are linked beside the copyright in the footer rather than in the main navigation.
+
+No terms-of-service page: nothing is sold here and there is no account to agree to anything
+with, so it would be boilerplate nobody reads.
+
 ## Deploying
 
 [.github/workflows/deploy.yml](.github/workflows/deploy.yml) builds and publishes to GitHub
-Pages. **Manual trigger only** (`workflow_dispatch`) so a content edit cannot publish before
-anyone has looked at it; the `push` trigger is written but commented out, to be enabled after
-the DNS cutover.
+Pages **on every push to `main`**, which is what makes the admin useful: Gavin saves, Tina
+commits to `main`, the deploy runs, and the change is live in about a minute.
+`workflow_dispatch` is still there for re-running a deploy by hand — which is how you pick
+up a changed secret without a content change, since secrets are read at build time.
 
 Repository settings → Pages → Source must be **GitHub Actions**, not a branch.
 
@@ -116,6 +138,9 @@ fails the build instead of rendering blank.
 | About page    | `content/pages/about.md`     | Singleton. Body = the story, plus a photo   |
 | Gallery page  | `content/pages/gallery.md`   | Singleton. Photo list with alt text         |
 | Contact page  | `content/pages/contact.md`   | Singleton. Intro + what the map looks up    |
+| 404 page      | `content/pages/404.md`       | Singleton. Headline, message and an optional photo |
+| Privacy       | `content/pages/privacy.md`   | Singleton. Prose                            |
+| Accessibility | `content/pages/accessibility.md` | Singleton. Prose                        |
 | Menu Sections | `content/menu-sections/*.md` | `order` + `published`. Body = section blurb |
 | Menu Items    | `content/menu-items/*.md`    | `order` + `available`, `section` reference   |
 | Guest Reviews | `content/testimonials/*.md`  | `order` + `published`. Google sync writes here |

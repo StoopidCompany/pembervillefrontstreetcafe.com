@@ -1,12 +1,12 @@
 name: Build and deploy to GitHub Pages
 
-# Manual trigger only until the DNS cutover is approved, so a content edit cannot publish
-# the site before anyone has looked at it. After cutover, uncomment the push trigger and
-# Tina's saves-to-main will deploy by themselves.
+# The site is live, so a save in the Tina admin should reach visitors by itself: Tina
+# commits to main, this runs, and the deploy follows. workflow_dispatch stays for re-running
+# a deploy by hand, which is how you pick up a changed secret without a content change.
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [main]
+  push:
+    branches: [main]
 
 permissions:
   contents: read

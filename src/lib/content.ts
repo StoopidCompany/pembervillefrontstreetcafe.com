@@ -13,7 +13,9 @@ export async function getHours() {
   return sortHours(hours);
 }
 
-export async function getPage(slug: "home" | "menu" | "about" | "gallery" | "contact") {
+export async function getPage(
+  slug: "home" | "menu" | "about" | "gallery" | "contact" | "404" | "privacy" | "accessibility",
+) {
   const entry = await getEntry("pages", slug);
   if (!entry) throw new Error(`Page not found: content/pages/${slug}.md`);
   return entry;
