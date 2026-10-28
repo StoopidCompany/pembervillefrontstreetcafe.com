@@ -215,6 +215,20 @@ that is a customer describing you, not a claim the business is making.
     blank. Both exist properly on the new site now: Reviews lists all 70 of the reviews you
     approved, and the Gallery has your photos.
 
+**The picture people see when they share a link**
+
+31. When someone texts a link to the cafe, or posts it on Facebook, a picture comes up with
+    it. You can choose that picture yourself:
+    - **Site Settings → Link Sharing Card** sets the one used for the whole site. It's
+      currently the front of the building with the hanging sign.
+    - Any individual page has its own **Sharing Photo** if you'd rather that page showed
+      something else. The Menu page is set to the ribeye on the bar as an example.
+    - The picture is a **wide strip**, so a tall phone photo loses its top and bottom. There
+      is a "which part of the photo to keep" setting for that, but a photo taken sideways
+      makes a better one. Worth bearing in mind when you take new photos.
+    - The cafe's name is added over the bottom of the picture automatically, so you don't
+      need to pick a photo that has the sign in it.
+
 ---
 
 ## What happens to your answers

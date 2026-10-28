@@ -55,6 +55,12 @@ jobs:
       - name: Generate responsive image variants
         run: node scripts/build-responsive-images.mjs
 
+      # Same reasoning for link-preview cards: choosing a new sharing photo in the admin
+      # commits only the original, and the 1200x630 card has to be built from it. Without
+      # this step the page would quietly fall back to the generic storefront card.
+      - name: Generate social cards
+        run: node scripts/build-social-cards.mjs
+
       - name: Build the site
         run: npm run build
         env:
@@ -64,6 +70,11 @@ jobs:
       # Cheap gate: a type error should stop a deploy, not land on the live site.
       - name: Type check
         run: npx astro check
+
+      # A broken link preview is invisible until someone shares the site, so check it here
+      # rather than find out from a bad-looking post. Pure standard library, no install.
+      - name: Check social tags
+        run: python3 -I _seed/validate-social.py dist
 
       - uses: actions/upload-pages-artifact@v3
         with:

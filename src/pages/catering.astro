@@ -1,8 +1,11 @@
 ---
+import { render } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import VisitInfo from "~/components/VisitInfo.astro";
-import { getSettings, telHref } from "~/lib/content";
+import { getPage, getSettings, telHref } from "~/lib/content";
 
+const page = await getPage("catering");
+const { Content } = await render(page);
 const settings = await getSettings();
 const tel = telHref(settings.phone);
 
@@ -18,18 +21,15 @@ const nearby = [
 ];
 ---
 <Base
-  title="Catering & events"
-  description="Catering, private events and large parties at Pemberville Front Street Cafe — a scratch kitchen in Wood County, northwest Ohio. Tell us what you need."
+  title={page.data.seoTitle ?? "Catering & events"}
+  description={page.data.description ?? undefined}
   breadcrumb="Catering & private events"
+  social={page.data}
 >
   <div class="mx-auto max-w-3xl px-5 py-10 lg:px-8">
-    <h1 class="text-3xl sm:text-4xl">Catering & private events</h1>
+    <h1 class="text-3xl sm:text-4xl">{page.data.headline}</h1>
 
-    <p class="mt-4 text-lg text-ink-soft text-pretty">
-      Everything here is made from scratch — we bake our own bread, churn our own butter and
-      hand-cut the fries. If you are feeding a group in Pemberville or anywhere nearby in
-      Wood County, start by telling us what you have in mind.
-    </p>
+    <div class="mt-4 space-y-4 text-lg text-ink-soft text-pretty"><Content /></div>
 
     <section class="mt-10 rounded-2xl border border-crust bg-crust/30 p-6 sm:p-8">
       <h2 class="font-display text-xl">Tell us what you need</h2>

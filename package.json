@@ -8,6 +8,7 @@
     "dev:cms": "tinacms dev --datalayer-port 9876 -c \"astro dev\"",
     "build": "astro build --force",
     "build:cms": "tinacms build && astro build --force",
+    "social": "node scripts/build-social-cards.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

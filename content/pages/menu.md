@@ -9,6 +9,9 @@ images:
   - image: /uploads/photos/IMG_4610.jpg
     alt: Trays of microgreens being cut in the cafe's kitchen
     caption: Microgreens, cut for the Peppercorn Pork Chop
+socialImage: /uploads/photos/ribeye-at-the-bar.jpg
+socialImageAlt: "A ribeye with mashed potatoes and mushrooms on the bar at Pemberville Front Street Cafe"
+socialImageFocus: bottom
 ---
 
 A true scratch kitchen — nut-oil free.
