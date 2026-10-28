@@ -44,6 +44,9 @@ jobs:
         env:
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.TINA_CLIENT_ID }}
+          # Measured: this step OOMs at a 1GB heap and passes at 2GB, which is close enough
+          # to a runner's default to be worth stating explicitly.
+          NODE_OPTIONS: --max-old-space-size=4096
 
       # Gavin uploads photos through Tina, which commits the originals to public/uploads
       # with no responsive variants. Generating them here means an uploaded phone photo is

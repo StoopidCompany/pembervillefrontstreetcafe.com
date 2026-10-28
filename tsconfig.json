@@ -1,7 +1,10 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules", "_seed"],
+  // `public` holds no TypeScript, but `include: **/*` made the compiler enumerate all 200
+  // files in it — mostly generated image variants — and that pushed `astro check` over 2GB
+  // of heap. Excluding it brings the same check in comfortably under 1GB.
+  "exclude": ["dist", "node_modules", "_seed", "public"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
