@@ -21,6 +21,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # A step's `if` cannot read `secrets` — that context is not available there, which is
+    # what "Unrecognized named-value: 'secrets'" means. Job-level `env` can read secrets,
+    # and `if` can read `env`, so the Tina check goes through here.
+    env:
+      TINA_CLIENT_ID: ${{ secrets.TINA_CLIENT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -34,7 +39,7 @@ jobs:
       # Skipped until Tina Cloud is set up, so the first deploy is not blocked on it. The
       # site builds and serves fine without the admin; /admin just will not exist yet.
       - name: Build the Tina admin
-        if: ${{ secrets.TINA_CLIENT_ID != '' }}
+        if: ${{ env.TINA_CLIENT_ID != '' }}
         run: npx tinacms build
         env:
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
